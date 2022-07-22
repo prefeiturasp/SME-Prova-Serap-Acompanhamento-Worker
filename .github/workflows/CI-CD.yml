@@ -28,7 +28,7 @@ jobs:
       - name: Build the Docker image Backend  
         run: |
              docker login ${{ secrets.REGISTRY_HOST }}
-             docker build -f src/SME.SERAp.Prova.Acompanhamento.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/serap-acompanhamento-worker .
+             docker build -f src/SME.SERAp.Prova.Acompanhamento.Worker/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/serap-acompanhamento-worker .
              docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/serap-acompanhamento-worker
 
   build-hom:
@@ -48,7 +48,7 @@ jobs:
       - name: Build the Docker image Backend  
         run: |
              docker login ${{ secrets.REGISTRY_HOST }}
-             docker build -f src/SME.SERAp.Prova.Acompanhamento.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/serap-acompanhamento-worker .
+             docker build -f src/SME.SERAp.Prova.Acompanhamento.Worker/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/serap-acompanhamento-worker .
              docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/serap-acompanhamento-worker
          
   build-dev:
@@ -68,7 +68,7 @@ jobs:
       - name: Build the Docker image Backend  
         run: |
              docker login ${{ secrets.REGISTRY_HOST }}
-             docker build -f src/SME.SERAp.Prova.Acompanhamento.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/serap-acompanhamento-worker .
+             docker build -f src/SME.SERAp.Prova.Acompanhamento.Worker/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/serap-acompanhamento-worker .
              docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/serap-acompanhamento-worker
 
   deploy-prod:
