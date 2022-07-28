@@ -10,7 +10,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Nest;
 using RabbitMQ.Client;
+using SME.SERAp.Prova.Acompanhamento.Dados;
 using SME.SERAp.Prova.Acompanhamento.Infra.EnvironmentVariables;
+using SME.SERAp.Prova.Acompanhamento.Infra.Interfaces;
+using SME.SERAp.Prova.Acompanhamento.Infra.Services;
 using SME.SERAp.Prova.Acompanhamento.IoC;
 using System;
 
@@ -67,6 +70,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             var elasticClient = new ElasticClient(connectionSettings);
             services.AddSingleton<IElasticClient>(elasticClient);
 
+            var connectionStringOptions = new ConnectionStringOptions();
+            Configuration.GetSection(ConnectionStringOptions.Secao).Bind(connectionStringOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(connectionStringOptions);
+
             var rabbitLogOptions = new RabbitLogOptions();
             Configuration.GetSection(RabbitLogOptions.Secao).Bind(rabbitLogOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(rabbitLogOptions);
@@ -85,6 +92,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             var telemetriaOptions = new TelemetriaOptions();
             Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(telemetriaOptions);
+
+            var servicoTelemetria = new ServicoTelemetria(telemetriaOptions);
+            services.AddSingleton<IServicoTelemetria>(servicoTelemetria);
+            DapperExtensionMethods.Init(servicoTelemetria);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
