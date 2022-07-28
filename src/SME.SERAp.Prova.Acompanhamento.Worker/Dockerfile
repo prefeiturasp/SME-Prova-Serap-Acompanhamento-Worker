@@ -5,12 +5,12 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["src/SME.SERAp.Prova.Acompanhamento.Worker/SME.SERAp.Prova.Acompanhamento.Worker.csproj", "src/SME.SERAp.Prova.Acompanhamento.Worker/"]
-COPY ["src/SME.SERAp.Prova.Acompanhamento.IoC/SME.SERAp.Prova.Acompanhamento.IoC.csproj", "src/SME.SERAp.Prova.Acompanhamento.IoC/"]
-COPY ["src/SME.SERAp.Prova.Acompanhamento.Aplicacao/SME.SERAp.Prova.Acompanhamento.Aplicacao.csproj", "src/SME.SERAp.Prova.Acompanhamento.Aplicacao/"]
-COPY ["src/SME.SERAp.Prova.Acompanhamento.Infra/SME.SERAp.Prova.Acompanhamento.Infra.csproj", "src/SME.SERAp.Prova.Acompanhamento.Infra/"]
-COPY ["src/SME.SERAp.Prova.Acompanhamento.Dados/SME.SERAp.Prova.Acompanhamento.Dados.csproj", "src/SME.SERAp.Prova.Acompanhamento.Dados/"]
-COPY ["src/SME.SERAp.Prova.Acompanhamento.Dominio/SME.SERAp.Prova.Acompanhamento.Dominio.csproj", "src/SME.SERAp.Prova.Acompanhamento.Dominio/"]
+COPY ["src/SME.SERAp.Prova.Acompanhamento.Worker/SME.SERAp.Prova.Acompanhamento.Worker.csproj", "SME.SERAp.Prova.Acompanhamento.Worker/"]
+COPY ["src/SME.SERAp.Prova.Acompanhamento.IoC/SME.SERAp.Prova.Acompanhamento.IoC.csproj", "SME.SERAp.Prova.Acompanhamento.IoC/"]
+COPY ["src/SME.SERAp.Prova.Acompanhamento.Aplicacao/SME.SERAp.Prova.Acompanhamento.Aplicacao.csproj", "SME.SERAp.Prova.Acompanhamento.Aplicacao/"]
+COPY ["src/SME.SERAp.Prova.Acompanhamento.Infra/SME.SERAp.Prova.Acompanhamento.Infra.csproj", "SME.SERAp.Prova.Acompanhamento.Infra/"]
+COPY ["src/SME.SERAp.Prova.Acompanhamento.Dados/SME.SERAp.Prova.Acompanhamento.Dados.csproj", "SME.SERAp.Prova.Acompanhamento.Dados/"]
+COPY ["src/SME.SERAp.Prova.Acompanhamento.Dominio/SME.SERAp.Prova.Acompanhamento.Dominio.csproj", "SME.SERAp.Prova.Acompanhamento.Dominio/"]
 RUN dotnet restore "SME.SERAp.Prova.Acompanhamento.Worker/SME.SERAp.Prova.Acompanhamento.Worker.csproj"
 COPY . .
 WORKDIR "/src/src/SME.SERAp.Prova.Acompanhamento.Worker"
