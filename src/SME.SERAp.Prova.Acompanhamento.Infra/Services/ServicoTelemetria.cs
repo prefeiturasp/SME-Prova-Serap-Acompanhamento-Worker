@@ -27,11 +27,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Services
                 result = await acao() as dynamic;
                 temporizadorApm.Stop();
 
-                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, async (span) =>
-                {
-                    span.SetLabel(telemetriaNome, telemetriaValor);
-                    span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
-                });
+                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, (span) =>
+                  {
+                      span.SetLabel(telemetriaNome, telemetriaValor);
+                      span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
+                  });
             }
             else
             {
@@ -51,7 +51,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Services
                 result = acao();
                 temporizadorApm.Stop();
 
-                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, async (span) =>
+                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, (span) =>
                 {
                     span.SetLabel(telemetriaNome, telemetriaValor);
                     span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
@@ -73,7 +73,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Services
                 acao();
                 temporizadorApm.Stop();
 
-                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, async (span) =>
+                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, (span) =>
                 {
                     span.SetLabel(telemetriaNome, telemetriaValor);
                     span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
@@ -93,11 +93,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Services
                 await acao();
                 temporizadorApm.Stop();
 
-                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, async (span) =>
-                {
-                    span.SetLabel(telemetriaNome, telemetriaValor);
-                    span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
-                });
+                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, (span) =>
+                  {
+                      span.SetLabel(telemetriaNome, telemetriaValor);
+                      span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
+                  });
             }
             else
             {
