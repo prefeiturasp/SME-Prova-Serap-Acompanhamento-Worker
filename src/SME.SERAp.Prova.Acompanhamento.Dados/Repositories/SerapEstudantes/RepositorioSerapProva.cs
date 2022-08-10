@@ -36,6 +36,27 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
             }
         }
 
+        public async Task<SituacaoTurmaProvaDto> ObterSituacaoTurmaAsync(long provaId, long turmaId)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select count(case when pa.criado_em::date = current_date then 1 end) as totalIniciadoHoje,
+	                                 count(case when pa.criado_em::date < current_date and pa.status = 1 then 1 end) as totalIniciadoNaoFinalizado,
+	                                 count(case when pa.status = 2 then 1 end) as totalFinalizado
+                              from prova_aluno pa
+                              left join aluno a on a.ra = pa.aluno_ra
+                              where pa.prova_id = @provaId and a.turma_id = @turmaId";
+
+                return await conn.QueryFirstOrDefaultAsync<SituacaoTurmaProvaDto>(query, new { provaId, turmaId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
         public async Task<IEnumerable<ProvaDto>> ObterTodosAsync()
         {
             using var conn = ObterConexao();
@@ -71,8 +92,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
 	                               vpta.ue_id as ueId,
 	                               vpta.turma_ano as ano,
 	                               vpta.turma_modalidade as modalidade,
-	                               vpta.turma_id as TurmaId
+	                               vpta.turma_id as TurmaId,
+                                   p.descricao,
+	                               p.total_itens as QuantidadeQuestoes
                              from v_prova_turma_aluno vpta 
+                             left join prova p on p.id = vpta.prova_id 
                              left join ue u on u.id = vpta.ue_id
                              where vpta.prova_id = @provaId ";
 

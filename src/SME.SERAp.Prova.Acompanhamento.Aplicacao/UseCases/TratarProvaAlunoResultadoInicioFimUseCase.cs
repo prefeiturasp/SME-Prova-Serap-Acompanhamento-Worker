@@ -36,6 +36,9 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             if (alteracao)
                 await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaTurmaAlunoSituacao));
 
+
+            //TODO Consolidar prova aluno turma.
+
             return true;
         }
     }

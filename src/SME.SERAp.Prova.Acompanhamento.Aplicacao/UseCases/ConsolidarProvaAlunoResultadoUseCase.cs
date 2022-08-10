@@ -30,6 +30,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                 await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaAlunoResultado));
             }
 
+
+            // TODO Atualizar os dados do indice ProvaTurmaResultado.
+
+
             return true;
         }
     }

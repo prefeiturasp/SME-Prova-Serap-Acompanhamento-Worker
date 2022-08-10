@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 {
-    public class ObterSituacaoProvaSerapQueryHandler : IRequestHandler<ObterSituacaoAlunoProvaSerapQuery, SituacaoAlunoProvaDto>
+    public class ObterSituacaoAlunoProvaSerapQueryHandler : IRequestHandler<ObterSituacaoAlunoProvaSerapQuery, SituacaoAlunoProvaDto>
     {
         private readonly IRepositorioSerapProva repositorioSerapProva;
 
-        public ObterSituacaoProvaSerapQueryHandler(IRepositorioSerapProva repositorioSerapProva)
+        public ObterSituacaoAlunoProvaSerapQueryHandler(IRepositorioSerapProva repositorioSerapProva)
         {
             this.repositorioSerapProva = repositorioSerapProva ?? throw new ArgumentNullException(nameof(repositorioSerapProva));
         }

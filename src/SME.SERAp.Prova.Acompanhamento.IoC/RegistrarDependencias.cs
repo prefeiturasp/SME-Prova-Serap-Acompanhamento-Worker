@@ -48,6 +48,7 @@ namespace SME.SERAp.Prova.Acompanhamento.IoC
             services.AddScoped<IRepositorioAno, RepositorioAno>();
             services.AddScoped<IRepositorioProvaAlunoResposta, RepositorioProvaAlunoResposta>();
             services.AddScoped<IRepositorioProvaAlunoResultado, RepositorioProvaAlunoResultado>();
+            services.AddScoped<IRepositorioProvaTurmaResultado, RepositorioProvaTurmaResultado>();
         }
 
         private static void RegistrarCasosDeUso(IServiceCollection services)
@@ -77,7 +78,8 @@ namespace SME.SERAp.Prova.Acompanhamento.IoC
 
             services.AddScoped<ITratarProvaAlunoSyncUseCase, TratarProvaAlunoSyncUseCase>();
             services.AddScoped<ITratarProvaAlunoUseCase, TratarProvaAlunoUseCase>();
-            services.AddScoped<ITratarProvaTurmaAlunoResultadoUseCase, TratarProvaAlunoResultadoUseCase>();
+            services.AddScoped<ITratarProvaAlunoResultadoUseCase, TratarProvaAlunoResultadoUseCase>();
+            services.AddScoped<ITratarProvaTurmaResultadoUseCase, TratarProvaTurmaResultadoUseCase>();
             services.AddScoped<IConsolidarProvaAlunoRespostaUseCase, ConsolidarProvaAlunoRespostaUseCase>();
 
             services.AddScoped<ITratarProvaAlunoRespostaSyncUseCase, TratarProvaAlunoRespostaSyncUseCase>();
