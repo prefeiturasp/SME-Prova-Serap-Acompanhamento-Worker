@@ -17,6 +17,12 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var provaAlunoRespostaDto = mensagemRabbit.ObterObjetoMensagem<ProvaAlunoRespostaDto>();
             if (provaAlunoRespostaDto == null) return false;
 
+            if (provaAlunoRespostaDto.ProvaId == 0)
+            {
+                var provaQuestao = await mediator.Send(new ObterProvaQuestaoPorQuestaoIdQuery(provaAlunoRespostaDto.QuestaoId));
+                provaAlunoRespostaDto.ProvaId = provaQuestao.ProvaId;
+            }
+
             var provaAlunoResposta = await mediator.Send(new ObterProvaAlunoRespostaQuery(provaAlunoRespostaDto.ProvaId, provaAlunoRespostaDto.AlunoRa, provaAlunoRespostaDto.QuestaoId));
             if (provaAlunoResposta == null)
             {
