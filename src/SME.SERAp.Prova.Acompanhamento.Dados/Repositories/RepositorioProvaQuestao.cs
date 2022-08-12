@@ -1,6 +1,7 @@
 ﻿using Nest;
 using SME.SERAp.Prova.Acompanhamento.Dados.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,12 +42,13 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
 
         public async Task<bool> ExcluirAsync(ProvaQuestao provaQuestao)
         {
-            var response = elasticClient.DeleteByQuery<ProvaQuestao>(q => q
-            .Query(rq => rq
-                .Match(m => m
-                .Field(f => f.ProvaId).Query(provaQuestao.ProvaId.ToString())
-                )
-            ).Index(IndexName));
+            var response = await elasticClient.DeleteByQueryAsync<ProvaQuestao>(q => q
+            .Query(q => q.Term(t => t.Field(f => f.ProvaId).Value(provaQuestao.ProvaId)) &&
+                        q.Term(t => t.Field(f => f.QuestaoId).Value(provaQuestao.QuestaoId))
+                  ).Index(IndexName));
+
+            if (!response.IsValid)
+                throw new Exception(response.ServerError?.ToString(), response.OriginalException);
 
             return true;
         }
