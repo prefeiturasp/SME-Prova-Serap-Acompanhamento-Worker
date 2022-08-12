@@ -22,6 +22,9 @@
         public const string ProvaSync = "serap.estudante.acomp.prova.sync";
         public const string ProvaTratar = "serap.estudante.acomp.prova.tratar";
 
+        public const string ProvaQuestaoSync = "serap.estudante.acomp.prova.questao.sync";
+        public const string ProvaQuestaoTratar = "serap.estudante.acomp.prova.questao.tratar";
+
         public const string AbrangenciaSync = "serap.estudante.acomp.abrangencia.sync";
         public const string AbrangenciaTratar = "serap.estudante.acomp.abrangencia.tratar";
 
