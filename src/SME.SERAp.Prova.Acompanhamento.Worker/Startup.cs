@@ -68,8 +68,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             var connectionSettings = new ConnectionSettings(connectionPool);
             connectionSettings.DefaultIndex(elasticOptions.DefaultIndex);
 
-            connectionSettings.ServerCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => true);
-
             if (!string.IsNullOrEmpty(elasticOptions.CertificateFingerprint))
                 connectionSettings.CertificateFingerprint(elasticOptions.CertificateFingerprint);
 
