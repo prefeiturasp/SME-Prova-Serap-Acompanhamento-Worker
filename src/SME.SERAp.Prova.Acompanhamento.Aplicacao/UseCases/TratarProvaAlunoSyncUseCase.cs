@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Acompanhamento.Aplicacao.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Infra.Fila;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var provas = await mediator.Send(new ObterTodasProvasSerapQuery());
             if (provas != null && provas.Any())
             {
-                foreach (var prova in provas)
+                foreach (var prova in provas.Where(t => t.Inicio.Year == DateTime.Now.Year))
                 {
                     var provasTurmas = await mediator.Send(new ObterProvasTurmasSerapQuery(prova.Id));
                     if (provasTurmas != null && provasTurmas.Any())
