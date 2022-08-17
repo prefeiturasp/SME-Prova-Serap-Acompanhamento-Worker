@@ -31,6 +31,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                 await mediator.Send(new AlterarProvaCommand(provaDto));
             }
 
+            await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaQuestaoSync, provaDto.Id));
+
             return true;
         }
     }

@@ -39,6 +39,7 @@ namespace SME.SERAp.Prova.Acompanhamento.IoC
             services.AddScoped<IRepositorioSerapAbrangencia, RepositorioSerapAbrangencia>();
             services.AddScoped<IRepositorioSerapAno, RepositorioSerapAno>();
             services.AddScoped<IRepositorioSerapProvaAlunoResposta, RepositorioSerapProvaAlunoResposta>();
+            services.AddScoped<IRepositorioProvaQuestao, RepositorioProvaQuestao>();
 
             services.AddScoped<IRepositorioDre, RepositorioDre>();
             services.AddScoped<IRepositorioUe, RepositorioUe>();
@@ -49,6 +50,7 @@ namespace SME.SERAp.Prova.Acompanhamento.IoC
             services.AddScoped<IRepositorioProvaAlunoResposta, RepositorioProvaAlunoResposta>();
             services.AddScoped<IRepositorioProvaAlunoResultado, RepositorioProvaAlunoResultado>();
             services.AddScoped<IRepositorioProvaTurmaResultado, RepositorioProvaTurmaResultado>();
+            services.AddScoped<IRepositorioSerapQuestao, RepositorioSerapQuestao>();
         }
 
         private static void RegistrarCasosDeUso(IServiceCollection services)
@@ -87,6 +89,9 @@ namespace SME.SERAp.Prova.Acompanhamento.IoC
 
             services.AddScoped<ITratarProvaAlunoResultadoDownloadUseCase, TratarProvaAlunoResultadoDownloadUseCase>();
             services.AddScoped<ITratarProvaAlunoResultadoInicioFimUseCase, TratarProvaAlunoResultadoInicioFimUseCase>();
+
+            services.AddScoped<ITratarProvaQuestaoSyncUseCase, TratarProvaQuestaoSyncUseCase>();
+            services.AddScoped<ITratarProvaQuestaoUseCase, TratarProvaQuestaoUseCase>();
         }
     }
 }

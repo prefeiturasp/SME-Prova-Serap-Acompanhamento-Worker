@@ -109,6 +109,9 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             comandos.Add(RotaRabbit.ProvaSync, new ComandoRabbit("Sincronização de provas", typeof(ITratarProvaSyncUseCase)));
             comandos.Add(RotaRabbit.ProvaTratar, new ComandoRabbit("Tratar provas", typeof(ITratarProvaUseCase)));
 
+            comandos.Add(RotaRabbit.ProvaQuestaoSync, new ComandoRabbit("Sincronização de questões por prova", typeof(ITratarProvaQuestaoSyncUseCase)));
+            comandos.Add(RotaRabbit.ProvaQuestaoTratar, new ComandoRabbit("Tratar questão prova", typeof(ITratarProvaQuestaoUseCase)));
+
             comandos.Add(RotaRabbit.AbrangenciaSync, new ComandoRabbit("Sincronização de abragencia", typeof(ITratarAbrangenciaSyncUseCase)));
             comandos.Add(RotaRabbit.AbrangenciaTratar, new ComandoRabbit("Tratar abrangencia", typeof(ITratarAbrangenciaUseCase)));
 
