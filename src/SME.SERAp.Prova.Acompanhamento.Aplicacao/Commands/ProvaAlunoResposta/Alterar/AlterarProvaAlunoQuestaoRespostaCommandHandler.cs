@@ -17,13 +17,15 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 
         public async Task<bool> Handle(AlterarProvaAlunoQuestaoRespostaCommand request, CancellationToken cancellationToken)
         {
-            return await repositorioProvaAlunoQuestaoResposta.AlterarAsync(new Dominio.Entities.ProvaAlunoResposta(
+            var dto = new Dominio.Entities.ProvaAlunoResposta(
                request.ProvaAlunoQuestaoRespostaDto.ProvaId,
                request.ProvaAlunoQuestaoRespostaDto.AlunoRa,
                request.ProvaAlunoQuestaoRespostaDto.QuestaoId,
                request.ProvaAlunoQuestaoRespostaDto.AlternativaId,
-               request.ProvaAlunoQuestaoRespostaDto.Tempo)
-               );
+               request.ProvaAlunoQuestaoRespostaDto.Tempo);
+            dto.Id = request.IdIndex;
+
+            return await repositorioProvaAlunoQuestaoResposta.AlterarAsync(dto);
         }
     }
 }

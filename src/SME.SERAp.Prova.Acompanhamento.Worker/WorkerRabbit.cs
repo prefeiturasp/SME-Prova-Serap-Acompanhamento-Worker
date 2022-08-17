@@ -1,5 +1,4 @@
-﻿using Elastic.Apm;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
@@ -110,12 +109,16 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             comandos.Add(RotaRabbit.ProvaSync, new ComandoRabbit("Sincronização de provas", typeof(ITratarProvaSyncUseCase)));
             comandos.Add(RotaRabbit.ProvaTratar, new ComandoRabbit("Tratar provas", typeof(ITratarProvaUseCase)));
 
+            comandos.Add(RotaRabbit.ProvaQuestaoSync, new ComandoRabbit("Sincronização de questões por prova", typeof(ITratarProvaQuestaoSyncUseCase)));
+            comandos.Add(RotaRabbit.ProvaQuestaoTratar, new ComandoRabbit("Tratar questão prova", typeof(ITratarProvaQuestaoUseCase)));
+
             comandos.Add(RotaRabbit.AbrangenciaSync, new ComandoRabbit("Sincronização de abragencia", typeof(ITratarAbrangenciaSyncUseCase)));
             comandos.Add(RotaRabbit.AbrangenciaTratar, new ComandoRabbit("Tratar abrangencia", typeof(ITratarAbrangenciaUseCase)));
 
             comandos.Add(RotaRabbit.ProvaAlunoSync, new ComandoRabbit("Sincronização prova aluno", typeof(ITratarProvaAlunoSyncUseCase)));
             comandos.Add(RotaRabbit.ProvaAlunoTratar, new ComandoRabbit("tratar prova aluno", typeof(ITratarProvaAlunoUseCase)));
-            comandos.Add(RotaRabbit.ProvaAlunoResultadoTratar, new ComandoRabbit("tratar prova aluno resultado", typeof(ITratarProvaTurmaAlunoResultadoUseCase)));
+            comandos.Add(RotaRabbit.ProvaAlunoResultadoTratar, new ComandoRabbit("tratar prova aluno resultado", typeof(ITratarProvaAlunoResultadoUseCase)));
+            comandos.Add(RotaRabbit.ProvaTurmaResultadoTratar, new ComandoRabbit("tratar prova turma resultado", typeof(ITratarProvaTurmaResultadoUseCase)));
 
             comandos.Add(RotaRabbit.ProvaAlunoRespostaSync, new ComandoRabbit("Sincronização prova turma aluno resposta", typeof(ITratarProvaAlunoRespostaSyncUseCase)));
             comandos.Add(RotaRabbit.ProvaAlunoRespostaTratar, new ComandoRabbit("tratar prova turma aluno resposta", typeof(ITratarProvaAlunoRespostaUseCase)));
@@ -158,15 +161,13 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             var rota = ea.RoutingKey;
             if (comandos.ContainsKey(rota))
             {
+                var transacao = servicoTelemetria.IniciarTransacao(rota);
+
                 var mensagemRabbit = mensagem.ConverterObjectStringPraObjeto<MensagemRabbit>();
                 var comandoRabbit = comandos[rota];
 
-                var transacao = servicoTelemetria.Apm ?
-                    Agent.Tracer.StartTransaction(rota, "WorkerRabbitSerapAcompanhamento") :
-                    null;
                 try
                 {
-
                     using var scope = serviceScopeFactory.CreateScope();
                     var casoDeUso = scope.ServiceProvider.GetService(comandoRabbit.TipoCasoUso);
 
@@ -184,23 +185,23 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
                 {
                     channel.BasicAck(ea.DeliveryTag, false);
                     RegistrarLog(ea, mensagemRabbit, nex, LogNivel.Negocio, $"Erros: {nex.Message}");
-                    transacao.CaptureException(nex);
+                    servicoTelemetria.RegistrarExcecao(transacao, nex);
                 }
                 catch (ValidacaoException vex)
                 {
                     channel.BasicAck(ea.DeliveryTag, false);
                     RegistrarLog(ea, mensagemRabbit, vex, LogNivel.Negocio, $"Erros: {JsonSerializer.Serialize(vex.Mensagens())}");
-                    transacao.CaptureException(vex);
+                    servicoTelemetria.RegistrarExcecao(transacao, vex);
                 }
                 catch (Exception ex)
                 {
                     channel.BasicReject(ea.DeliveryTag, false);
                     RegistrarLog(ea, mensagemRabbit, ex, LogNivel.Critico, $"Erros: {ex.Message}");
-                    transacao.CaptureException(ex);
+                    servicoTelemetria.RegistrarExcecao(transacao, ex);
                 }
                 finally
                 {
-                    transacao?.End();
+                    servicoTelemetria.FinalizarTransacao(transacao);
                 }
             }
             else

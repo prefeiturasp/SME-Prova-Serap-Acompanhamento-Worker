@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 
         public async Task<bool> Handle(AlterarAnoCommand request, CancellationToken cancellationToken)
         {
-            return await repositorioAno.AlterarAsync(new Dominio.Entities.Ano(request.AnoDto.Id, request.AnoDto.AnoLetivo, request.AnoDto.UeId, request.AnoDto.Nome));
+            return await repositorioAno.AlterarAsync(new Dominio.Entities.Ano(request.AnoDto.Id, request.AnoDto.AnoLetivo, request.AnoDto.Modalidade, request.AnoDto.UeId, request.AnoDto.Nome));
         }
     }
 }

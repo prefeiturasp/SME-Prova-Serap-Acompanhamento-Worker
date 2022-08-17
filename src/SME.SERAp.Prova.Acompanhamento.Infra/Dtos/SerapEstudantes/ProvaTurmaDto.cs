@@ -14,5 +14,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes
         public string Ano { get; set; }
         public Modalidade Modalidade { get; set; }
         public long TurmaId { get; set; }
+        public string Descricao { get; set; }
+        public int QuantidadeQuestoes { get; set; }
     }
 }

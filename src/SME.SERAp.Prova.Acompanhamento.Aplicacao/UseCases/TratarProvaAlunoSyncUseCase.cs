@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var provas = await mediator.Send(new ObterTodasProvasSerapQuery());
             if (provas != null && provas.Any())
             {
-                foreach (var prova in provas.Where(t => t.Id == 137))
+                foreach (var prova in provas)
                 {
                     var provasTurmas = await mediator.Send(new ObterProvasTurmasSerapQuery(prova.Id));
                     if (provasTurmas != null && provasTurmas.Any())

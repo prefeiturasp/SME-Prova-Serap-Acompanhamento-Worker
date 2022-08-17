@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
 {
-    public class TratarProvaAlunoResultadoUseCase : AbstractUseCase, ITratarProvaTurmaAlunoResultadoUseCase
+    public class TratarProvaAlunoResultadoUseCase : AbstractUseCase, ITratarProvaAlunoResultadoUseCase
     {
         public TratarProvaAlunoResultadoUseCase(IMediator mediator) : base(mediator)
         {
