@@ -21,10 +21,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             if (provaTurma == null) return false;
 
             var alunos = await mediator.Send(new ObterAlunosTurmaSerapQuery(provaTurma.TurmaId, provaTurma.Inicio, provaTurma.Fim));
-
-            // TODO remover registro de teste
-            alunos = alunos.Where(t => t.Ra == 1306542 || t.Ra == 2515835);
-
             if (alunos != null && alunos.Any())
             {
                 int tempoTotal = 0;

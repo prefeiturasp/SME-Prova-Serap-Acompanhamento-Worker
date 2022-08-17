@@ -18,10 +18,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
         public async Task<bool> Handle(InserirAnoCommand request, CancellationToken cancellationToken)
         {
             return await repositorioAno.InserirAsync(new Dominio.Entities.Ano(
-                request.AnoDto.Id, 
-                request.AnoDto.AnoLetivo, 
+                request.AnoDto.Id,
+                request.AnoDto.AnoLetivo,
                 request.AnoDto.Modalidade,
-                request.AnoDto.UeId, 
+                request.AnoDto.UeId,
                 request.AnoDto.Nome));
         }
     }
