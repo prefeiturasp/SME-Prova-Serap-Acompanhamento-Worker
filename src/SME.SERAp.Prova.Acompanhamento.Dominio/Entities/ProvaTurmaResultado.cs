@@ -25,6 +25,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
             TotalQuestoes = totalQuestoes;
             QuestoesRespondidas = questoesRespondidas;
             TempoMedio = tempoMedio;
+
+            Id = Guid.NewGuid().ToString();
         }
 
         public long ProvaId { get; set; }

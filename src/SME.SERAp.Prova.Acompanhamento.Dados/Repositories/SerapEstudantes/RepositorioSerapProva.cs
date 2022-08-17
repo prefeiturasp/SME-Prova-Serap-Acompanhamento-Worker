@@ -18,7 +18,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
             try
             {
                 var query = @"select min(pa.criado_em) as Inicio,
-                                     max(case when pa.status = 2 then pa.finalizado_em end) as Fim,  
+                                     max(case when pa.status in (2, 5) then pa.finalizado_em end) as Fim,  
 		                             count(qar.alternativa_id) as questaoRespondida,  
 		                             sum(qar.tempo_resposta_aluno) / count(1) as tempoMedio,
                                      exists(select 1 from downloads_prova_aluno dpa where dpa.aluno_ra = @ra and dpa.prova_id = @provaId) as FezDownload
@@ -43,7 +43,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
             {
                 var query = @"select count(case when pa.criado_em::date = current_date then 1 end) as totalIniciadoHoje,
 	                                 count(case when pa.criado_em::date < current_date and pa.status = 1 then 1 end) as totalIniciadoNaoFinalizado,
-	                                 count(case when pa.status = 2 then 1 end) as totalFinalizado
+	                                 count(case when pa.status in (2, 5) then 1 end) as totalFinalizado
                               from prova_aluno pa
                               left join aluno a on a.ra = pa.aluno_ra
                               where pa.prova_id = @provaId and a.turma_id = @turmaId";
