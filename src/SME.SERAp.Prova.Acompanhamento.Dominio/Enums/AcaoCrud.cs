@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SME.SERAp.Prova.Acompanhamento.Dominio.Enums
+﻿namespace SME.SERAp.Prova.Acompanhamento.Dominio.Enums
 {
     public enum AcaoCrud
     {

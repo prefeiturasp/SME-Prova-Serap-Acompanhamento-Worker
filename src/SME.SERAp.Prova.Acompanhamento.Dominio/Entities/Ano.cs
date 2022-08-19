@@ -4,6 +4,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
 {
     public class Ano : EntidadeBase
     {
+        public Ano() { }
         public Ano(long id, int anoLetivo, Modalidade modalidade, long ueId, string nome)
         {
             Id = id.ToString();

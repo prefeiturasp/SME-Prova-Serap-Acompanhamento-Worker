@@ -4,6 +4,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
 {
     public class ProvaAlunoResposta : EntidadeBase
     {
+        public ProvaAlunoResposta() { }
         public ProvaAlunoResposta(long provaId, long alunoRa, long questaoId, long? alternativaId, int? tempo)
         {
             ProvaId = provaId;

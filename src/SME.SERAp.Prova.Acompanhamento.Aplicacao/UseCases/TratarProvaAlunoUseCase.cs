@@ -43,6 +43,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                         aluno.Ra,
                         aluno.Nome,
                         aluno.NomeSocial,
+                        aluno.Situacao,
                         situacaoAlunoProva.FezDownload,
                         situacaoAlunoProva.Inicio,
                         situacaoAlunoProva.Fim,
@@ -57,7 +58,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                     tempoTotal += situacaoAlunoProva.Tempo.GetValueOrDefault();
                 }
 
-                var totalAlunos = alunos.Count();
+                var totalAlunos = alunos.Where(t => t.Situacao != 99).Count();
                 var totalQuestoes = totalAlunos * provaTurma.QuantidadeQuestoes;
 
                 var situacaoTurmaProva = await mediator.Send(new ObterSituacaoTurmaProvaSerapQuery(provaTurma.ProvaId, provaTurma.TurmaId));

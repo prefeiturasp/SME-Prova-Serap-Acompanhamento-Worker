@@ -2,6 +2,7 @@
 using SME.SERAp.Prova.Acompanhamento.Aplicacao.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Infra.Dtos;
 using SME.SERAp.Prova.Acompanhamento.Infra.Fila;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
@@ -17,13 +18,16 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var downloadProvaAluno = mensagemRabbit.ObterObjetoMensagem<DownloadProvaAlunoDto>();
             if (downloadProvaAluno == null) return false;
 
-            var provaTurmaAlunoSituacao = await mediator.Send(new ObterProvaTurmaAlunoResultadoQuery(downloadProvaAluno.ProvaId, downloadProvaAluno.AlunoRa));
-            if (provaTurmaAlunoSituacao == null) return false;
+            var provaAlunoResultados = await mediator.Send(new ObterProvaAlunoResultadoQuery(downloadProvaAluno.ProvaId, downloadProvaAluno.AlunoRa));
+            if (provaAlunoResultados == null || !provaAlunoResultados.Any()) return false;
 
-            if (!provaTurmaAlunoSituacao.AlunoDownload)
+            foreach (var resultado in provaAlunoResultados)
             {
-                provaTurmaAlunoSituacao.AlunoDownload = true;
-                await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaTurmaAlunoSituacao));
+                if (!resultado.AlunoDownload)
+                {
+                    resultado.AlunoDownload = true;
+                    await mediator.Send(new AlterarProvaAlunoResultadoCommand(resultado));
+                }
             }
 
             return true;

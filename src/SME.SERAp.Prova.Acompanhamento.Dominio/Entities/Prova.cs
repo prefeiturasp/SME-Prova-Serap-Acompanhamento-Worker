@@ -5,6 +5,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
 {
     public class Prova : EntidadeBase
     {
+        public Prova() { }
         public Prova(long id, long codigo, string descricao, Modalidade modalidade, int ano, DateTime inicio, DateTime fim)
         {
             Id = id.ToString();
