@@ -4,6 +4,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
 {
     public class Abrangencia : EntidadeBase
     {
+        public Abrangencia() { }
         public Abrangencia(long id, string login, string usuario, Guid coressoId, string grupo, long dreId, long ueId, long turmaId)
         {
             Id = id.ToString();

@@ -10,7 +10,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
 {
     public class TratarProvaQuestaoSyncUseCase : AbstractUseCase, ITratarProvaQuestaoSyncUseCase
     {
-        public TratarProvaQuestaoSyncUseCase(IMediator mediator) : base(mediator){}
+        public TratarProvaQuestaoSyncUseCase(IMediator mediator) : base(mediator) { }
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {

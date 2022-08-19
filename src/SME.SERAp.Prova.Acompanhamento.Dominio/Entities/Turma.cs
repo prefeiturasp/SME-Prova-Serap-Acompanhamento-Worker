@@ -4,6 +4,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
 {
     public class Turma : EntidadeBase
     {
+        public Turma() { }
         public Turma(long id, long ueId, long codigo, int anoLetivo, string ano, string nome, Modalidade modalidade, Turno turno, int etapaEja, string serieEnsino)
         {
             Id = id.ToString();

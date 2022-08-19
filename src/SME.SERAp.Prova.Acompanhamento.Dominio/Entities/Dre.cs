@@ -2,6 +2,7 @@
 {
     public class Dre : EntidadeBase
     {
+        public Dre() { }
         public Dre(long id, long codigo, string abreviacao, string nome)
         {
             Id = id.ToString();

@@ -54,6 +54,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
 
             var conexaoRabbit = factory.CreateConnection();
             IModel channel = conexaoRabbit.CreateModel();
+            services.AddSingleton(channel);
 
             var elasticOptions = new ElasticOptions();
             Configuration.GetSection(ElasticOptions.Secao).Bind(elasticOptions, c => c.BindNonPublicProperties = true);
@@ -71,7 +72,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             if (!string.IsNullOrEmpty(elasticOptions.CertificateFingerprint))
                 connectionSettings.CertificateFingerprint(elasticOptions.CertificateFingerprint);
 
-            if(!string.IsNullOrEmpty(elasticOptions.Username) && !string.IsNullOrEmpty(elasticOptions.Password))
+            if (!string.IsNullOrEmpty(elasticOptions.Username) && !string.IsNullOrEmpty(elasticOptions.Password))
                 connectionSettings.BasicAuthentication(elasticOptions.Username, elasticOptions.Password);
 
             var elasticClient = new ElasticClient(connectionSettings);

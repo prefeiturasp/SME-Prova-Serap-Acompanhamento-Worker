@@ -79,6 +79,29 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
             }
         }
 
+        public async Task<IEnumerable<ProvaDto>> ObterProvasEmAndamentoAsync()
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select p.id, 
+	                                 p.prova_legado_id as codigo, 
+	                                 p.descricao, 
+                                     p.modalidade,
+	                                 p.inicio, 
+	                                 p.fim 
+                              from prova p 
+                              where inicio::date <= current_date and fim::date >= current_date";
+
+                return await conn.QueryAsync<ProvaDto>(query);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
         public async Task<IEnumerable<ProvaTurmaDto>> ObterTurmasAsync(long provaId)
         {
             using var conn = ObterConexao();

@@ -3,11 +3,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
 {
     public class ProvaQuestao : EntidadeBase
     {
-        public ProvaQuestao()
-        {
-
-        }
-
+        public ProvaQuestao() { }
         public ProvaQuestao(long provaId, long questaoId)
         {
             ProvaId = provaId;

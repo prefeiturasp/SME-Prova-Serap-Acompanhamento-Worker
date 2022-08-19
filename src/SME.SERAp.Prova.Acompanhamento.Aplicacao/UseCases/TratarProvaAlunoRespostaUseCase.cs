@@ -8,7 +8,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
 {
     public class TratarProvaAlunoRespostaUseCase : AbstractUseCase, ITratarProvaAlunoRespostaUseCase
     {
-        public TratarProvaAlunoRespostaUseCase(IMediator mediator) : base(mediator){}
+        public TratarProvaAlunoRespostaUseCase(IMediator mediator) : base(mediator) { }
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {
@@ -18,9 +18,9 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             if (provaAlunoRespostaDto.ProvaId == 0)
             {
                 var provaQuestao = await mediator.Send(new ObterProvaQuestaoPorQuestaoIdQuery(provaAlunoRespostaDto.QuestaoId));
-                
+
                 if (provaQuestao == null || provaQuestao.ProvaId == 0) return false;
-                
+
                 provaAlunoRespostaDto.ProvaId = provaQuestao.ProvaId;
             }
 

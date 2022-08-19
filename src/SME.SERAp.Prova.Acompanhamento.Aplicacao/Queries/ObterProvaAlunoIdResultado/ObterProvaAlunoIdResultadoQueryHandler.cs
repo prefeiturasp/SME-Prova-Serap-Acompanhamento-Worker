@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 {
-    public class ObterProvaTurmaAlunoResultadoQueryHandler : IRequestHandler<ObterProvaTurmaAlunoResultadoQuery, ProvaAlunoResultado>
+    public class ObterProvaAlunoIdResultadoQueryHandler : IRequestHandler<ObterProvaAlunoIdResultadoQuery, ProvaAlunoResultado>
     {
         private readonly IRepositorioProvaAlunoResultado repositorioProvaAlunoResultado;
 
-        public ObterProvaTurmaAlunoResultadoQueryHandler(IRepositorioProvaAlunoResultado repositorioProvaAlunoResultado)
+        public ObterProvaAlunoIdResultadoQueryHandler(IRepositorioProvaAlunoResultado repositorioProvaAlunoResultado)
         {
             this.repositorioProvaAlunoResultado = repositorioProvaAlunoResultado ?? throw new ArgumentNullException(nameof(repositorioProvaAlunoResultado));
         }
 
-        public async Task<ProvaAlunoResultado> Handle(ObterProvaTurmaAlunoResultadoQuery request, CancellationToken cancellationToken)
+        public async Task<ProvaAlunoResultado> Handle(ObterProvaAlunoIdResultadoQuery request, CancellationToken cancellationToken)
         {
-            return await repositorioProvaAlunoResultado.ObterPorProvaAlunoRaAsync(request.ProvaId, request.AlunoRa);
+            return await repositorioProvaAlunoResultado.ObterPorProvaAlunoIdAsync(request.ProvaId, request.AlunoId);
         }
     }
 }
