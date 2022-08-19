@@ -19,14 +19,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             {
                 foreach (var prova in provas)
                 {
-                    var provasTurmas = await mediator.Send(new ObterProvasTurmasSerapQuery(prova.Id));
-                    if (provasTurmas != null && provasTurmas.Any())
-                    {
-                        foreach (var provaTurma in provasTurmas)
-                        {
-                            await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoTratar, provaTurma));
-                        }
-                    }
+                    await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoTurmaSync, prova.Id));
                 }
             }
 

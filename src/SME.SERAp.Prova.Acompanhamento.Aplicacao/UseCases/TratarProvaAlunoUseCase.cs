@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {
-            var provaTurma = mensagemRabbit.ObterObjetoMensagem<ProvaTurmaDto>();
+           var provaTurma = mensagemRabbit.ObterObjetoMensagem<ProvaTurmaDto>();
             if (provaTurma == null) return false;
 
             var alunos = await mediator.Send(new ObterAlunosTurmaSerapQuery(provaTurma.TurmaId, provaTurma.Inicio, provaTurma.Fim));
