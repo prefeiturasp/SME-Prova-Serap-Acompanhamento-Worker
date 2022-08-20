@@ -42,6 +42,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                 provaTurmaResultadoBanco.QuestoesRespondidas != provaTurmaResultado.QuestoesRespondidas ||
                 provaTurmaResultadoBanco.TempoMedio != provaTurmaResultado.TempoMedio)
             {
+                provaTurmaResultado.Id = provaTurmaResultadoBanco.Id;
                 await mediator.Send(new AlterarProvaTurmaResultadoCommand(provaTurmaResultado));
             }
 
