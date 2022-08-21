@@ -6,17 +6,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SME.SERAp.Prova.Acompanhamento.Dados
+namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
 {
     public abstract class RepositorioBase<TEntidade> : IRepositorioBase<TEntidade> where TEntidade : EntidadeBase
     {
-        private readonly IElasticClient elasticClient;
+        protected readonly IElasticClient elasticClient;
 
-        public abstract string IndexName { get; }
+        protected abstract string IndexName { get; }
 
         public RepositorioBase(IElasticClient elasticClient)
         {
-            this.elasticClient = elasticClient ?? throw new ArgumentException(nameof(elasticClient));
+            this.elasticClient = elasticClient ?? throw new ArgumentNullException(nameof(elasticClient));
+            _ = CriarIndexAsync().Result;
         }
 
         public async Task<bool> CriarIndexAsync()
@@ -52,7 +53,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados
             return true;
         }
 
-        public virtual async Task<bool> DeletarAsync(string id)
+        public virtual async Task<bool> DeletarAsync(long id)
         {
             var response = await elasticClient.DeleteAsync(DocumentPath<TEntidade>.Id(id).Index(IndexName));
 
@@ -62,12 +63,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados
             return true;
         }
 
-        public async Task<TEntidade> ObterPorIdAsync(string id)
+        public async Task<TEntidade> ObterPorIdAsync(long id)
         {
             var response = await elasticClient.GetAsync(DocumentPath<TEntidade>.Id(id).Index(IndexName));
 
-            if (!response.IsValid)
-                throw new Exception(response.ServerError?.ToString(), response.OriginalException);
+            if (!response.IsValid) return default;
 
             return response.Source;
         }
