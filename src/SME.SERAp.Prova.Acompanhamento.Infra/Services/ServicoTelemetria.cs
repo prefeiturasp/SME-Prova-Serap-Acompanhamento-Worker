@@ -1,4 +1,5 @@
 ﻿using Elastic.Apm;
+using Elastic.Apm.Api;
 using SME.SERAp.Prova.Acompanhamento.Infra.EnvironmentVariables;
 using SME.SERAp.Prova.Acompanhamento.Infra.Interfaces;
 using System;
@@ -10,11 +11,32 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Services
     public class ServicoTelemetria : IServicoTelemetria
     {
         private readonly TelemetriaOptions telemetriaOptions;
-        public bool Apm => telemetriaOptions.Apm;
 
         public ServicoTelemetria(TelemetriaOptions telemetriaOptions)
         {
             this.telemetriaOptions = telemetriaOptions ?? throw new ArgumentNullException(nameof(telemetriaOptions));
+        }
+
+        public ServicoTelemetriaTransacao IniciarTransacao(string rota)
+        {
+            var transacao = new ServicoTelemetriaTransacao(rota);
+
+            if (telemetriaOptions.Apm)
+                transacao.TransacaoApm = Agent.Tracer?.StartTransaction(rota, "WorkerRabbitSerapAcompanhamento");
+
+            return transacao;
+        }
+
+        public void FinalizarTransacao(ServicoTelemetriaTransacao servicoTelemetriaTransacao)
+        {
+            if (telemetriaOptions.Apm)
+                servicoTelemetriaTransacao.TransacaoApm?.End();
+        }
+
+        public void RegistrarExcecao(ServicoTelemetriaTransacao servicoTelemetriaTransacao, Exception ex)
+        {
+            if (telemetriaOptions.Apm)
+                servicoTelemetriaTransacao.TransacaoApm?.CaptureException(ex);
         }
 
         public async Task<dynamic> RegistrarComRetornoAsync<T>(Func<Task<object>> acao, string acaoNome, string telemetriaNome, string telemetriaValor)
@@ -27,11 +49,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Services
                 result = await acao() as dynamic;
                 temporizadorApm.Stop();
 
-                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, async (span) =>
-                {
-                    span.SetLabel(telemetriaNome, telemetriaValor);
-                    span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
-                });
+                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, (span) =>
+                  {
+                      span.SetLabel(telemetriaNome, telemetriaValor);
+                      span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
+                  });
             }
             else
             {
@@ -51,7 +73,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Services
                 result = acao();
                 temporizadorApm.Stop();
 
-                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, async (span) =>
+                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, (span) =>
                 {
                     span.SetLabel(telemetriaNome, telemetriaValor);
                     span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
@@ -73,7 +95,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Services
                 acao();
                 temporizadorApm.Stop();
 
-                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, async (span) =>
+                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, (span) =>
                 {
                     span.SetLabel(telemetriaNome, telemetriaValor);
                     span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
@@ -93,16 +115,27 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Services
                 await acao();
                 temporizadorApm.Stop();
 
-                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, async (span) =>
-                {
-                    span.SetLabel(telemetriaNome, telemetriaValor);
-                    span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
-                });
+                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, (span) =>
+                  {
+                      span.SetLabel(telemetriaNome, telemetriaValor);
+                      span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
+                  });
             }
             else
             {
                 await acao();
             }
+        }
+
+        public class ServicoTelemetriaTransacao
+        {
+            public ServicoTelemetriaTransacao(string nome)
+            {
+                Nome = nome;
+            }
+
+            public string Nome { get; set; }
+            public ITransaction TransacaoApm { get; set; }
         }
     }
 }

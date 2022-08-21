@@ -1,10 +1,9 @@
-﻿using Elastic.Apm;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using SME.SERAp.Prova.Acompanhamento.Aplicacao;
+using SME.SERAp.Prova.Acompanhamento.Aplicacao.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Infra.EnvironmentVariables;
 using SME.SERAp.Prova.Acompanhamento.Infra.Exceptions;
 using SME.SERAp.Prova.Acompanhamento.Infra.Extensions;
@@ -92,7 +91,43 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
 
         private void RegistrarUseCases()
         {
-            comandos.Add(RotaRabbit.Teste, new ComandoRabbit("Teste", typeof(ITesteUseCase)));
+            comandos.Add(RotaRabbit.DeadLetterSync, new ComandoRabbit("Sincronização de dead letter", typeof(ITratarDeadletterSyncUseCase)));
+            comandos.Add(RotaRabbit.DeadLetterTratar, new ComandoRabbit("Tratar dead letter", typeof(ITratarDeadletterUseCase)));
+
+            comandos.Add(RotaRabbit.IniciarSync, new ComandoRabbit("Iniciar Sincronização", typeof(IIniciarSyncUseCase)));
+
+            comandos.Add(RotaRabbit.DreSync, new ComandoRabbit("Sincronização institucional", typeof(ITratarDreSyncUseCase)));
+            comandos.Add(RotaRabbit.DreTratar, new ComandoRabbit("Tratar dre", typeof(ITratarDreUseCase)));
+            comandos.Add(RotaRabbit.UeSync, new ComandoRabbit("Sincronização de ue", typeof(ITratarUeSyncUseCase)));
+            comandos.Add(RotaRabbit.UeTratar, new ComandoRabbit("Tratar ue", typeof(ITratarUeUseCase)));
+            comandos.Add(RotaRabbit.TurmaSync, new ComandoRabbit("Sincronização de turmas", typeof(ITratarTurmaSyncUseCase)));
+            comandos.Add(RotaRabbit.TurmaTratar, new ComandoRabbit("Tratar turma", typeof(ITratarTurmaUseCase)));
+
+            comandos.Add(RotaRabbit.AnoSync, new ComandoRabbit("Sincronização de anos", typeof(ITratarAnoSyncUseCase)));
+            comandos.Add(RotaRabbit.AnoTratar, new ComandoRabbit("Tratar anos", typeof(ITratarAnoUseCase)));
+
+            comandos.Add(RotaRabbit.ProvaSync, new ComandoRabbit("Sincronização de provas", typeof(ITratarProvaSyncUseCase)));
+            comandos.Add(RotaRabbit.ProvaTratar, new ComandoRabbit("Tratar provas", typeof(ITratarProvaUseCase)));
+
+            comandos.Add(RotaRabbit.ProvaQuestaoSync, new ComandoRabbit("Sincronização de questões por prova", typeof(ITratarProvaQuestaoSyncUseCase)));
+            comandos.Add(RotaRabbit.ProvaQuestaoTratar, new ComandoRabbit("Tratar questão prova", typeof(ITratarProvaQuestaoUseCase)));
+
+            comandos.Add(RotaRabbit.AbrangenciaSync, new ComandoRabbit("Sincronização de abragencia", typeof(ITratarAbrangenciaSyncUseCase)));
+            comandos.Add(RotaRabbit.AbrangenciaTratar, new ComandoRabbit("Tratar abrangencia", typeof(ITratarAbrangenciaUseCase)));
+
+            comandos.Add(RotaRabbit.ProvaAlunoSync, new ComandoRabbit("Sincronização prova aluno", typeof(ITratarProvaAlunoSyncUseCase)));
+            comandos.Add(RotaRabbit.ProvaAlunoTurmaSync, new ComandoRabbit("Sincronização prova aluno turma", typeof(ITratarProvaAlunoTurmaSyncUseCase)));
+            comandos.Add(RotaRabbit.ProvaAlunoTratar, new ComandoRabbit("tratar prova aluno", typeof(ITratarProvaAlunoUseCase)));
+
+            comandos.Add(RotaRabbit.ProvaAlunoResultadoTratar, new ComandoRabbit("tratar prova aluno resultado", typeof(ITratarProvaAlunoResultadoUseCase)));
+            comandos.Add(RotaRabbit.ProvaTurmaResultadoTratar, new ComandoRabbit("tratar prova turma resultado", typeof(ITratarProvaTurmaResultadoUseCase)));
+
+            comandos.Add(RotaRabbit.ProvaAlunoRespostaSync, new ComandoRabbit("Sincronização prova turma aluno resposta", typeof(ITratarProvaAlunoRespostaSyncUseCase)));
+            comandos.Add(RotaRabbit.ProvaAlunoRespostaTratar, new ComandoRabbit("tratar prova turma aluno resposta", typeof(ITratarProvaAlunoRespostaUseCase)));
+            comandos.Add(RotaRabbit.ProvaAlunoRespostaConsolidar, new ComandoRabbit("consolidar resposta prova aluno", typeof(IConsolidarProvaAlunoRespostaUseCase)));
+
+            comandos.Add(RotaRabbit.ProvaAlunoDownloadTratar, new ComandoRabbit("tratar download prova aluno", typeof(ITratarProvaAlunoResultadoDownloadUseCase)));
+            comandos.Add(RotaRabbit.ProvaAlunoInicioFimTratar, new ComandoRabbit("tratar inicio e fim prova aluno", typeof(ITratarProvaAlunoResultadoInicioFimUseCase)));
         }
 
         private async Task InicializaConsumer(IModel channel, CancellationToken stoppingToken)
@@ -128,17 +163,17 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             var rota = ea.RoutingKey;
             if (comandos.ContainsKey(rota))
             {
+                var transacao = servicoTelemetria.IniciarTransacao(rota);
+
                 var mensagemRabbit = mensagem.ConverterObjectStringPraObjeto<MensagemRabbit>();
                 var comandoRabbit = comandos[rota];
 
-                var transacao = servicoTelemetria.Apm ?
-                    Agent.Tracer.StartTransaction(rota, "WorkerRabbitSerapAcompanhamento") :
-                    null;
                 try
                 {
-
                     using var scope = serviceScopeFactory.CreateScope();
                     var casoDeUso = scope.ServiceProvider.GetService(comandoRabbit.TipoCasoUso);
+
+                    if (casoDeUso == null) throw new ArgumentNullException(comandoRabbit.TipoCasoUso.Name);
 
                     await servicoTelemetria.RegistrarAsync(() =>
                         comandoRabbit.TipoCasoUso.ObterMetodo("Executar").InvokeAsync(casoDeUso, new object[] { mensagemRabbit }),
@@ -152,23 +187,23 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
                 {
                     channel.BasicAck(ea.DeliveryTag, false);
                     RegistrarLog(ea, mensagemRabbit, nex, LogNivel.Negocio, $"Erros: {nex.Message}");
-                    transacao.CaptureException(nex);
+                    servicoTelemetria.RegistrarExcecao(transacao, nex);
                 }
                 catch (ValidacaoException vex)
                 {
                     channel.BasicAck(ea.DeliveryTag, false);
                     RegistrarLog(ea, mensagemRabbit, vex, LogNivel.Negocio, $"Erros: {JsonSerializer.Serialize(vex.Mensagens())}");
-                    transacao.CaptureException(vex);
+                    servicoTelemetria.RegistrarExcecao(transacao, vex);
                 }
                 catch (Exception ex)
                 {
                     channel.BasicReject(ea.DeliveryTag, false);
                     RegistrarLog(ea, mensagemRabbit, ex, LogNivel.Critico, $"Erros: {ex.Message}");
-                    transacao.CaptureException(ex);
+                    servicoTelemetria.RegistrarExcecao(transacao, ex);
                 }
                 finally
                 {
-                    transacao?.End();
+                    servicoTelemetria.FinalizarTransacao(transacao);
                 }
             }
             else
