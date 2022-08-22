@@ -19,7 +19,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
             try
             {
                 var query = @"
-                            select ROW_NUMBER () OVER ( ORDER by ugsc.id) as id,
+                            select concat(gsc.id, '-', usc.id, '-', coalesce(a.dre_id, 0), '-', coalesce(a.ue_id, 0), '-', coalesce(a.turma_id, 0)) as id,
                                    usc.login, 
                                    usc.nome, 
                                    gsc.id_coresso as coressoId, 

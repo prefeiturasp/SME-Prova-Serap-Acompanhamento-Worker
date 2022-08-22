@@ -5,11 +5,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 {
     public class ObterAbrangenciaPorIdQuery : IRequest<Abrangencia>
     {
-        public ObterAbrangenciaPorIdQuery(long id)
+        public ObterAbrangenciaPorIdQuery(string id)
         {
             Id = id;
         }
 
-        public long Id { get; set; }
+        public string Id { get; set; }
     }
 }
