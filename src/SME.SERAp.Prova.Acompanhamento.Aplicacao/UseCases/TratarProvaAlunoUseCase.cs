@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {
-           var provaTurma = mensagemRabbit.ObterObjetoMensagem<ProvaTurmaDto>();
+            var provaTurma = mensagemRabbit.ObterObjetoMensagem<ProvaTurmaDto>();
             if (provaTurma == null) return false;
 
             var alunos = await mediator.Send(new ObterAlunosTurmaSerapQuery(provaTurma.TurmaId, provaTurma.Inicio, provaTurma.Fim));
@@ -55,7 +55,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                     await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoRespostaSync, new { provaTurma.ProvaId, AlunoRa = aluno.Ra }));
 
                     totalQuestoesRespondidas += situacaoAlunoProva.QuestaoRespondida.GetValueOrDefault();
-                    tempoTotal += situacaoAlunoProva.Tempo.GetValueOrDefault();
+                    if (situacaoAlunoProva.Fim is not null)
+                        tempoTotal += situacaoAlunoProva.Tempo.GetValueOrDefault();
                 }
 
                 var totalAlunos = alunos.Where(t => t.Situacao != 99).Count();
