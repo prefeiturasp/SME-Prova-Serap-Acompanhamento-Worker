@@ -4,7 +4,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes
 {
     public class AbrangenciaDto
     {
-        public long Id { get; set; }
+        public string Id { get; set; }
         public string Login { get; set; }
         public string Usuario { get; set; }
         public Guid CoressoId { get; set; }
