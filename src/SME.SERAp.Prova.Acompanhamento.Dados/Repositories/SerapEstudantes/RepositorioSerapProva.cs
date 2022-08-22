@@ -70,7 +70,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                                      p.modalidade,
 	                                 p.inicio, 
 	                                 p.fim 
-                              from prova p ";
+                              from prova p 
+                              where (p.ocultar_prova = false or p.ocultar_prova is null)";
 
                 return await conn.QueryAsync<ProvaDto>(query);
             }
@@ -93,7 +94,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
 	                                 p.inicio, 
 	                                 p.fim 
                               from prova p 
-                              where inicio::date <= current_date and fim::date >= current_date";
+                              where inicio::date <= current_date and fim::date >= current_date 
+                                and (p.ocultar_prova = false or p.ocultar_prova is null)";
 
                 return await conn.QueryAsync<ProvaDto>(query);
             }
