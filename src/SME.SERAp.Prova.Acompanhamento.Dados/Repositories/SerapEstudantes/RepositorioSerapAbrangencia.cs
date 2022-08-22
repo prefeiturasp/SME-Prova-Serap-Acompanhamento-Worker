@@ -18,15 +18,20 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
             using var conn = ObterConexao();
             try
             {
-                var query = @"select vaug.id, 
-                                     vaug.login, 
-                                     vaug.usuario, 
-                                     vaug.id_coresso as coressoId,  
-                                     vaug.grupo, 
-                                     vaug.dre_id as dreId, 
-                                     vaug.ue_id as ueId, 
-                                     vaug.turma_id as turmaId
-                              from v_abrangencia_usuario_grupo vaug where vaug.id_coresso = @coressoId ";
+                var query = @"
+                            select concat(gsc.id, '-', usc.id, '-', coalesce(a.dre_id, 0), '-', coalesce(a.ue_id, 0), '-', coalesce(a.turma_id, 0)) as id,
+                                   usc.login, 
+                                   usc.nome as usuario, 
+                                   gsc.id_coresso as coressoId, 
+                                   gsc.nome as grupo, 
+                                   a.dre_id as dreId, 
+                                   a.ue_id as ueId, 
+                                   a.turma_id as turmaId
+                            from grupo_serap_coresso gsc 
+                            left join usuario_grupo_serap_coresso ugsc on ugsc.id_grupo_serap = gsc.id
+                            left join usuario_serap_coresso usc on usc.id = ugsc.id_usuario_serap 
+                            left join abrangencia a on a.usuario_id = usc.id and a.grupo_id = gsc.id
+                            where gsc.id_coresso = @coressoId ";
 
                 return await conn.QueryAsync<AbrangenciaDto>(query, new { coressoId });
             }
