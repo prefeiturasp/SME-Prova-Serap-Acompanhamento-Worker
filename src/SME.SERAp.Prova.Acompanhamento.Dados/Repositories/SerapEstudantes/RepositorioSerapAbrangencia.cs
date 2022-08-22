@@ -21,7 +21,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                 var query = @"
                             select concat(gsc.id, '-', usc.id, '-', coalesce(a.dre_id, 0), '-', coalesce(a.ue_id, 0), '-', coalesce(a.turma_id, 0)) as id,
                                    usc.login, 
-                                   usc.nome, 
+                                   usc.nome as usuario, 
                                    gsc.id_coresso as coressoId, 
                                    gsc.nome as grupo, 
                                    a.dre_id as dreId, 
