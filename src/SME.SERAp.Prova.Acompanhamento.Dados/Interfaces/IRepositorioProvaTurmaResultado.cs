@@ -6,5 +6,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Interfaces
     public interface IRepositorioProvaTurmaResultado : IRepositorioBase<ProvaTurmaResultado>
     {
         Task<ProvaTurmaResultado> ObterPorProvaTurmaAsync(long provaId, long turmaId);
+        Task<bool> ExcluirPorProvaTurmaIdAsync(ProvaTurmaResultado provaTurmaResultado);
     }
 }
