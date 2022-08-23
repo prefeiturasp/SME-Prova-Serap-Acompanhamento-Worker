@@ -82,7 +82,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                         provaTurma.QuantidadeQuestoes,
                         totalQuestoes,
                         totalQuestoesRespondidas,
-                         tempoTotal > 0 ? tempoTotal / situacaoTurmaProva.TotalFinalizado : 0
+                         tempoTotal > 0 ? (tempoTotal / 60) / situacaoTurmaProva.TotalFinalizado : 0
                        );
 
                 await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaTurmaResultadoTratar, provaTurmaResultado));
