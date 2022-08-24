@@ -29,7 +29,9 @@
         public const string AbrangenciaTratar = "serap.estudante.acomp.abrangencia.tratar";
 
         public const string ProvaAlunoSync = "serap.estudante.acomp.prova.aluno.sync";
+        public const string ProvaAlunoTurmaSync = "serap.estudante.acomp.prova.aluno.turma.sync";
         public const string ProvaAlunoTratar = "serap.estudante.acomp.prova.aluno.tratar";
+
         public const string ProvaAlunoResultadoTratar = "serap.estudante.acomp.prova.aluno.resultado.tratar";
         public const string ProvaTurmaResultadoTratar = "serap.estudante.acomp.prova.turma.resultado.tratar";
 

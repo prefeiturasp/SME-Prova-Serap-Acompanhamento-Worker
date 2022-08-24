@@ -19,13 +19,15 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
             {
                 var query = @"select min(pa.criado_em) as Inicio,
                                      max(case when pa.status in (2, 5) then pa.finalizado_em end) as Fim,  
-		                             count(qar.alternativa_id) as questaoRespondida,  
-		                             sum(qar.tempo_resposta_aluno) / count(1) as tempoMedio,
+		                             count(qar.alternativa_id) as questaoRespondida,
+                                     sum(qar.tempo_resposta_aluno) tempo,
+		                             sum(qar.tempo_resposta_aluno) / count(qar.alternativa_id) as tempoMedio,
                                      exists(select 1 from downloads_prova_aluno dpa where dpa.aluno_ra = @ra and dpa.prova_id = @provaId) as FezDownload
                               from questao_aluno_resposta qar
                               left join questao q on q.id = qar.questao_id 
                               left join prova_aluno pa on pa.prova_id = q.prova_id and pa.aluno_ra = qar.aluno_ra 
-                              where qar.aluno_ra = @ra and q.prova_id = @provaId ";
+                              where qar.aluno_ra = @ra and q.prova_id = @provaId
+                                    and qar.alternativa_id is not null";
 
                 return await conn.QueryFirstOrDefaultAsync<SituacaoAlunoProvaDto>(query, new { provaId, ra });
             }
@@ -68,7 +70,32 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                                      p.modalidade,
 	                                 p.inicio, 
 	                                 p.fim 
-                              from prova p ";
+                              from prova p 
+                              where (p.ocultar_prova = false or p.ocultar_prova is null)";
+
+                return await conn.QueryAsync<ProvaDto>(query);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<IEnumerable<ProvaDto>> ObterProvasEmAndamentoAsync()
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select p.id, 
+	                                 p.prova_legado_id as codigo, 
+	                                 p.descricao, 
+                                     p.modalidade,
+	                                 p.inicio, 
+	                                 p.fim 
+                              from prova p 
+                              where inicio::date <= current_date and fim::date >= current_date 
+                                and (p.ocultar_prova = false or p.ocultar_prova is null)";
 
                 return await conn.QueryAsync<ProvaDto>(query);
             }

@@ -14,12 +14,12 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
     public class PublicaFilaRabbitCommandHandler : IRequestHandler<PublicaFilaRabbitCommand, bool>
     {
         private readonly IServicoLog servicoLog;
-        private readonly ConnectionFactory connectionFactory;
+        private readonly IModel model;
 
-        public PublicaFilaRabbitCommandHandler(IServicoLog servicoLog, ConnectionFactory connectionFactory)
+        public PublicaFilaRabbitCommandHandler(IServicoLog servicoLog, IModel model)
         {
             this.servicoLog = servicoLog ?? throw new ArgumentNullException(nameof(servicoLog));
-            this.connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
+            this.model = model ?? throw new ArgumentNullException(nameof(model));
         }
 
         public Task<bool> Handle(PublicaFilaRabbitCommand request, CancellationToken cancellationToken)
@@ -31,13 +31,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
                 var mensagemJson = JsonSerializer.Serialize(mensagem);
                 var body = Encoding.UTF8.GetBytes(mensagemJson);
 
-                using var conexaoRabbit = connectionFactory.CreateConnection();
-                using IModel channel = conexaoRabbit.CreateModel();
-
-                var props = channel.CreateBasicProperties();
+                var props = model.CreateBasicProperties();
                 props.Persistent = true;
 
-                channel.BasicPublish(ExchangeRabbit.SerapEstudanteAcompanhamento, request.NomeRota, props, body);
+                model.BasicPublish(ExchangeRabbit.SerapEstudanteAcompanhamento, request.NomeRota, props, body);
 
                 return Task.FromResult(true);
             }

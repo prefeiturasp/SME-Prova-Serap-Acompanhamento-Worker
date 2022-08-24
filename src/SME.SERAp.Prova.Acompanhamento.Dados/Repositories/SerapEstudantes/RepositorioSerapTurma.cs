@@ -17,19 +17,9 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
             using var conn = ObterConexao();
             try
             {
-                var query = @"select distinct tb.id, tb.ra, tb.nome, tb.nomeSocial
-                              from (
-                                    select a.id, a.ra, a.nome, a.nome_social as nomeSocial 
-                                    from aluno a 
-                                    where a.turma_id = @turmaId 
-
-                                    union all
-
-                                    select a.id, a.ra, a.nome, a.nome_social as nomeSocial 
-                                    from turma_aluno_historico tah 
-                                    left join aluno a on a.id = tah.aluno_id 
-                                    where a.turma_id = @turmaId and tah.data_matricula <= @provaInicio and tah.data_matricula <= @provaFim
-                              ) tb";
+                var query = @"select a.id, a.ra, a.nome, a.nome_social as nomeSocial, a.situacao
+                              from aluno a 
+                              where a.turma_id = @turmaId";
 
                 return await conn.QueryAsync<AlunoDto>(query, new { turmaId, provaInicio, provaFim });
             }

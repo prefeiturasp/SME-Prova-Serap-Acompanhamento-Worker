@@ -21,18 +21,19 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var respostas = await mediator.Send(new ObterRespostasProvaAlunoQuery(provaAluno.ProvaId, provaAluno.AlunoRa));
             if (respostas != null && respostas.Any())
             {
-                var provaAlunoResultado = await mediator.Send(new ObterProvaTurmaAlunoResultadoQuery(provaAluno.ProvaId, provaAluno.AlunoRa));
-                if (provaAlunoResultado == null) return false;
+                var provaAlunoResultados = await mediator.Send(new ObterProvaAlunoResultadoQuery(provaAluno.ProvaId, provaAluno.AlunoRa));
+                if (provaAlunoResultados == null || !provaAlunoResultados.Any()) return false;
 
-                provaAlunoResultado.AlunoQuestaoRespondida = respostas.Count(t => t.AlternativaId.HasValue);
-                provaAlunoResultado.AlunoTempoMedio = respostas.Sum(s => s.Tempo) / provaAlunoResultado.AlunoQuestaoRespondida;
+                foreach (var resultado in provaAlunoResultados)
+                {
+                    resultado.AlunoQuestaoRespondida = respostas.Count(t => t.AlternativaId.HasValue);
+                    resultado.AlunoTempoMedio = respostas.Sum(s => s.Tempo) / resultado.AlunoQuestaoRespondida;
 
-                await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaAlunoResultado));
+                    await mediator.Send(new AlterarProvaAlunoResultadoCommand(resultado));
+                }
             }
 
-
-            // TODO Atualizar os dados do indice ProvaTurmaResultado.
-
+            //TODO Consolidar prova aluno turma.
 
             return true;
         }

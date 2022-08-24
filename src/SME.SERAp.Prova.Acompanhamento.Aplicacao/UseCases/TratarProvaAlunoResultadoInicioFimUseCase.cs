@@ -2,6 +2,7 @@
 using SME.SERAp.Prova.Acompanhamento.Aplicacao.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Infra.Dtos;
 using SME.SERAp.Prova.Acompanhamento.Infra.Fila;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
@@ -17,25 +18,27 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var provaAlunoDto = mensagemRabbit.ObterObjetoMensagem<ProvaAlunoDto>();
             if (provaAlunoDto == null) return false;
 
-            var provaTurmaAlunoSituacao = await mediator.Send(new ObterProvaTurmaAlunoResultadoQuery(provaAlunoDto.ProvaId, provaAlunoDto.AlunoRa));
-            if (provaTurmaAlunoSituacao == null) return false;
+            var provaAlunoResultados = await mediator.Send(new ObterProvaAlunoResultadoQuery(provaAlunoDto.ProvaId, provaAlunoDto.AlunoRa));
+            if (provaAlunoResultados == null || !provaAlunoResultados.Any()) return false;
 
-            var alteracao = false;
-            if (!provaTurmaAlunoSituacao.AlunoInicio.HasValue)
+            foreach (var resultado in provaAlunoResultados)
             {
-                provaTurmaAlunoSituacao.AlunoInicio = provaAlunoDto.CriadoEm;
-                alteracao = true;
+                var alteracao = false;
+                if (!resultado.AlunoInicio.HasValue)
+                {
+                    resultado.AlunoInicio = provaAlunoDto.CriadoEm;
+                    alteracao = true;
+                }
+
+                if (provaAlunoDto.Status == 2)
+                {
+                    resultado.AlunoFim = provaAlunoDto.FinalizadoEm;
+                    alteracao = true;
+                }
+
+                if (alteracao)
+                    await mediator.Send(new AlterarProvaAlunoResultadoCommand(resultado));
             }
-
-            if (provaAlunoDto.Status == 2)
-            {
-                provaTurmaAlunoSituacao.AlunoFim = provaAlunoDto.FinalizadoEm;
-                alteracao = true;
-            }
-
-            if (alteracao)
-                await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaTurmaAlunoSituacao));
-
 
             //TODO Consolidar prova aluno turma.
 

@@ -2,6 +2,7 @@
 {
     public class Ue : EntidadeBase
     {
+        public Ue() { }
         public Ue(long id, long dreId, long codigo, string nome)
         {
             Id = id.ToString();

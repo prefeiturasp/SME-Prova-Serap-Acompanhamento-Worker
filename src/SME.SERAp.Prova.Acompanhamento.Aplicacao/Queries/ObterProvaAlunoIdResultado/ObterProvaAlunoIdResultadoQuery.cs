@@ -3,15 +3,15 @@ using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
 
 namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 {
-    public class ObterProvaTurmaAlunoResultadoQuery : IRequest<ProvaAlunoResultado>
+    public class ObterProvaAlunoIdResultadoQuery : IRequest<ProvaAlunoResultado>
     {
-        public ObterProvaTurmaAlunoResultadoQuery(long provaId, long alunoRa)
+        public ObterProvaAlunoIdResultadoQuery(long provaId, long alunoId)
         {
             ProvaId = provaId;
-            AlunoRa = alunoRa;
+            AlunoId = alunoId;
         }
 
         public long ProvaId { get; set; }
-        public long AlunoRa { get; set; }
+        public long AlunoId { get; set; }
     }
 }

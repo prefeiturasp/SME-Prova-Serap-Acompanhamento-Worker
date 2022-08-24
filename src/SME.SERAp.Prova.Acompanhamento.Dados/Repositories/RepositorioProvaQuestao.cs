@@ -14,7 +14,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
         public RepositorioProvaQuestao(IElasticClient elasticClient) : base(elasticClient)
         {
 
-        }        
+        }
 
         public async Task<IEnumerable<ProvaQuestao>> ObterPorProvaIdAsync(long provaId)
         {

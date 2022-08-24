@@ -14,32 +14,34 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {
-            var provaTurmaAlunoSituacao = mensagemRabbit.ObterObjetoMensagem<ProvaAlunoResultado>();
-            if (provaTurmaAlunoSituacao == null) return false;
+            var provaAlunoResultado = mensagemRabbit.ObterObjetoMensagem<ProvaAlunoResultado>();
+            if (provaAlunoResultado == null) return false;
 
-            var provaTurmaAlunoSituacaoBanco = await mediator.Send(new ObterProvaTurmaAlunoResultadoQuery(provaTurmaAlunoSituacao.ProvaId, provaTurmaAlunoSituacao.AlunoRa));
+            var provaAlunoResultadoBanco = await mediator.Send(new ObterProvaAlunoIdResultadoQuery(provaAlunoResultado.ProvaId, provaAlunoResultado.AlunoId));
 
-            if (provaTurmaAlunoSituacaoBanco == null)
+            if (provaAlunoResultadoBanco == null)
             {
-                await mediator.Send(new InserirProvaAlunoResultadoCommand(provaTurmaAlunoSituacao));
+                await mediator.Send(new InserirProvaAlunoResultadoCommand(provaAlunoResultado));
             }
-            else if (provaTurmaAlunoSituacaoBanco.AnoLetivo != provaTurmaAlunoSituacao.AnoLetivo ||
-                provaTurmaAlunoSituacaoBanco.Inicio != provaTurmaAlunoSituacao.Inicio ||
-                provaTurmaAlunoSituacaoBanco.Fim != provaTurmaAlunoSituacao.Fim ||
-                provaTurmaAlunoSituacaoBanco.DreId != provaTurmaAlunoSituacao.DreId ||
-                provaTurmaAlunoSituacaoBanco.UeId != provaTurmaAlunoSituacao.UeId ||
-                provaTurmaAlunoSituacaoBanco.Ano != provaTurmaAlunoSituacao.Ano ||
-                provaTurmaAlunoSituacaoBanco.Modalidade != provaTurmaAlunoSituacao.Modalidade ||
-                provaTurmaAlunoSituacaoBanco.TurmaId != provaTurmaAlunoSituacao.TurmaId ||
-                provaTurmaAlunoSituacaoBanco.AlunoNome != provaTurmaAlunoSituacao.AlunoNome ||
-                provaTurmaAlunoSituacaoBanco.AlunoNomeSocial != provaTurmaAlunoSituacao.AlunoNomeSocial ||
-                provaTurmaAlunoSituacaoBanco.AlunoDownload != provaTurmaAlunoSituacao.AlunoDownload ||
-                provaTurmaAlunoSituacaoBanco.AlunoInicio != provaTurmaAlunoSituacao.AlunoInicio ||
-                provaTurmaAlunoSituacaoBanco.AlunoFim != provaTurmaAlunoSituacao.AlunoFim ||
-                provaTurmaAlunoSituacaoBanco.AlunoTempoMedio != provaTurmaAlunoSituacao.AlunoTempoMedio ||
-                provaTurmaAlunoSituacaoBanco.AlunoQuestaoRespondida != provaTurmaAlunoSituacao.AlunoQuestaoRespondida)
+            else if (provaAlunoResultadoBanco.AnoLetivo != provaAlunoResultado.AnoLetivo ||
+                provaAlunoResultadoBanco.Inicio != provaAlunoResultado.Inicio ||
+                provaAlunoResultadoBanco.Fim != provaAlunoResultado.Fim ||
+                provaAlunoResultadoBanco.DreId != provaAlunoResultado.DreId ||
+                provaAlunoResultadoBanco.UeId != provaAlunoResultado.UeId ||
+                provaAlunoResultadoBanco.Ano != provaAlunoResultado.Ano ||
+                provaAlunoResultadoBanco.Modalidade != provaAlunoResultado.Modalidade ||
+                provaAlunoResultadoBanco.TurmaId != provaAlunoResultado.TurmaId ||
+                provaAlunoResultadoBanco.AlunoNome != provaAlunoResultado.AlunoNome ||
+                provaAlunoResultadoBanco.AlunoNomeSocial != provaAlunoResultado.AlunoNomeSocial ||
+                provaAlunoResultadoBanco.AlunoDownload != provaAlunoResultado.AlunoDownload ||
+                provaAlunoResultadoBanco.AlunoSituacao != provaAlunoResultado.AlunoSituacao ||
+                provaAlunoResultadoBanco.AlunoInicio != provaAlunoResultado.AlunoInicio ||
+                provaAlunoResultadoBanco.AlunoFim != provaAlunoResultado.AlunoFim ||
+                provaAlunoResultadoBanco.AlunoTempoMedio != provaAlunoResultado.AlunoTempoMedio ||
+                provaAlunoResultadoBanco.AlunoQuestaoRespondida != provaAlunoResultado.AlunoQuestaoRespondida)
             {
-                await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaTurmaAlunoSituacao));
+                provaAlunoResultado.Id = provaAlunoResultadoBanco.Id;
+                await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaAlunoResultado));
             }
 
             return true;
