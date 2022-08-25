@@ -47,7 +47,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                         situacaoAlunoProva.FezDownload,
                         situacaoAlunoProva.Inicio,
                         situacaoAlunoProva.Fim,
-                        situacaoAlunoProva.TempoMedio,
+                        situacaoAlunoProva.Tempo,
                         situacaoAlunoProva.QuestaoRespondida
                         );
 
