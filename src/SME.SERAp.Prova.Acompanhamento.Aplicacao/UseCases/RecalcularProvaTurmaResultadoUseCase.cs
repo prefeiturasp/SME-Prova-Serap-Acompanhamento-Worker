@@ -21,12 +21,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
             if (provaTurmaResultadoBanco == null) return false;
 
             var provaAlunoResultados = await mediator.Send(new ObterProvaAlunoResultadoPorProvaTurmaQuery(provaTurmaRecalcular.ProvaId, provaTurmaRecalcular.TurmaId));
-            //int tempoTotal = provaAlunoResultados.Where(p => p.Fim );
+            var tempoTotal = provaAlunoResultados.Where(pa => pa.AlunoFim != null && pa.AlunoTempoMedio > 0).Sum(pa => pa.AlunoTempoMedio);
             int totalQuestoesRespondidas = 0;
-            foreach (var provaAlunoResultado in provaAlunoResultados)
-            {
 
-            }
+            provaTurmaResultadoBanco.TotalAlunos = provaAlunoResultados.Select(pa => pa.AlunoRa).Distinct().Count();
 
             return true;
         }
