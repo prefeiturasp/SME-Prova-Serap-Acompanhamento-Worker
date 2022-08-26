@@ -135,5 +135,36 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                 conn.Dispose();
             }
         }
+
+        public async Task<ProvaTurmaDto> ObterTurmaAsync(long provaId, long turmaId)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select distinct vpta.turma_ano_letivo as anoLetivo,
+                                   vpta.prova_id as provaId,
+	                               vpta.inicio,
+	                               vpta.fim,
+	                               u.dre_id as dreId,
+	                               vpta.ue_id as ueId,
+	                               vpta.turma_ano as ano,
+	                               vpta.turma_modalidade as modalidade,
+	                               vpta.turma_id as TurmaId,
+                                   p.descricao,
+	                               p.total_itens as QuantidadeQuestoes
+                             from v_prova_turma_aluno vpta 
+                             left join prova p on p.id = vpta.prova_id 
+                             left join ue u on u.id = vpta.ue_id
+                             where vpta.prova_id = @provaId 
+                               and vpta.turma_id = @turmaId ";
+
+                return await conn.QueryFirstOrDefaultAsync<ProvaTurmaDto>(query, new { provaId, turmaId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }

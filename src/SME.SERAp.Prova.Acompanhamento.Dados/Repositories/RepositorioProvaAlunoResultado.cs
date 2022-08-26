@@ -41,5 +41,19 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
 
             return response.Hits.Select(hit => hit.Source).FirstOrDefault();
         }
+
+        public async Task<IEnumerable<ProvaAlunoResultado>> ObterPorProvaTurmaIdAsync(long provaId, long turmaId)
+        {
+            var search = new SearchDescriptor<ProvaAlunoResultado>(IndexName).Query(q =>
+                q.Term(t => t.Field(f => f.ProvaId).Value(provaId)) &&
+                q.Term(t => t.Field(f => f.TurmaId).Value(turmaId))
+            );
+
+            var response = await elasticClient.SearchAsync<ProvaAlunoResultado>(search);
+
+            if (!response.IsValid) return default;
+
+            return response.Hits.Select(hit => hit.Source).ToList();
+        }
     }
 }
