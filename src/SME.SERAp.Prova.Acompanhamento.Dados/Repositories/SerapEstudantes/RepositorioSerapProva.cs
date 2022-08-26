@@ -26,8 +26,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                               from questao_aluno_resposta qar
                               left join questao q on q.id = qar.questao_id 
                               left join prova_aluno pa on pa.prova_id = q.prova_id and pa.aluno_ra = qar.aluno_ra 
-                              where qar.aluno_ra = @ra and q.prova_id = @provaId
-                                    and qar.alternativa_id is not null";
+                              where qar.aluno_ra = @ra and q.prova_id = @provaId";
 
                 return await conn.QueryFirstOrDefaultAsync<SituacaoAlunoProvaDto>(query, new { provaId, ra });
             }
