@@ -21,7 +21,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                                      max(case when pa.status in (2, 5) then pa.finalizado_em end) as Fim,  
 		                             count(qar.alternativa_id) as questaoRespondida,
                                      sum(qar.tempo_resposta_aluno) tempo,
-		                             sum(qar.tempo_resposta_aluno) / count(qar.alternativa_id) as tempoMedio,
+		                             case when count(qar.alternativa_id) > 0 then sum(qar.tempo_resposta_aluno) / count(qar.alternativa_id) else 0 end as tempoMedio,
                                      exists(select 1 from downloads_prova_aluno dpa where dpa.aluno_ra = @ra and dpa.prova_id = @provaId) as FezDownload
                               from questao_aluno_resposta qar
                               left join questao q on q.id = qar.questao_id 
