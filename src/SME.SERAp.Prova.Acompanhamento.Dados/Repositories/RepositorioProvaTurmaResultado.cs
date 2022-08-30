@@ -1,6 +1,7 @@
 ﻿using Nest;
 using SME.SERAp.Prova.Acompanhamento.Dados.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
+using SME.SERAp.Prova.Acompanhamento.Infra.EnvironmentVariables;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,11 +10,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
 {
     public class RepositorioProvaTurmaResultado : RepositorioBase<ProvaTurmaResultado>, IRepositorioProvaTurmaResultado
     {
-        protected override string IndexName => "prova-turma-resultado";
-
-        public RepositorioProvaTurmaResultado(IElasticClient elasticClient) : base(elasticClient)
+        public RepositorioProvaTurmaResultado(ElasticOptions elasticOptions, IElasticClient elasticClient) : base(elasticOptions, elasticClient)
         {
-
         }
 
         public async Task<ProvaTurmaResultado> ObterPorProvaTurmaAsync(long provaId, long turmaId)

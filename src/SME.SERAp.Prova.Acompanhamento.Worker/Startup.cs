@@ -16,6 +16,7 @@ using SME.SERAp.Prova.Acompanhamento.Infra.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Infra.Services;
 using SME.SERAp.Prova.Acompanhamento.IoC;
 using System;
+using System.Collections.Generic;
 
 namespace SME.SERAp.Prova.Acompanhamento.Worker
 {
@@ -60,10 +61,18 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             Configuration.GetSection(ElasticOptions.Secao).Bind(elasticOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(elasticOptions);
 
-            var nodes = new Uri[]
+            var nodes = new List<Uri>();
+
+            if (elasticOptions.Urls.Contains(','))
             {
-                new Uri(elasticOptions.Url),
-            };
+                string[] urls = elasticOptions.Urls.Split(',');
+                foreach (string url in urls)
+                    nodes.Add(new Uri(url));
+            }
+            else
+            {
+                nodes.Add(new Uri(elasticOptions.Urls));
+            }
 
             var connectionPool = new StaticConnectionPool(nodes);
             var connectionSettings = new ConnectionSettings(connectionPool);
