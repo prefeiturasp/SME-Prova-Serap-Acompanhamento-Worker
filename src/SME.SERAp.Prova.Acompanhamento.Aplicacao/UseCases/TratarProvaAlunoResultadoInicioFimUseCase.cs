@@ -40,7 +40,9 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                     await mediator.Send(new AlterarProvaAlunoResultadoCommand(resultado));
             }
 
-            //TODO Consolidar prova aluno turma.
+            var provaAlunoResultado = provaAlunoResultados.FirstOrDefault();
+            var provaTurmaRecalcular = new ProvaTurmaRecalcularDto(provaAlunoResultado.ProvaId, provaAlunoResultado.TurmaId);
+            await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaTurmaResultadoRecalcular, provaTurmaRecalcular));
 
             return true;
         }
