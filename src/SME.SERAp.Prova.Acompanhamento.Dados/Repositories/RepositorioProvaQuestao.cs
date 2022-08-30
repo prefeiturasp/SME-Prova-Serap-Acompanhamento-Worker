@@ -1,6 +1,7 @@
 ﻿using Nest;
 using SME.SERAp.Prova.Acompanhamento.Dados.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
+using SME.SERAp.Prova.Acompanhamento.Infra.EnvironmentVariables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
 {
     public class RepositorioProvaQuestao : RepositorioBase<ProvaQuestao>, IRepositorioProvaQuestao
     {
-        protected override string IndexName => "prova-questao";
-        public RepositorioProvaQuestao(IElasticClient elasticClient) : base(elasticClient)
+        public RepositorioProvaQuestao(ElasticOptions elasticOptions, IElasticClient elasticClient) : base(elasticOptions, elasticClient)
         {
-
         }
 
         public async Task<IEnumerable<ProvaQuestao>> ObterPorProvaIdAsync(long provaId)
