@@ -17,16 +17,20 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
             using var conn = ObterConexao();
             try
             {
-                var query = @"select min(pa.criado_em) as Inicio,
-                                     max(case when pa.status in (2, 5) then pa.finalizado_em end) as Fim,  
-		                             count(qar.alternativa_id) as questaoRespondida,
-                                     sum(qar.tempo_resposta_aluno) tempo,
-		                             case when count(qar.alternativa_id) > 0 then sum(qar.tempo_resposta_aluno) / count(qar.alternativa_id) else 0 end as tempoMedio,
-                                     exists(select 1 from downloads_prova_aluno dpa where dpa.aluno_ra = @ra and dpa.prova_id = @provaId) as FezDownload
-                              from questao_aluno_resposta qar
-                              left join questao q on q.id = qar.questao_id 
-                              left join prova_aluno pa on pa.prova_id = q.prova_id and pa.aluno_ra = qar.aluno_ra 
-                              where qar.aluno_ra = @ra and q.prova_id = @provaId";
+                var query = @"select
+	                            min(pa.criado_em) as Inicio,
+	                            max(case when pa.status in (2, 5) then pa.finalizado_em end) as Fim,
+	                            count(tb.alternativa_id) as QuestaoRespondida,
+	                            sum(tb.tempo_resposta_aluno) Tempo,
+	                            case when count(tb.alternativa_id) > 0 then sum(tb.tempo_resposta_aluno) / count(tb.alternativa_id) else 0 end as TempoMedio,
+	                            exists(select 1	from downloads_prova_aluno dpa where dpa.aluno_ra = pa.aluno_ra and dpa.prova_id = pa.prova_id limit 1) as FezDownload
+                              from prova_aluno pa
+                              left join (select q.prova_id, qar.aluno_ra, qar.tempo_resposta_aluno, qar.alternativa_id
+	                          from questao_aluno_resposta qar 
+	                          left join questao q on q.id = qar.questao_id) tb on tb.prova_id = pa.prova_id and tb.aluno_ra = pa.aluno_ra
+                              where
+	                            pa.aluno_ra = @ra and pa.prova_id = @provaId
+                              group by pa.prova_id, pa.aluno_ra";
 
                 return await conn.QueryFirstOrDefaultAsync<SituacaoAlunoProvaDto>(query, new { provaId, ra });
             }
