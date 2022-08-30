@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using SME.SERAp.Prova.Acompanhamento.Aplicacao;
 using SME.SERAp.Prova.Acompanhamento.Aplicacao.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases;
 using SME.SERAp.Prova.Acompanhamento.Dados.Interfaces;
@@ -85,6 +86,7 @@ namespace SME.SERAp.Prova.Acompanhamento.IoC
             services.AddScoped<ITratarProvaAlunoResultadoUseCase, TratarProvaAlunoResultadoUseCase>();
             services.AddScoped<ITratarProvaTurmaResultadoUseCase, TratarProvaTurmaResultadoUseCase>();
             services.AddScoped<IConsolidarProvaAlunoRespostaUseCase, ConsolidarProvaAlunoRespostaUseCase>();
+            services.AddScoped<IRecalcularProvaTurmaResultadoUseCase, RecalcularProvaTurmaResultadoUseCase>();
 
             services.AddScoped<ITratarProvaAlunoRespostaSyncUseCase, TratarProvaAlunoRespostaSyncUseCase>();
             services.AddScoped<ITratarProvaAlunoRespostaUseCase, TratarProvaAlunoRespostaUseCase>();
