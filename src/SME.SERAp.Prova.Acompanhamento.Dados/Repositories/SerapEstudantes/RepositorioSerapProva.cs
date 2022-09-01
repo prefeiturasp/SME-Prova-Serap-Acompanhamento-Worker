@@ -96,7 +96,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
 	                                 p.inicio::date, 
 	                                 p.fim::date 
                               from prova p 
-                              where inicio::date <= current_date and fim::date >= current_date 
+                              where inicio::date <= current_date and fim::date >= (current_date -1)
                                 and (p.ocultar_prova = false or p.ocultar_prova is null)";
 
                 return await conn.QueryAsync<ProvaDto>(query);
