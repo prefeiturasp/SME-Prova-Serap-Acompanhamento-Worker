@@ -1,6 +1,7 @@
 ﻿using Nest;
 using SME.SERAp.Prova.Acompanhamento.Dados.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
+using SME.SERAp.Prova.Acompanhamento.Infra.EnvironmentVariables;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,8 +10,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
 {
     public class RepositorioProvaAlunoResposta : RepositorioBase<ProvaAlunoResposta>, IRepositorioProvaAlunoResposta
     {
-        protected override string IndexName => "prova-aluno-resposta";
-        public RepositorioProvaAlunoResposta(IElasticClient elasticClient) : base(elasticClient)
+        public RepositorioProvaAlunoResposta(ElasticOptions elasticOptions, IElasticClient elasticClient) : base(elasticOptions, elasticClient)
         {
         }
 
@@ -20,7 +20,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
                            q.Term(t => t.Field(f => f.ProvaId).Value(provaId)) &&
                            q.Term(t => t.Field(f => f.AlunoRa).Value(alunoRa)) &&
                            q.Term(t => t.Field(f => f.QuestaoId).Value(questaoId))
-                       );
+                       ).Size(10000);
 
             var response = await elasticClient.SearchAsync<ProvaAlunoResposta>(search);
 

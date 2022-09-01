@@ -1,6 +1,7 @@
 ﻿using Nest;
 using SME.SERAp.Prova.Acompanhamento.Dados.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
+using SME.SERAp.Prova.Acompanhamento.Infra.EnvironmentVariables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,16 +11,14 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
 {
     public class RepositorioProvaQuestao : RepositorioBase<ProvaQuestao>, IRepositorioProvaQuestao
     {
-        protected override string IndexName => "prova-questao";
-        public RepositorioProvaQuestao(IElasticClient elasticClient) : base(elasticClient)
+        public RepositorioProvaQuestao(ElasticOptions elasticOptions, IElasticClient elasticClient) : base(elasticOptions, elasticClient)
         {
-
         }
 
         public async Task<IEnumerable<ProvaQuestao>> ObterPorProvaIdAsync(long provaId)
         {
             var search = new SearchDescriptor<ProvaQuestao>(IndexName).Query(q =>
-                          q.Term(t => t.Field(f => f.ProvaId).Value(provaId)));
+                          q.Term(t => t.Field(f => f.ProvaId).Value(provaId))).Size(10000);
 
             var response = await elasticClient.SearchAsync<ProvaQuestao>(search);
 
@@ -31,7 +30,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
         public async Task<ProvaQuestao> ObterPorQuestaoIdAsync(long questaoId)
         {
             var search = new SearchDescriptor<ProvaQuestao>(IndexName).Query(q =>
-                          q.Term(t => t.Field(f => f.QuestaoId).Value(questaoId)));
+                          q.Term(t => t.Field(f => f.QuestaoId).Value(questaoId))).Size(10000);
 
             var response = await elasticClient.SearchAsync<ProvaQuestao>(search);
 

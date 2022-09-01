@@ -1,14 +1,14 @@
 ﻿using Nest;
 using SME.SERAp.Prova.Acompanhamento.Dados.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
+using SME.SERAp.Prova.Acompanhamento.Infra.EnvironmentVariables;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
 {
     public class RepositorioAbrangencia : RepositorioBase<Abrangencia>, IRepositorioAbrangencia
     {
-        protected override string IndexName => "abrangencia";
-        public RepositorioAbrangencia(IElasticClient elasticClient) : base(elasticClient)
+        public RepositorioAbrangencia(ElasticOptions elasticOptions, IElasticClient elasticClient) : base(elasticOptions, elasticClient)
         {
         }
 
