@@ -18,7 +18,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
         public async Task<IEnumerable<ProvaQuestao>> ObterPorProvaIdAsync(long provaId)
         {
             var search = new SearchDescriptor<ProvaQuestao>(IndexName).Query(q =>
-                          q.Term(t => t.Field(f => f.ProvaId).Value(provaId)));
+                          q.Term(t => t.Field(f => f.ProvaId).Value(provaId))).Size(10000);
 
             var response = await elasticClient.SearchAsync<ProvaQuestao>(search);
 
@@ -30,7 +30,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
         public async Task<ProvaQuestao> ObterPorQuestaoIdAsync(long questaoId)
         {
             var search = new SearchDescriptor<ProvaQuestao>(IndexName).Query(q =>
-                          q.Term(t => t.Field(f => f.QuestaoId).Value(questaoId)));
+                          q.Term(t => t.Field(f => f.QuestaoId).Value(questaoId))).Size(10000);
 
             var response = await elasticClient.SearchAsync<ProvaQuestao>(search);
 
