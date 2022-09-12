@@ -23,12 +23,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
         }
 
         public Guid UsuarioId { get; set; }
-
-        public bool Any()
-        {
-            throw new NotImplementedException();
-        }
-
         public string Login { get; set; }
         public string Usuario { get; set; }
         public Guid GrupoId { get; set; }
