@@ -39,30 +39,72 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
 
         private void ConfigEnvoiromentVariables(IServiceCollection services)
         {
-            var rabbitOptions = new RabbitOptions();
-            Configuration.GetSection(RabbitOptions.Secao).Bind(rabbitOptions, c => c.BindNonPublicProperties = true);
-            services.AddSingleton(rabbitOptions);
+            ConfigurarConexoes(services);
+            ConfigurarRabbitmq(services);
+            ConfigurarRabbitmqLog(services);
+            ConfigurarTelemetria(services);
+            ConfigurarElasticSearch(services);
+            ConfigurarCoresso(services);
+            ConfigurarEol(services);
+        }
 
-            var factory = new ConnectionFactory
+        private void ConfigurarEol(IServiceCollection services)
+        {
+            var eolOptions = new EolOptions();
+            Configuration.GetSection(EolOptions.Secao).Bind(eolOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(eolOptions);
+        }
+
+        private void ConfigurarCoresso(IServiceCollection services)
+        {
+            var coressoOptions = new CoressoOptions();
+            Configuration.GetSection(CoressoOptions.Secao).Bind(coressoOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(coressoOptions);
+        }
+
+        private void ConfigurarConexoes(IServiceCollection services)
+        {
+            var connectionStringOptions = new ConnectionStringOptions();
+            Configuration.GetSection(ConnectionStringOptions.Secao).Bind(connectionStringOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(connectionStringOptions);
+        }
+
+        private void ConfigurarTelemetria(IServiceCollection services)
+        {
+            var telemetriaOptions = new TelemetriaOptions();
+            Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(telemetriaOptions);
+
+            var servicoTelemetria = new ServicoTelemetria(telemetriaOptions);
+            services.AddSingleton<IServicoTelemetria>(servicoTelemetria);
+            DapperExtensionMethods.Init(servicoTelemetria);
+        }
+
+        private void ConfigurarRabbitmqLog(IServiceCollection services)
+        {
+            var rabbitLogOptions = new RabbitLogOptions();
+            Configuration.GetSection(RabbitLogOptions.Secao).Bind(rabbitLogOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(rabbitLogOptions);
+
+            var factoryLog = new ConnectionFactory
             {
-                HostName = rabbitOptions.HostName,
-                UserName = rabbitOptions.UserName,
-                Password = rabbitOptions.Password,
-                VirtualHost = rabbitOptions.VirtualHost
+                HostName = rabbitLogOptions.HostName,
+                UserName = rabbitLogOptions.UserName,
+                Password = rabbitLogOptions.Password,
+                VirtualHost = rabbitLogOptions.VirtualHost
             };
 
-            services.AddSingleton(factory);
+            var conexaoRabbitLog = factoryLog.CreateConnection();
+            IModel channelLog = conexaoRabbitLog.CreateModel();
+        }
 
-            var conexaoRabbit = factory.CreateConnection();
-            IModel channel = conexaoRabbit.CreateModel();
-            services.AddSingleton(channel);
-
+        private void ConfigurarElasticSearch(IServiceCollection services)
+        {
             var elasticOptions = new ElasticOptions();
             Configuration.GetSection(ElasticOptions.Secao).Bind(elasticOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(elasticOptions);
 
             var nodes = new List<Uri>();
-
             if (elasticOptions.Urls.Contains(','))
             {
                 string[] urls = elasticOptions.Urls.Split(',');
@@ -86,16 +128,15 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
 
             var elasticClient = new ElasticClient(connectionSettings);
             services.AddSingleton<IElasticClient>(elasticClient);
+        }
 
-            var connectionStringOptions = new ConnectionStringOptions();
-            Configuration.GetSection(ConnectionStringOptions.Secao).Bind(connectionStringOptions, c => c.BindNonPublicProperties = true);
-            services.AddSingleton(connectionStringOptions);
+        private void ConfigurarRabbitmq(IServiceCollection services)
+        {
+            var rabbitOptions = new RabbitOptions();
+            Configuration.GetSection(RabbitOptions.Secao).Bind(rabbitOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(rabbitOptions);
 
-            var rabbitLogOptions = new RabbitLogOptions();
-            Configuration.GetSection(RabbitLogOptions.Secao).Bind(rabbitLogOptions, c => c.BindNonPublicProperties = true);
-            services.AddSingleton(rabbitLogOptions);
-
-            var factoryLog = new ConnectionFactory
+            var factory = new ConnectionFactory
             {
                 HostName = rabbitOptions.HostName,
                 UserName = rabbitOptions.UserName,
@@ -103,16 +144,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
                 VirtualHost = rabbitOptions.VirtualHost
             };
 
-            var conexaoRabbitLog = factoryLog.CreateConnection();
-            IModel channelLog = conexaoRabbitLog.CreateModel();
+            services.AddSingleton(factory);
 
-            var telemetriaOptions = new TelemetriaOptions();
-            Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
-            services.AddSingleton(telemetriaOptions);
-
-            var servicoTelemetria = new ServicoTelemetria(telemetriaOptions);
-            services.AddSingleton<IServicoTelemetria>(servicoTelemetria);
-            DapperExtensionMethods.Init(servicoTelemetria);
+            var conexaoRabbit = factory.CreateConnection();
+            IModel channel = conexaoRabbit.CreateModel();
+            services.AddSingleton(channel);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
