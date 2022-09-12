@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var dreDto = mensagemRabbit.ObterObjetoMensagem<DreDto>();
             if (dreDto == null) return false;
 
-            var dre = await mediator.Send(new ObterDrePorIdQuery(dreDto.Id));
+            var dre = await mediator.Send(new ObterDrePorIdQuery(dreDto.Id.ToString()));
             if (dre == null)
             {
                 await mediator.Send(new InserirDreCommand(dreDto));

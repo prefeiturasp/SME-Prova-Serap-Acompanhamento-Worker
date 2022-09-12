@@ -5,11 +5,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 {
     public class ObterAnoPorIdQuery : IRequest<Ano>
     {
-        public ObterAnoPorIdQuery(long id)
+        public ObterAnoPorIdQuery(string id)
         {
             Id = id;
         }
 
-        public long Id { get; set; }
+        public string Id { get; set; }
     }
 }
