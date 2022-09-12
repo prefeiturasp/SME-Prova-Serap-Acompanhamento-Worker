@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var ueDto = mensagemRabbit.ObterObjetoMensagem<UeDto>();
             if (ueDto == null) return false;
 
-            var eu = await mediator.Send(new ObterUePorIdQuery(ueDto.Id));
+            var eu = await mediator.Send(new ObterUePorIdQuery(ueDto.Id.ToString()));
             if (eu == null)
             {
                 await mediator.Send(new InserirUeCommand(ueDto));
