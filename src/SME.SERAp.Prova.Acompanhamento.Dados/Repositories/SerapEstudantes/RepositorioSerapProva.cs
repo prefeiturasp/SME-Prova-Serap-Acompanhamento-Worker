@@ -70,8 +70,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
 	                                 p.prova_legado_id as codigo, 
 	                                 p.descricao, 
                                      p.modalidade,
-	                                 p.inicio, 
-	                                 p.fim 
+	                                 p.inicio::date, 
+	                                 p.fim::date 
                               from prova p 
                               where (p.ocultar_prova = false or p.ocultar_prova is null)";
 
@@ -93,8 +93,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
 	                                 p.prova_legado_id as codigo, 
 	                                 p.descricao, 
                                      p.modalidade,
-	                                 p.inicio, 
-	                                 p.fim 
+	                                 p.inicio::date, 
+	                                 p.fim::date 
                               from prova p 
                               where inicio::date <= current_date and fim::date >= current_date 
                                 and (p.ocultar_prova = false or p.ocultar_prova is null)";
@@ -115,8 +115,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
             {
                 var query = @"select distinct vpta.turma_ano_letivo as anoLetivo,
                                    vpta.prova_id as provaId,
-	                               vpta.inicio,
-	                               vpta.fim,
+	                               vpta.inicio::date,
+	                               vpta.fim::date,
 	                               u.dre_id as dreId,
 	                               vpta.ue_id as ueId,
 	                               vpta.turma_ano as ano,

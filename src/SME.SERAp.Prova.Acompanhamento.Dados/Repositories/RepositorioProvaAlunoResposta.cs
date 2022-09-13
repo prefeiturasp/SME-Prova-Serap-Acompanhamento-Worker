@@ -20,7 +20,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
                            q.Term(t => t.Field(f => f.ProvaId).Value(provaId)) &&
                            q.Term(t => t.Field(f => f.AlunoRa).Value(alunoRa)) &&
                            q.Term(t => t.Field(f => f.QuestaoId).Value(questaoId))
-                       );
+                       ).Size(10000);
 
             var response = await elasticClient.SearchAsync<ProvaAlunoResposta>(search);
 

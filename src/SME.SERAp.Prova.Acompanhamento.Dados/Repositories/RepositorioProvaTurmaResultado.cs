@@ -19,7 +19,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
             var search = new SearchDescriptor<ProvaTurmaResultado>(IndexName).Query(q =>
                 q.Term(t => t.Field(f => f.ProvaId).Value(provaId)) &&
                 q.Term(t => t.Field(f => f.TurmaId).Value(turmaId))
-            );
+            ).Size(10000);
 
             var response = await elasticClient.SearchAsync<ProvaTurmaResultado>(search);
 
