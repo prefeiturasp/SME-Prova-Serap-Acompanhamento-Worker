@@ -138,6 +138,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
 
             comandos.Add(RotaRabbit.ProvaAlunoDownloadTratar, new ComandoRabbit("tratar download prova aluno", typeof(ITratarProvaAlunoResultadoDownloadUseCase)));
             comandos.Add(RotaRabbit.ProvaAlunoInicioFimTratar, new ComandoRabbit("tratar inicio e fim prova aluno", typeof(ITratarProvaAlunoResultadoInicioFimUseCase)));
+
+
         }
 
         private async Task InicializaConsumer(IModel channel, CancellationToken stoppingToken)
