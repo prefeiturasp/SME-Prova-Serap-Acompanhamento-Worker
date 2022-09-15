@@ -138,7 +138,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
 
             comandos.Add(RotaRabbit.ProvaAlunoDownloadTratar, new ComandoRabbit("tratar download prova aluno", typeof(ITratarProvaAlunoResultadoDownloadUseCase)));
             comandos.Add(RotaRabbit.ProvaAlunoInicioFimTratar, new ComandoRabbit("tratar inicio e fim prova aluno", typeof(ITratarProvaAlunoResultadoInicioFimUseCase)));
-
+            comandos.Add(RotaRabbit.ProvaAlunoReaberturaTratar, new ComandoRabbit("tratar prova aluno reabertura ", typeof(ITratarProvaAlunoReaberturaUseCase)));
+            
 
         }
 

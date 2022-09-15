@@ -52,7 +52,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
         public DateTime? AlunoFim { get; set; }
         public int? AlunoTempoMedio { get; set; }
         public int? AlunoQuestaoRespondida { get; set; }
-        public SituacaoProvaAluno Situacao { get; set;  }
+        public SituacaoProvaAluno? Situacao { get; set;  }
         public Guid? UsuarioIdReabertura { get; set; }
         public DateTime? DataHoraReabertura { get; set; }
 
