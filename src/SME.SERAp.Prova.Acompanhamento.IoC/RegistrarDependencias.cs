@@ -126,6 +126,9 @@ namespace SME.SERAp.Prova.Acompanhamento.IoC
 
             services.AddScoped<ITratarProvaQuestaoSyncUseCase, TratarProvaQuestaoSyncUseCase>();
             services.AddScoped<ITratarProvaQuestaoUseCase, TratarProvaQuestaoUseCase>();
+
+            services.AddScoped<ITratarProvaAlunoReaberturaUseCase, TratarProvaAlunoReaberturaUseCase>();
+
         }
     }
 }

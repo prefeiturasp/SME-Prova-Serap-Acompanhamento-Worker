@@ -10,5 +10,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes
         public int? Tempo { get; set; }
         public int? TempoMedio { get; set; }
         public int? QuestaoRespondida { get; set; }
+        public Guid? UsuarioIdReabertura { get; set;} 
+        public DateTime? DataHoraReabertura { get; set; }
+
     }
 }
