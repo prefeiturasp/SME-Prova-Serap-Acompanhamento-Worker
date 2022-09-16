@@ -119,10 +119,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
         private async Task<Abrangencia> PublicarAbrangencia(GrupoUsuarioCoressoDto grupoUsuarioCoressoDto, long dreId, long ueId, long turmaId)
         {
             Abrangencia abrangencia = new(
-                grupoUsuarioCoressoDto.Usuario.Id,
+                grupoUsuarioCoressoDto.Usuario.Id.ToString(),
                 grupoUsuarioCoressoDto.Usuario.Login,
                 grupoUsuarioCoressoDto.Usuario.Nome,
-                grupoUsuarioCoressoDto.Grupo.Id,
+                grupoUsuarioCoressoDto.Grupo.Id.ToString(),
                 grupoUsuarioCoressoDto.Grupo.Nome,
                 grupoUsuarioCoressoDto.Grupo.PermiteConsultar,
                 grupoUsuarioCoressoDto.Grupo.PermiteAlterar,

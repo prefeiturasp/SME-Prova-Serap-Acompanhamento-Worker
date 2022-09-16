@@ -2,7 +2,6 @@
 using SME.SERAp.Prova.Acompanhamento.Dados.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
 using SME.SERAp.Prova.Acompanhamento.Infra.EnvironmentVariables;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,13 +14,13 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
         {
         }
 
-        public async Task<IEnumerable<string>> ObterIdsPorGrupoUsuarioDiretenteAbrangenciaIds(Guid grupoId, Guid usuarioId, IEnumerable<string> abrangenciaIds)
+        public async Task<IEnumerable<string>> ObterIdsPorGrupoUsuarioDiretenteAbrangenciaIds(string grupoId, string usuarioId, IEnumerable<string> abrangenciaIds)
         {
             var resultado = new List<string>();
 
             var query =
-                new QueryContainerDescriptor<Abrangencia>().Term(t => t.Field(f => f.GrupoId).Value(grupoId)) &&
-                new QueryContainerDescriptor<Abrangencia>().Term(t => t.Field(f => f.UsuarioId).Value(usuarioId));
+                new QueryContainerDescriptor<Abrangencia>().Match(t => t.Field(f => f.GrupoId).Query(grupoId.ToLower())) &&
+                new QueryContainerDescriptor<Abrangencia>().Match(t => t.Field(f => f.UsuarioId).Query(usuarioId.ToLower()));
 
             foreach (var abrangenciaId in abrangenciaIds)
                 query &= !new QueryContainerDescriptor<Abrangencia>().Match(t => t.Field(f => f.Id).Query(abrangenciaId));
@@ -43,14 +42,14 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
             return resultado;
         }
 
-        public async Task<IEnumerable<string>> ObterIdsDiretenteGrupoIds(Guid[] grupoIds)
+        public async Task<IEnumerable<string>> ObterIdsDiretenteGrupoIds(string[] grupoIds)
         {
             var resultado = new List<string>();
 
             var query = new QueryContainer();
 
             foreach (var grupoId in grupoIds)
-                query = query && !new QueryContainerDescriptor<Abrangencia>().Term(t => t.Field(f => f.GrupoId).Value(grupoId));
+                query = query && !new QueryContainerDescriptor<Abrangencia>().Match(t => t.Field(f => f.GrupoId).Query(grupoId.ToLower()));
 
             var search = new SearchDescriptor<Abrangencia>(IndexName)
                 .Query(_ => query)
@@ -69,14 +68,14 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
             return resultado;
         }
 
-        public async Task<IEnumerable<string>> ObterIdsPorGrupoDiretenteUsuarioIds(Guid grupoId, Guid[] usuarioIds)
+        public async Task<IEnumerable<string>> ObterIdsPorGrupoDiretenteUsuarioIds(string grupoId, string[] usuarioIds)
         {
             var resultado = new List<string>();
 
-            var query = new QueryContainerDescriptor<Abrangencia>().Term(t => t.Field(f => f.GrupoId).Value(grupoId));
+            var query = new QueryContainerDescriptor<Abrangencia>().Match(t => t.Field(f => f.GrupoId).Query(grupoId.ToLower()));
 
             foreach (var usuarioId in usuarioIds)
-                query = query && !new QueryContainerDescriptor<Abrangencia>().Term(t => t.Field(f => f.UsuarioId).Value(usuarioId));
+                query = query && !new QueryContainerDescriptor<Abrangencia>().Match(t => t.Field(f => f.UsuarioId).Query(usuarioId.ToLower()));
 
             var search = new SearchDescriptor<Abrangencia>(IndexName)
                 .Query(_ => query)
