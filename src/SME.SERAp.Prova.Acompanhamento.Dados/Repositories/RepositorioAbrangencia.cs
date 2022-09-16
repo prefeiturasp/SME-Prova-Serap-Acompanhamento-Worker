@@ -20,8 +20,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
             var resultado = new List<string>();
 
             var query =
-                new QueryContainerDescriptor<Abrangencia>().Term(t => t.Field(f => f.GrupoId).Value(grupoId)) &&
-                new QueryContainerDescriptor<Abrangencia>().Term(t => t.Field(f => f.UsuarioId).Value(usuarioId));
+                new QueryContainerDescriptor<Abrangencia>().Match(t => t.Field(f => f.GrupoId).Query(grupoId.ToString().ToLower())) &&
+                new QueryContainerDescriptor<Abrangencia>().Match(t => t.Field(f => f.UsuarioId).Query(usuarioId.ToString().ToLower()));
 
             foreach (var abrangenciaId in abrangenciaIds)
                 query &= !new QueryContainerDescriptor<Abrangencia>().Match(t => t.Field(f => f.Id).Query(abrangenciaId));
@@ -50,7 +50,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
             var query = new QueryContainer();
 
             foreach (var grupoId in grupoIds)
-                query = query && !new QueryContainerDescriptor<Abrangencia>().Term(t => t.Field(f => f.GrupoId).Value(grupoId));
+                query = query && !new QueryContainerDescriptor<Abrangencia>().Match(t => t.Field(f => f.GrupoId).Query(grupoId.ToString().ToLower()));
 
             var search = new SearchDescriptor<Abrangencia>(IndexName)
                 .Query(_ => query)
@@ -73,10 +73,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
         {
             var resultado = new List<string>();
 
-            var query = new QueryContainerDescriptor<Abrangencia>().Term(t => t.Field(f => f.GrupoId).Value(grupoId));
+            var query = new QueryContainerDescriptor<Abrangencia>().Match(t => t.Field(f => f.GrupoId).Query(grupoId.ToString().ToLower()));
 
             foreach (var usuarioId in usuarioIds)
-                query = query && !new QueryContainerDescriptor<Abrangencia>().Term(t => t.Field(f => f.UsuarioId).Value(usuarioId));
+                query = query && !new QueryContainerDescriptor<Abrangencia>().Match(t => t.Field(f => f.UsuarioId).Query(usuarioId.ToString().ToLower()));
 
             var search = new SearchDescriptor<Abrangencia>(IndexName)
                 .Query(_ => query)
