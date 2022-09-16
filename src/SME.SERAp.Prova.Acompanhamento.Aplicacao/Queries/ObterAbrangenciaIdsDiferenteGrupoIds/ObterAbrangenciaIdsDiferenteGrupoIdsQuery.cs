@@ -1,16 +1,15 @@
 ﻿using MediatR;
-using System;
 using System.Collections.Generic;
 
 namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 {
     public class ObterAbrangenciaIdsDiferenteGrupoIdsQuery : IRequest<IEnumerable<string>>
     {
-        public ObterAbrangenciaIdsDiferenteGrupoIdsQuery(Guid[] grupoIds)
+        public ObterAbrangenciaIdsDiferenteGrupoIdsQuery(string[] grupoIds)
         {
             GrupoIds = grupoIds;
         }
 
-        public Guid[] GrupoIds { get; set; }
+        public string[] GrupoIds { get; set; }
     }
 }
