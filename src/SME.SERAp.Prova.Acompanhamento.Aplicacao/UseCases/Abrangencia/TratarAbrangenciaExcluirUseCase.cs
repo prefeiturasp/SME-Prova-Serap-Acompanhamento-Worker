@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Acompanhamento.Aplicacao.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Infra.Fila;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +15,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {
-            var grupoIds = mensagemRabbit.ObterObjetoMensagem<List<Guid>>();
+            var grupoIds = mensagemRabbit.ObterObjetoMensagem<List<string>>();
             if (grupoIds == null || !grupoIds.Any()) return false;
 
             var abrangenciaIdsExcluir = await mediator.Send(new ObterAbrangenciaIdsDiferenteGrupoIdsQuery(grupoIds.ToArray()));

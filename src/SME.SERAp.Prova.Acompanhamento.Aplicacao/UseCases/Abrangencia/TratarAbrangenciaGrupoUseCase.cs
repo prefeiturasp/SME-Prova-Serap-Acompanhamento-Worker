@@ -26,7 +26,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                     await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.AbrangenciaGrupoUsuarioTratar, new GrupoUsuarioCoressoDto(grupo, usuario)));
                 }
 
-                await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.AbrangenciaGrupoExcluirTratar, new GrupoExcluirCoressoDto(grupo.Id, usuarios.Select(t => t.Id).ToArray())));
+                await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.AbrangenciaGrupoExcluirTratar, new GrupoExcluirCoressoDto(grupo.Id.ToString(), usuarios.Select(t => t.Id.ToString()).ToArray())));
             }
 
             return true;
