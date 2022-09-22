@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
 using SME.SERAp.Prova.Acompanhamento.Dominio.Enums;
 using SME.SERAp.Prova.Acompanhamento.Infra.Dtos;
 using SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes;
@@ -28,11 +29,18 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             foreach (var resultado in provaAlunoResultados)
             {
 
-                resultado.AlunoInicio = null;
-                resultado.AlunoFim = null;
-                resultado.Situacao = SituacaoProvaAluno.NaoIniciado;
+                var entidade = new ProvaAlunoResultado(resultado.ProvaId, resultado.DreId, resultado.UeId,
+                                                        resultado.TurmaId, resultado.Ano, resultado.Modalidade, 
+                                                        resultado.AnoLetivo, resultado.Inicio, resultado.Fim,
+                                                        resultado.AlunoId, resultado.AlunoRa,
+                                                        resultado.AlunoNome, resultado.AlunoNomeSocial,
+                                                        ((int)SituacaoProvaAluno.NaoIniciado), resultado.AlunoDownload,
+                                                        null, null, resultado.AlunoTempoMedio,
+                                                        resultado.AlunoQuestaoRespondida, provaAlunoReabertura.UsuarioCoresso, DateTime.Now);
 
-                await mediator.Send(new AlterarProvaAlunoResultadoCommand(resultado));
+
+                await mediator.Send(new ExcluirProvaAlunoResultadoCommand(resultado.Id));
+                await mediator.Send(new InserirProvaAlunoResultadoCommand(entidade));
             }
 
             var provaAlunoResultado = provaAlunoResultados.FirstOrDefault();
