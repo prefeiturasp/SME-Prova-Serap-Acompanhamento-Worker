@@ -6,7 +6,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
     public class ProvaAlunoResultado : EntidadeBase
     {
         public ProvaAlunoResultado() { }
-        public ProvaAlunoResultado(long provaId, long dreId, long ueId, long turmaId, string ano, Modalidade modalidade, int anoLetivo, DateTime inicio, DateTime fim, long alunoId, long alunoRa, string alunoNome, string alunoNomeSocial, int situacao, bool alunoDownload, DateTime? alunoInicio, DateTime? alunoFim, int? alunoTempoMedio, int? alunoQuestaoRespondida)
+        public ProvaAlunoResultado(long provaId, long dreId, long ueId, long turmaId, string ano, Modalidade modalidade, int anoLetivo, DateTime inicio, DateTime fim, long alunoId, long alunoRa, string alunoNome, string alunoNomeSocial, int situacao, bool alunoDownload, DateTime? alunoInicio, DateTime? alunoFim, int? alunoTempoMedio, int? alunoQuestaoRespondida, string usuarioIdReabertura, DateTime? dataHoraReabertura)
         {
             ProvaId = provaId;
             DreId = dreId;
@@ -27,6 +27,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
             AlunoFim = alunoFim;
             AlunoTempoMedio = alunoTempoMedio;
             AlunoQuestaoRespondida = alunoQuestaoRespondida;
+            UsuarioIdReabertura = usuarioIdReabertura;
+            DataHoraReabertura = dataHoraReabertura;
 
             Id = Guid.NewGuid().ToString();
         }
@@ -50,5 +52,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
         public DateTime? AlunoFim { get; set; }
         public int? AlunoTempoMedio { get; set; }
         public int? AlunoQuestaoRespondida { get; set; }
+        public SituacaoProvaAluno? Situacao { get; set;  }
+        public string UsuarioIdReabertura { get; set; }
+        public DateTime? DataHoraReabertura { get; set; }
+
+
     }
 }
