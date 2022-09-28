@@ -4,11 +4,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 {
     public class ObterProvaPorIdQuery : IRequest<Dominio.Entities.Prova>
     {
-        public ObterProvaPorIdQuery(string id)
+        public ObterProvaPorIdQuery(long id)
         {
             Id = id;
         }
 
-        public string Id { get; set; }
+        public long Id { get; set; }
     }
 }

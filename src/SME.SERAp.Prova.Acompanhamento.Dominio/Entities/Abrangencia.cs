@@ -1,32 +1,26 @@
-﻿namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
+﻿using System;
+
+namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
 {
     public class Abrangencia : EntidadeBase
     {
         public Abrangencia() { }
-
-        public Abrangencia(string usuarioId, string login, string usuario, string grupoId, string grupo, bool permiteConsultar, bool permiteAlterar, long dreId, long ueId, long turmaId)
+        public Abrangencia(string id, string login, string usuario, Guid coressoId, string grupo, long dreId, long ueId, long turmaId)
         {
-            UsuarioId = usuarioId.ToLower();
+            Id = id;
             Login = login;
             Usuario = usuario;
-            GrupoId = grupoId.ToLower();
+            CoressoId = coressoId;
             Grupo = grupo;
-            PermiteConsultar = permiteConsultar;
-            PermiteAlterar = permiteAlterar;
             DreId = dreId;
             UeId = ueId;
             TurmaId = turmaId;
-
-            Id = $"{GrupoId}-{UsuarioId}-{DreId}-{UeId}-{TurmaId}";
         }
 
-        public string UsuarioId { get; set; }
         public string Login { get; set; }
         public string Usuario { get; set; }
-        public string GrupoId { get; set; }
+        public Guid CoressoId { get; set; }
         public string Grupo { get; set; }
-        public bool PermiteConsultar { get; set; }
-        public bool PermiteAlterar { get; set; }
         public long DreId { get; set; }
         public long UeId { get; set; }
         public long TurmaId { get; set; }

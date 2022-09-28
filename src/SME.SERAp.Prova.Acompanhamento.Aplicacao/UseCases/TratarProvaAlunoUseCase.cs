@@ -44,20 +44,19 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                         aluno.Nome,
                         aluno.NomeSocial,
                         aluno.Situacao,
-                        situacaoAlunoProva?.FezDownload ?? false,
-                        situacaoAlunoProva?.Inicio,
-                        situacaoAlunoProva?.Fim,
-                        situacaoAlunoProva?.Tempo,
-                        situacaoAlunoProva?.QuestaoRespondida,
-                        situacaoAlunoProva?.UsuarioIdReabertura,
-                        situacaoAlunoProva?.DataHoraReabertura
+                        situacaoAlunoProva.FezDownload,
+                        situacaoAlunoProva.Inicio,
+                        situacaoAlunoProva.Fim,
+                        situacaoAlunoProva.Tempo,
+                        situacaoAlunoProva.QuestaoRespondida
                         );
 
                     await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoResultadoTratar, provaAlunoResultado));
                     await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoRespostaSync, new { provaTurma.ProvaId, AlunoRa = aluno.Ra }));
 
-                    totalQuestoesRespondidas += provaAlunoResultado.AlunoQuestaoRespondida.GetValueOrDefault();
-                    tempoTotal += situacaoAlunoProva?.Fim is not null ? provaAlunoResultado.AlunoTempo.GetValueOrDefault() : 0;
+                    totalQuestoesRespondidas += situacaoAlunoProva.QuestaoRespondida.GetValueOrDefault();
+                    if (situacaoAlunoProva.Fim is not null)
+                        tempoTotal += situacaoAlunoProva.Tempo.GetValueOrDefault();
                 }
 
                 var totalAlunos = alunos.Where(t => t.Situacao != 99).Count();
@@ -83,7 +82,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                         provaTurma.QuantidadeQuestoes,
                         totalQuestoes,
                         totalQuestoesRespondidas,
-                        tempoTotal > 0 ? (tempoTotal / 60) / situacaoTurmaProva.TotalFinalizado : 0
+                         tempoTotal > 0 ? (tempoTotal / 60) / situacaoTurmaProva.TotalFinalizado : 0
                        );
 
                 await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaTurmaResultadoTratar, provaTurmaResultado));

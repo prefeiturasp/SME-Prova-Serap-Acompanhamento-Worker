@@ -18,16 +18,14 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
         public async Task<bool> Handle(AlterarAbrangenciaCommand request, CancellationToken cancellationToken)
         {
             return await repositorioAbrangencia.AlterarAsync(new Dominio.Entities.Abrangencia(
-                request.Abrangencia.UsuarioId,
-                request.Abrangencia.Login,
-                request.Abrangencia.Usuario,
-                request.Abrangencia.GrupoId,
-                request.Abrangencia.Grupo,
-                request.Abrangencia.PermiteConsultar,
-                request.Abrangencia.PermiteAlterar,
-                request.Abrangencia.DreId,
-                request.Abrangencia.UeId,
-                request.Abrangencia.TurmaId
+                request.AbrangenciaDto.Id,
+                request.AbrangenciaDto.Login,
+                request.AbrangenciaDto.Usuario,
+                request.AbrangenciaDto.CoressoId,
+                request.AbrangenciaDto.Grupo,
+                request.AbrangenciaDto.DreId,
+                request.AbrangenciaDto.UeId,
+                request.AbrangenciaDto.TurmaId
                 ));
         }
     }
