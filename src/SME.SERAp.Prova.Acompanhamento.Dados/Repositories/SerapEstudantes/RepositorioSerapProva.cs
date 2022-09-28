@@ -22,7 +22,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                                      count(tb.alternativa_id) as QuestaoRespondida,
                                      sum(tb.tempo_resposta_aluno) Tempo,
                                      exists(select 1 from downloads_prova_aluno dpa where dpa.aluno_ra = pa.aluno_ra and dpa.prova_id = pa.prova_id limit 1) as FezDownload,
-                                     (select par.usuario_id_coresso from prova_aluno_reabertura par where par.prova_id = pa.prova_id and par.aluno_ra = pa.aluno_ra order by par.criado_em desc limit 1) as UsuarioIdReabertura,
+                                     cast((select par.usuario_id_coresso from prova_aluno_reabertura par where par.prova_id = pa.prova_id and par.aluno_ra = pa.aluno_ra order by par.criado_em desc limit 1) as varchar(40)) as UsuarioIdReabertura,
                                      (select par.criado_em from prova_aluno_reabertura par where par.prova_id = pa.prova_id and par.aluno_ra = pa.aluno_ra order by par.criado_em desc limit 1) as DataHoraReabertura
                               from prova_aluno pa
                               left join ( select q.prova_id, qar.aluno_ra, qar.tempo_resposta_aluno, qar.alternativa_id
