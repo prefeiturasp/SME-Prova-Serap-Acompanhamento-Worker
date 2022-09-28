@@ -32,9 +32,9 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                                                         resultado.AnoLetivo, resultado.Inicio, resultado.Fim,
                                                         resultado.AlunoId, resultado.AlunoRa,
                                                         resultado.AlunoNome, resultado.AlunoNomeSocial,
-                                                        ((int)SituacaoProvaAluno.NaoIniciado), resultado.AlunoDownload,
+                                                        1, resultado.AlunoDownload,
                                                         null, null, resultado.AlunoTempo,
-                                                        resultado.AlunoQuestaoRespondida, provaAlunoReabertura.UsuarioCoresso, DateTime.Now);
+                                                        resultado.AlunoQuestaoRespondida, provaAlunoReabertura.UsuarioCoresso, DateTime.Now, SituacaoProvaAluno.NaoIniciado) ;
 
 
                 await mediator.Send(new ExcluirProvaAlunoResultadoCommand(resultado.Id));

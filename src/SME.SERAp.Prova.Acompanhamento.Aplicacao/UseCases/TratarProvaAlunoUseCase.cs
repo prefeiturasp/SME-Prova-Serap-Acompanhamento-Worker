@@ -29,9 +29,9 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                 foreach (var aluno in alunos)
                 {
                     try
-                    {
+                    { 
                         var situacaoAlunoProva = await mediator.Send(new ObterSituacaoAlunoProvaSerapQuery(provaTurma.ProvaId, aluno.Ra));
-
+                        
                         var provaAlunoResultado = new ProvaAlunoResultado(
                             provaTurma.ProvaId,
                             provaTurma.DreId,
@@ -53,8 +53,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                             situacaoAlunoProva?.Tempo,
                             situacaoAlunoProva?.QuestaoRespondida,
                             situacaoAlunoProva?.UsuarioIdReabertura,
-                            situacaoAlunoProva?.DataHoraReabertura
-                            );
+                            situacaoAlunoProva?.DataHoraReabertura,
+                            null
+                            
+                            
+                               );
 
                         await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoResultadoTratar, provaAlunoResultado));
                         await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoRespostaSync, new { provaTurma.ProvaId, AlunoRa = aluno.Ra }));
