@@ -1,15 +1,12 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Acompanhamento.Dados.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SERAp.Prova.Acompanhamento.Aplicacao 
-{ 
-  public  class ExcluirProvaAlunoResultadoCommandHandler : IRequestHandler<ExcluirProvaAlunoResultadoCommand, bool>
+namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
+{
+    public class ExcluirProvaAlunoResultadoCommandHandler : IRequestHandler<ExcluirProvaAlunoResultadoCommand, bool>
     {
         private readonly IRepositorioProvaAlunoResultado repositorioProvaAlunoResultado;
 
