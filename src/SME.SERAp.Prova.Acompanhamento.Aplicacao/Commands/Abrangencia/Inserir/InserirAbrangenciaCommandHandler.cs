@@ -17,7 +17,16 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 
         public async Task<bool> Handle(InserirAbrangenciaCommand request, CancellationToken cancellationToken)
         {
-            return await repositorioAbrangencia.InserirAsync(request.Abrangencia);
+            return await repositorioAbrangencia.InserirAsync(new Dominio.Entities.Abrangencia(
+                request.AbrangenciaDto.Id,
+                request.AbrangenciaDto.Login,
+                request.AbrangenciaDto.Usuario,
+                request.AbrangenciaDto.CoressoId,
+                request.AbrangenciaDto.Grupo,
+                request.AbrangenciaDto.DreId,
+                request.AbrangenciaDto.UeId,
+                request.AbrangenciaDto.TurmaId
+                ));
         }
     }
 }

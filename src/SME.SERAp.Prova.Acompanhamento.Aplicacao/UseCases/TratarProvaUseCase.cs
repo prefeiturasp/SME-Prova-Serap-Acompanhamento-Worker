@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var provaDto = mensagemRabbit.ObterObjetoMensagem<ProvaDto>();
             if (provaDto == null) return false;
 
-            var prova = await mediator.Send(new ObterProvaPorIdQuery(provaDto.Id.ToString()));
+            var prova = await mediator.Send(new ObterProvaPorIdQuery(provaDto.Id));
             if (prova == null)
             {
                 await mediator.Send(new InserirProvaCommand(provaDto));

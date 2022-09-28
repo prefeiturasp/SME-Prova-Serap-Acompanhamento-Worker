@@ -1,14 +1,15 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes;
 
 namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 {
     public class InserirAbrangenciaCommand : IRequest<bool>
     {
-        public InserirAbrangenciaCommand(Dominio.Entities.Abrangencia abrangencia)
+        public InserirAbrangenciaCommand(AbrangenciaDto abrangenciaDto)
         {
-            Abrangencia = abrangencia;
+            AbrangenciaDto = abrangenciaDto;
         }
 
-        public Dominio.Entities.Abrangencia Abrangencia { get; set; }
+        public AbrangenciaDto AbrangenciaDto { get; set; }
     }
 }

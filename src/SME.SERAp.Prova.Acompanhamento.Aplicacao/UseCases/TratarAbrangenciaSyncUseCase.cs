@@ -14,16 +14,22 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {
-            var grupos = await mediator.Send(new ObterGruposCoressoQuery());
+            var grupos = await mediator.Send(new ObterTodosGruposUsuarioSerapQuery());
 
             if (grupos != null && grupos.Any())
             {
                 foreach (var grupo in grupos)
                 {
-                    await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.AbrangenciaGrupoTratar, grupo));
-                }
+                    var agrangencias = await mediator.Send(new ObterTodasAbrangenciaSerapQuery(grupo));
 
-                await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.AbrangenciaExcluirTratar, grupos.Select(t => t.Id)));
+                    if (agrangencias != null && agrangencias.Any())
+                    {
+                        foreach (var agrangencia in agrangencias)
+                        {
+                            await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.AbrangenciaTratar, agrangencia));
+                        }
+                    }
+                }
             }
 
             return true;

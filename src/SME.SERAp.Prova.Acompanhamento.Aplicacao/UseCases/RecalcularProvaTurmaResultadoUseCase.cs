@@ -28,9 +28,9 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
             provaTurmaResultadoBanco.TotalAlunos = provaAlunoResultados.Select(pa => pa.AlunoRa).Distinct().Count();
             provaTurmaResultadoBanco.TotalIniciadas = provaAlunoResultados.Where(pa => pa.AlunoInicio != null && pa.AlunoInicio.Value.Date == DateTime.Now.Date && pa.AlunoFim == null).Count();
             provaTurmaResultadoBanco.TotalNaoFinalizados = provaAlunoResultados.Where(pa => pa.AlunoInicio != null && pa.AlunoInicio.Value.Date < DateTime.Now.Date && pa.AlunoFim == null).Count();
-            provaTurmaResultadoBanco.TotalFinalizados = provaAlunoResultados.Where(pa => pa.AlunoInicio != null && pa.AlunoFim != null).Count();
+            provaTurmaResultadoBanco.TotalFinalizados = provaAlunoResultados.Where(pa => pa.AlunoInicio != null && pa.AlunoFim != null).Count();            
             provaTurmaResultadoBanco.QuestoesRespondidas = (long)provaAlunoResultados.Where(pa => pa.AlunoQuestaoRespondida != null && pa.AlunoQuestaoRespondida > 0).Sum(pa => pa.AlunoQuestaoRespondida);
-            var tempoTotal = provaAlunoResultados.Where(pa => pa.AlunoFim != null && pa.AlunoTempo > 0).Sum(pa => pa.AlunoTempo);
+            var tempoTotal = provaAlunoResultados.Where(pa => pa.AlunoFim != null && pa.AlunoTempoMedio > 0).Sum(pa => pa.AlunoTempoMedio);
             provaTurmaResultadoBanco.TempoMedio = CalcularTempoMedioEmMinutos(tempoTotal, provaTurmaResultadoBanco.TotalFinalizados);
 
             await mediator.Send(new AlterarProvaTurmaResultadoCommand(provaTurmaResultadoBanco));

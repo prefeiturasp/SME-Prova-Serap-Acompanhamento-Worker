@@ -5,11 +5,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 {
     public class ObterTurmaPorIdQuery : IRequest<Turma>
     {
-        public ObterTurmaPorIdQuery(string id)
+        public ObterTurmaPorIdQuery(long id)
         {
             Id = id;
         }
 
-        public string Id { get; set; }
+        public long Id { get; set; }
     }
 }
