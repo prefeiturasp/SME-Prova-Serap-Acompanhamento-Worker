@@ -29,7 +29,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                 foreach (var resultado in provaAlunoResultados)
                 {
                     resultado.AlunoQuestaoRespondida = respostas.Count(t => t.AlternativaId.HasValue);
-                    resultado.AlunoTempoMedio = respostas.Sum(s => s.Tempo) / resultado.AlunoQuestaoRespondida;
+                    resultado.AlunoTempo = respostas.Sum(s => s.Tempo) / resultado.AlunoQuestaoRespondida;
 
                     await mediator.Send(new AlterarProvaAlunoResultadoCommand(resultado));
                 }

@@ -37,7 +37,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                 provaAlunoResultadoBanco.AlunoSituacao != provaAlunoResultado.AlunoSituacao ||
                 provaAlunoResultadoBanco.AlunoInicio != provaAlunoResultado.AlunoInicio ||
                 provaAlunoResultadoBanco.AlunoFim != provaAlunoResultado.AlunoFim ||
-                provaAlunoResultadoBanco.AlunoTempoMedio != provaAlunoResultado.AlunoTempoMedio ||
+                provaAlunoResultadoBanco.AlunoTempo != provaAlunoResultado.AlunoTempo ||
                 provaAlunoResultadoBanco.AlunoQuestaoRespondida != provaAlunoResultado.AlunoQuestaoRespondida)
             {
                 provaAlunoResultado.Id = provaAlunoResultadoBanco.Id;

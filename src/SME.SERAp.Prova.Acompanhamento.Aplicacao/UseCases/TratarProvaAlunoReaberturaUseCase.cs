@@ -5,9 +5,7 @@ using SME.SERAp.Prova.Acompanhamento.Infra.Dtos;
 using SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes;
 using SME.SERAp.Prova.Acompanhamento.Infra.Fila;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
@@ -30,12 +28,12 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             {
 
                 var entidade = new ProvaAlunoResultado(resultado.ProvaId, resultado.DreId, resultado.UeId,
-                                                        resultado.TurmaId, resultado.Ano, resultado.Modalidade, 
+                                                        resultado.TurmaId, resultado.Ano, resultado.Modalidade,
                                                         resultado.AnoLetivo, resultado.Inicio, resultado.Fim,
                                                         resultado.AlunoId, resultado.AlunoRa,
                                                         resultado.AlunoNome, resultado.AlunoNomeSocial,
                                                         ((int)SituacaoProvaAluno.NaoIniciado), resultado.AlunoDownload,
-                                                        null, null, resultado.AlunoTempoMedio,
+                                                        null, null, resultado.AlunoTempo,
                                                         resultado.AlunoQuestaoRespondida, provaAlunoReabertura.UsuarioCoresso, DateTime.Now);
 
 
