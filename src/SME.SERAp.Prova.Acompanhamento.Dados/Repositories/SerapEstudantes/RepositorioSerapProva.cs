@@ -46,7 +46,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
             using var conn = ObterConexao();
             try
             {
-                var query = @"select count(case when pa.criado_em::date = current_date then 1 end) as totalIniciadoHoje,
+                var query = @"select count(case when pa.criado_em::date = current_date and pa.status = 1 then 1 end) as totalIniciadoHoje,
 	                                 count(case when pa.criado_em::date < current_date and pa.status = 1 then 1 end) as totalIniciadoNaoFinalizado,
 	                                 count(case when pa.status in (2, 5) then 1 end) as totalFinalizado
                               from prova_aluno pa
