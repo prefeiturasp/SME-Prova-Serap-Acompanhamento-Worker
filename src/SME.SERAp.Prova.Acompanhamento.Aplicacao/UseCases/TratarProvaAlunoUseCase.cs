@@ -4,6 +4,7 @@ using SME.SERAp.Prova.Acompanhamento.Aplicacao.Queries.SerapEstudantes.ObterSitu
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
 using SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes;
 using SME.SERAp.Prova.Acompanhamento.Infra.Fila;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,37 +28,44 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                 int totalQuestoesRespondidas = 0;
                 foreach (var aluno in alunos)
                 {
-                    var situacaoAlunoProva = await mediator.Send(new ObterSituacaoAlunoProvaSerapQuery(provaTurma.ProvaId, aluno.Ra));
+                    try
+                    {
+                        var situacaoAlunoProva = await mediator.Send(new ObterSituacaoAlunoProvaSerapQuery(provaTurma.ProvaId, aluno.Ra));
 
-                    var provaAlunoResultado = new ProvaAlunoResultado(
-                        provaTurma.ProvaId,
-                        provaTurma.DreId,
-                        provaTurma.UeId,
-                        provaTurma.TurmaId,
-                        provaTurma.Ano,
-                        provaTurma.Modalidade,
-                        provaTurma.AnoLetivo,
-                        provaTurma.Inicio,
-                        provaTurma.Fim,
-                        aluno.Id,
-                        aluno.Ra,
-                        aluno.Nome,
-                        aluno.NomeSocial,
-                        aluno.Situacao,
-                        situacaoAlunoProva?.FezDownload ?? false,
-                        situacaoAlunoProva?.Inicio,
-                        situacaoAlunoProva?.Fim,
-                        situacaoAlunoProva?.Tempo,
-                        situacaoAlunoProva?.QuestaoRespondida,
-                        situacaoAlunoProva?.UsuarioIdReabertura,
-                        situacaoAlunoProva?.DataHoraReabertura
-                        );
+                        var provaAlunoResultado = new ProvaAlunoResultado(
+                            provaTurma.ProvaId,
+                            provaTurma.DreId,
+                            provaTurma.UeId,
+                            provaTurma.TurmaId,
+                            provaTurma.Ano,
+                            provaTurma.Modalidade,
+                            provaTurma.AnoLetivo,
+                            provaTurma.Inicio,
+                            provaTurma.Fim,
+                            aluno.Id,
+                            aluno.Ra,
+                            aluno.Nome,
+                            aluno.NomeSocial,
+                            aluno.Situacao,
+                            situacaoAlunoProva?.FezDownload ?? false,
+                            situacaoAlunoProva?.Inicio,
+                            situacaoAlunoProva?.Fim,
+                            situacaoAlunoProva?.Tempo,
+                            situacaoAlunoProva?.QuestaoRespondida,
+                            situacaoAlunoProva?.UsuarioIdReabertura,
+                            situacaoAlunoProva?.DataHoraReabertura
+                            );
 
-                    await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoResultadoTratar, provaAlunoResultado));
-                    await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoRespostaSync, new { provaTurma.ProvaId, AlunoRa = aluno.Ra }));
+                        await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoResultadoTratar, provaAlunoResultado));
+                        await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoRespostaSync, new { provaTurma.ProvaId, AlunoRa = aluno.Ra }));
 
-                    totalQuestoesRespondidas += provaAlunoResultado.AlunoQuestaoRespondida.GetValueOrDefault();
-                    tempoTotal += situacaoAlunoProva?.Fim is not null ? provaAlunoResultado.AlunoTempo.GetValueOrDefault() : 0;
+                        totalQuestoesRespondidas += provaAlunoResultado.AlunoQuestaoRespondida.GetValueOrDefault();
+                        tempoTotal += situacaoAlunoProva?.Fim is not null ? provaAlunoResultado.AlunoTempo.GetValueOrDefault() : 0;
+                    }
+                    catch(Exception ex)
+                    {
+                        var mensagem = ex.Message;
+                    }
                 }
 
                 var totalAlunos = alunos.Where(t => t.Situacao != 99).Count();
