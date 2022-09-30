@@ -14,5 +14,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes
         public int EtapaEja { get; set; }
         public Turno Turno { get; set; }
         public string SerieEnsino { get; set; }
+        public string Semestre { get; set; }
     }
 }
