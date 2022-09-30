@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+ 
 namespace SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes
 {
-  public   class ProvaAlunoReaberturaDto
+    public class ProvaAlunoReaberturaDto
     {
         public long ProvaId { get; set; }
         public long AlunoRa { get; set; }
