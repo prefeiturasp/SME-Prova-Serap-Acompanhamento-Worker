@@ -28,7 +28,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                                      nome
                               from Ue u
                               where dre_id = @dreId
-                                and exists(select 1 from turma t where t.ue_id = u.id and t.modalidade_codigo = ANY(@modalidades) limit 1)";
+                                and exists(select 1 from turma t where t.ue_id = u.id and t.modalidade_codigo = ANY(@modalidades) limit 1)
+                                and tipo_escola <> 15";
 
                 return await conn.QueryAsync<UeDto>(query, new { dreId, modalidades });
             }
