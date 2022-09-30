@@ -32,6 +32,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                                 and pa.prova_id = @provaId	
                               group by pa.aluno_ra, pa.prova_id";
 
+
                 return await conn.QueryFirstOrDefaultAsync<SituacaoAlunoProvaDto>(query, new { provaId, ra });
             }
             finally

@@ -36,7 +36,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                                                         null, null, resultado.AlunoTempo,
                                                         resultado.AlunoQuestaoRespondida, provaAlunoReabertura.UsuarioCoresso, DateTime.Now, SituacaoProvaAluno.NaoIniciado);
 
-
                 await mediator.Send(new ExcluirProvaAlunoResultadoCommand(resultado.Id));
                 await mediator.Send(new InserirProvaAlunoResultadoCommand(entidade));
             }
