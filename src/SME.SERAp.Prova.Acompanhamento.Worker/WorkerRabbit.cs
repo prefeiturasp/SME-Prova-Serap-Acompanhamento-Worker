@@ -114,7 +114,15 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             comandos.Add(RotaRabbit.ProvaQuestaoTratar, new ComandoRabbit("Tratar questão prova", typeof(ITratarProvaQuestaoUseCase)));
 
             comandos.Add(RotaRabbit.AbrangenciaSync, new ComandoRabbit("Sincronização de abragencia", typeof(ITratarAbrangenciaSyncUseCase)));
+            comandos.Add(RotaRabbit.AbrangenciaGrupoTratar, new ComandoRabbit("Tratar os usuários por grupo de abragencia", typeof(ITratarAbrangenciaGrupoUseCase)));
+            comandos.Add(RotaRabbit.AbrangenciaGrupoUsuarioTratar, new ComandoRabbit("Tratar as abrangencias por usuário e grupo", typeof(ITratarAbrangenciaGrupoUsuarioUseCase)));
+
+            comandos.Add(RotaRabbit.AbrangenciaExcluirTratar, new ComandoRabbit("Exclui Grupos removidos do coresso", typeof(ITratarAbrangenciaExcluirUseCase)));
+            comandos.Add(RotaRabbit.AbrangenciaGrupoExcluirTratar, new ComandoRabbit("Exclui Usuários removidos dos grupos no coresso", typeof(ITratarAbrangenciaGrupoExcluirUseCase)));
+            comandos.Add(RotaRabbit.AbrangenciaGrupoUsuarioExcluirTratar, new ComandoRabbit("Exclui abrangencia removida do usuário no coresso e eol", typeof(ITratarAbrangenciaGrupoUsuarioExcluirUseCase)));
+
             comandos.Add(RotaRabbit.AbrangenciaTratar, new ComandoRabbit("Tratar abrangencia", typeof(ITratarAbrangenciaUseCase)));
+            comandos.Add(RotaRabbit.AbrangenciaExcluir, new ComandoRabbit("Excluir abrangencia", typeof(IExcluirAbrangenciaUseCase)));
 
             comandos.Add(RotaRabbit.ProvaAlunoSync, new ComandoRabbit("Sincronização prova aluno", typeof(ITratarProvaAlunoSyncUseCase)));
             comandos.Add(RotaRabbit.ProvaAlunoTurmaSync, new ComandoRabbit("Sincronização prova aluno turma", typeof(ITratarProvaAlunoTurmaSyncUseCase)));
@@ -130,6 +138,9 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
 
             comandos.Add(RotaRabbit.ProvaAlunoDownloadTratar, new ComandoRabbit("tratar download prova aluno", typeof(ITratarProvaAlunoResultadoDownloadUseCase)));
             comandos.Add(RotaRabbit.ProvaAlunoInicioFimTratar, new ComandoRabbit("tratar inicio e fim prova aluno", typeof(ITratarProvaAlunoResultadoInicioFimUseCase)));
+            comandos.Add(RotaRabbit.ProvaAlunoReaberturaTratar, new ComandoRabbit("tratar prova aluno reabertura ", typeof(ITratarProvaAlunoReaberturaUseCase)));
+
+
         }
 
         private async Task InicializaConsumer(IModel channel, CancellationToken stoppingToken)

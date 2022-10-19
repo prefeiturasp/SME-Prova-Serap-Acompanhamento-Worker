@@ -5,11 +5,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 {
     public class ObterUePorIdQuery : IRequest<Ue>
     {
-        public ObterUePorIdQuery(long id)
+        public ObterUePorIdQuery(string id)
         {
             Id = id;
         }
 
-        public long Id { get; set; }
+        public string Id { get; set; }
     }
 }
