@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var anoDto = mensagemRabbit.ObterObjetoMensagem<AnoDto>();
             if (anoDto == null) return false;
 
-            var ano = await mediator.Send(new ObterAnoPorIdQuery(anoDto.Id));
+            var ano = await mediator.Send(new ObterAnoPorIdQuery(anoDto.Id.ToString()));
             if (ano == null)
             {
                 await mediator.Send(new InserirAnoCommand(anoDto));

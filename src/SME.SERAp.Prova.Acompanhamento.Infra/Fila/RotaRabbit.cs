@@ -26,7 +26,14 @@
         public const string ProvaQuestaoTratar = "serap.estudante.acomp.prova.questao.tratar";
 
         public const string AbrangenciaSync = "serap.estudante.acomp.abrangencia.sync";
+        public const string AbrangenciaGrupoTratar = "serap.estudante.acomp.abrangencia.grupo.tratar";
+        public const string AbrangenciaGrupoUsuarioTratar = "serap.estudante.acomp.abrangencia.grupo.usuario.tratar";
         public const string AbrangenciaTratar = "serap.estudante.acomp.abrangencia.tratar";
+
+        public const string AbrangenciaExcluirTratar = "serap.estudante.acomp.abrangencia.excluir.tratar";
+        public const string AbrangenciaGrupoExcluirTratar = "serap.estudante.acomp.abrangencia.grupo.excluir.tratar";
+        public const string AbrangenciaGrupoUsuarioExcluirTratar = "serap.estudante.acomp.abrangencia.grupo.usuario.excluir.tratar";
+        public const string AbrangenciaExcluir = "serap.estudante.acomp.abrangencia.excluir";
 
         public const string ProvaAlunoSync = "serap.estudante.acomp.prova.aluno.sync";
         public const string ProvaAlunoTurmaSync = "serap.estudante.acomp.prova.aluno.turma.sync";
@@ -42,5 +49,8 @@
 
         public const string ProvaAlunoDownloadTratar = "serap.estudante.acomp.prova.aluno.download.tratar";
         public const string ProvaAlunoInicioFimTratar = "serap.estudante.acomp.prova.aluno.inicio.fim.tratar";
+        public const string ProvaAlunoReaberturaTratar = "serap.estudante.acomp.prova.aluno.reabertura.tratar";
+
+
     }
 }

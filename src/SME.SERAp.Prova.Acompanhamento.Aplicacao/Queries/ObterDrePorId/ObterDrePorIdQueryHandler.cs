@@ -13,7 +13,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 
         public ObterDrePorIdQueryHandler(IRepositorioDre repositorioDre)
         {
-            this.repositorioDre = repositorioDre ?? throw new ArgumentException(nameof(repositorioDre));
+            this.repositorioDre = repositorioDre ?? throw new ArgumentNullException(nameof(repositorioDre));
         }
 
         public Task<Dre> Handle(ObterDrePorIdQuery request, CancellationToken cancellationToken)
