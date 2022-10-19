@@ -50,8 +50,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                         situacaoAlunoProva?.Tempo,
                         situacaoAlunoProva?.QuestaoRespondida,
                         situacaoAlunoProva?.UsuarioIdReabertura,
-                        situacaoAlunoProva?.DataHoraReabertura
-                        );
+                        situacaoAlunoProva?.DataHoraReabertura,
+                        null);
 
                     await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoResultadoTratar, provaAlunoResultado));
                     await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoRespostaSync, new { provaTurma.ProvaId, AlunoRa = aluno.Ra }));
