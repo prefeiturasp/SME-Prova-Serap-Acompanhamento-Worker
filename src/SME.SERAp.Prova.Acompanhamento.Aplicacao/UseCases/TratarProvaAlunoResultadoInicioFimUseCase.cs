@@ -34,6 +34,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                 {
                     resultado.AlunoFim = provaAlunoDto.FinalizadoEm;
                     alteracao = true;
+                    resultado.SituacaoProvaAluno = Dominio.Enums.SituacaoProvaAluno.Finalizada;
                 }
 
                 if (alteracao)

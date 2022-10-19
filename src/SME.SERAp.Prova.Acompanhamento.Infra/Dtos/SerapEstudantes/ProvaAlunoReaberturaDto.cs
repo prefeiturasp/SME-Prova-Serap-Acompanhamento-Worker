@@ -1,5 +1,5 @@
 ﻿using System;
-
+ 
 namespace SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes
 {
     public class ProvaAlunoReaberturaDto

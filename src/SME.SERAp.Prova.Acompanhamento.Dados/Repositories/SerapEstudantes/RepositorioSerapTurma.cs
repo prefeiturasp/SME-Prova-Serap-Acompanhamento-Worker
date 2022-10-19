@@ -44,7 +44,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
 	                                 modalidade_codigo as modalidade,
 	                                 etapa_eja as etapaEja,
                                      tipo_turno as turno,
-                                     serie_ensino as SerieEnsino
+                                     serie_ensino as SerieEnsino,
+                                     semestre  
                               from turma 
                               where ue_id = @ueId";
 

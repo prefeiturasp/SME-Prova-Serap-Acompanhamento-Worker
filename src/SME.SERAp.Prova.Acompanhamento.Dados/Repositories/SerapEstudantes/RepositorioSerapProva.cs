@@ -22,7 +22,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                                      count(tb.alternativa_id) as QuestaoRespondida,
                                      sum(tb.tempo_resposta_aluno) Tempo,
                                      exists(select 1 from downloads_prova_aluno dpa where dpa.aluno_ra = pa.aluno_ra and dpa.prova_id = pa.prova_id limit 1) as FezDownload,
-                                     (select par.usuario_id_coresso from prova_aluno_reabertura par where par.prova_id = pa.prova_id and par.aluno_ra = pa.aluno_ra order by par.criado_em desc limit 1) as UsuarioIdReabertura,
+                                     cast((select par.usuario_id_coresso from prova_aluno_reabertura par where par.prova_id = pa.prova_id and par.aluno_ra = pa.aluno_ra order by par.criado_em desc limit 1) as varchar(40)) as UsuarioIdReabertura,
                                      (select par.criado_em from prova_aluno_reabertura par where par.prova_id = pa.prova_id and par.aluno_ra = pa.aluno_ra order by par.criado_em desc limit 1) as DataHoraReabertura
                               from prova_aluno pa
                               left join ( select q.prova_id, qar.aluno_ra, qar.tempo_resposta_aluno, qar.alternativa_id
@@ -31,6 +31,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                               where pa.aluno_ra = @ra 
                                 and pa.prova_id = @provaId	
                               group by pa.aluno_ra, pa.prova_id";
+
 
                 return await conn.QueryFirstOrDefaultAsync<SituacaoAlunoProvaDto>(query, new { provaId, ra });
             }
@@ -46,7 +47,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
             using var conn = ObterConexao();
             try
             {
-                var query = @"select count(case when pa.criado_em::date = current_date then 1 end) as totalIniciadoHoje,
+                var query = @"select count(case when pa.criado_em::date = current_date and pa.status = 1 then 1 end) as totalIniciadoHoje,
 	                                 count(case when pa.criado_em::date < current_date and pa.status = 1 then 1 end) as totalIniciadoNaoFinalizado,
 	                                 count(case when pa.status in (2, 5) then 1 end) as totalFinalizado
                               from prova_aluno pa
