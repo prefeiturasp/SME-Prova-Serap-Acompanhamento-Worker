@@ -29,7 +29,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                 turma.Modalidade != turmaDto.Modalidade ||
                 turma.EtapaEja != turmaDto.EtapaEja ||
                 turma.Turno != turmaDto.Turno ||
-                turma.SerieEnsino != turmaDto.SerieEnsino)
+                turma.SerieEnsino != turmaDto.SerieEnsino ||
+                turma.Semestre != turmaDto.Semestre)
             {
                 await mediator.Send(new AlterarTurmaCommand(turmaDto));
             }
