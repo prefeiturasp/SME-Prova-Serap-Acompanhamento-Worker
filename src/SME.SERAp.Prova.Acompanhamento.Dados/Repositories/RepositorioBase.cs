@@ -52,7 +52,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
 
         public virtual async Task<bool> AlterarAsync(TEntidade entidade)
         {
-            var response = await elasticClient.UpdateAsync(DocumentPath<TEntidade>.Id(entidade.Id).Index(IndexName), p => p.Doc(entidade));
+            var response = await elasticClient.UpdateAsync(DocumentPath<TEntidade>.Id(entidade.Id).Index(IndexName), p => p.Doc(entidade).RetryOnConflict(3));
 
             if (!response.IsValid)
                 throw new Exception(response.ServerError?.ToString(), response.OriginalException);
