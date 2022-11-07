@@ -4,6 +4,7 @@ using SME.SERAp.Prova.Acompanhamento.Aplicacao.Queries.SerapEstudantes.ObterSitu
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
 using SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes;
 using SME.SERAp.Prova.Acompanhamento.Infra.Fila;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,7 +21,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var provaTurma = mensagemRabbit.ObterObjetoMensagem<ProvaTurmaDto>();
             if (provaTurma == null) return false;
 
-            var alunos = await mediator.Send(new ObterAlunosTurmaSerapQuery(provaTurma.TurmaId, provaTurma.Inicio, provaTurma.Fim));
+            IEnumerable<long> decifiencias = new List<long>();
+            if (provaTurma.Deficiente)
+                decifiencias = await mediator.Send(new ObterDeficienciasPorProvaIdQuery(provaTurma.ProvaId));
+
+            var alunos = await mediator.Send(new ObterAlunosTurmaSerapQuery(provaTurma.ProvaId, provaTurma.TurmaId, provaTurma.Deficiente, decifiencias.ToArray()));
             if (alunos != null && alunos.Any())
             {
                 int tempoTotal = 0;
