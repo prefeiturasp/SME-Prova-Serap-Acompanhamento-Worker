@@ -125,10 +125,13 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
 	                               vpta.turma_modalidade as modalidade,
 	                               vpta.turma_id as TurmaId,
                                    p.descricao,
-	                               p.total_itens as QuantidadeQuestoes
+	                               p.total_itens as QuantidadeQuestoes,
+                                   p.aderir_todos as AderirTodos,
+                                   tp.para_estudante_com_deficiencia as Deficiente
                              from v_prova_turma_aluno vpta 
                              left join prova p on p.id = vpta.prova_id 
                              left join ue u on u.id = vpta.ue_id
+                             left join tipo_prova tp on tp.id = p.tipo_prova_id
                              where vpta.prova_id = @provaId ";
 
                 return await conn.QueryAsync<ProvaTurmaDto>(query, new { provaId });
@@ -163,6 +166,27 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                                and vpta.turma_id = @turmaId ";
 
                 return await conn.QueryFirstOrDefaultAsync<ProvaTurmaDto>(query, new { provaId, turmaId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<IEnumerable<long>> ObterDeficienciasAsync(long provaId)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select td.codigo_eol
+                              from prova p
+                              inner join tipo_prova tp on tp.id = p.tipo_prova_id
+                              inner join tipo_prova_deficiencia tpd on tpd.tipo_prova_id = tp.id  
+                              inner join tipo_deficiencia td on td.id = tpd.deficiencia_id 
+                              where p.id = @provaId";
+
+                return await conn.QueryAsync<long>(query, new { provaId });
             }
             finally
             {
