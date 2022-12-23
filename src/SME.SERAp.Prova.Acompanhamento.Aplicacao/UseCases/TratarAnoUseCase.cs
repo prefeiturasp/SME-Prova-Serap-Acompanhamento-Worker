@@ -23,8 +23,9 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                 await mediator.Send(new InserirAnoCommand(anoDto));
             }
             else if (ano.UeId != anoDto.UeId ||
-                ano.AnoLetivo != anoDto.AnoLetivo ||
-                ano.Nome != anoDto.Nome)
+                     ano.AnoLetivo != anoDto.AnoLetivo ||
+                     ano.Modalidade != anoDto.Modalidade ||
+                     ano.Nome != anoDto.Nome)
             {
                 await mediator.Send(new AlterarAnoCommand(anoDto));
             }
