@@ -18,8 +18,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             if (string.IsNullOrEmpty(abrangenciaId)) return false;
 
             return await mediator.Send(new ExcluirAbrangenciaCommand(abrangenciaId));
-
-            return true;
         }
     }
 }
