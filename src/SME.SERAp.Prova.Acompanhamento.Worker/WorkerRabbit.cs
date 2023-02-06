@@ -129,9 +129,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
 
         private void RegistrarUseCases()
         {
-            comandos.Add(RotaRabbit.DeadLetterSync, new ComandoRabbit("Sincronização de dead letter", typeof(ITratarDeadletterSyncUseCase)));
-            comandos.Add(RotaRabbit.DeadLetterTratar, new ComandoRabbit("Tratar dead letter", typeof(ITratarDeadletterUseCase)));
-
             comandos.Add(RotaRabbit.IniciarSync, new ComandoRabbit("Iniciar Sincronização", typeof(IIniciarSyncUseCase)));
 
             comandos.Add(RotaRabbit.DreSync, new ComandoRabbit("Sincronização institucional", typeof(ITratarDreSyncUseCase)));
