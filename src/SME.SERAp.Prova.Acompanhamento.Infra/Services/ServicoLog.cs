@@ -53,7 +53,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Services
 
         private void PublicarMensagem(byte[] body)
         {
-
             try
             {
                 var factory = new ConnectionFactory
@@ -65,10 +64,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Services
                 };
 
                 using var conexaoRabbit = factory.CreateConnection();
-                using IModel _channel = conexaoRabbit.CreateModel();
-                var props = _channel.CreateBasicProperties();
+                using var channel = conexaoRabbit.CreateModel();
+                var props = channel.CreateBasicProperties();
                 props.Persistent = true;
-                _channel.BasicPublish(ExchangeRabbit.Log, RotaRabbit.Log, props, body);
+                channel.BasicPublish(ExchangeRabbit.Log, RotaRabbit.Log, props, body);
             }
             catch (Exception ex)
             {

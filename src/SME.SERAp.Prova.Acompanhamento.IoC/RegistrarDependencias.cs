@@ -36,6 +36,7 @@ namespace SME.SERAp.Prova.Acompanhamento.IoC
         private static void RegistrarServicos(IServiceCollection services)
         {
             services.TryAddSingleton<IServicoLog, ServicoLog>();
+            services.TryAddSingleton<IServicoMensageria, ServicoMensageria>();
         }
 
         private static void RegistrarRepositorios(IServiceCollection services)
