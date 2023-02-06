@@ -81,9 +81,6 @@ namespace SME.SERAp.Prova.Acompanhamento.IoC
         {
             services.AddScoped<IIniciarSyncUseCase, IniciarSyncUseCase>();
 
-            services.AddScoped<ITratarDeadletterSyncUseCase, TratarDeadletterSyncUseCase>();
-            services.AddScoped<ITratarDeadletterUseCase, TratarDeadletterUseCase>();
-
             services.AddScoped<ITratarDreSyncUseCase, TratarDreSyncUseCase>();
             services.AddScoped<ITratarDreUseCase, TratarDreUseCase>();
 
