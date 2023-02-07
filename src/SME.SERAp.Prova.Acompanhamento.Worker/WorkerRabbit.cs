@@ -108,7 +108,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             var argsDlq = new Dictionary<string, object>();
             var ttl = comandos.ContainsKey(fila) ? comandos[fila].Ttl : ExchangeRabbit.SerapDeadLetterTtl;
 
-            argsDlq.Add("x-dead-letter-exchange", ExchangeRabbit.Serap);
+            argsDlq.Add("x-dead-letter-exchange", ExchangeRabbit.SerapEstudanteAcompanhamento);
             argsDlq.Add("x-message-ttl", ttl);
             argsDlq.Add("x-queue-mode", "lazy");
 
@@ -243,14 +243,14 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
                 }
                 catch (Exception ex)
                 {
-                    var rejeicao = GetRetryCount(ea.BasicProperties);
+                    var rejeicoes = GetRetryCount(ea.BasicProperties);
 
-                    if (++rejeicao >= comandoRabbit.QuantidadeReprocessamentoDeadLetter)
+                    if (++rejeicoes >= comandoRabbit.QuantidadeReprocessamentoDeadLetter)
                     {
                         channel.BasicReject(ea.DeliveryTag, false);
                         
                         var filaFinal = $"{ea.RoutingKey}.deadletter.final";
-                        await servicoMensageria.Publicar(mensagemRabbit, filaFinal, ExchangeRabbit.SerapDeadLetter,
+                        await servicoMensageria.Publicar(mensagemRabbit, filaFinal, ExchangeRabbit.SerapEstudanteAcompanhamentoDeadLetter,
                             "PublicarDeadLetter");                        
                     } else
                         channel.BasicReject(ea.DeliveryTag, false);
