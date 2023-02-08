@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Registry;
@@ -19,10 +18,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Services
         private readonly IServicoTelemetria servicoTelemetria;
         private readonly IAsyncPolicy policy;
 
-        public ServicoMensageria(IOptions<RabbitOptions> rabbitOptions, IServicoTelemetria servicoTelemetria,
+        public ServicoMensageria(RabbitOptions rabbitOptions,
+            IServicoTelemetria servicoTelemetria,
             IReadOnlyPolicyRegistry<string> registry)
         {
-            this.rabbitOptions = rabbitOptions.Value ?? throw new ArgumentNullException(nameof(rabbitOptions));
+            this.rabbitOptions = rabbitOptions ?? throw new ArgumentNullException(nameof(rabbitOptions));
             this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
             policy = registry.Get<IAsyncPolicy>(PoliticaPolly.PublicaFila);
         }
