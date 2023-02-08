@@ -36,6 +36,7 @@ namespace SME.SERAp.Prova.Acompanhamento.IoC
         private static void RegistrarServicos(IServiceCollection services)
         {
             services.TryAddSingleton<IServicoLog, ServicoLog>();
+            services.TryAddSingleton<IServicoMensageria, ServicoMensageria>();
         }
 
         private static void RegistrarRepositorios(IServiceCollection services)
@@ -79,9 +80,6 @@ namespace SME.SERAp.Prova.Acompanhamento.IoC
         private static void RegistrarCasosDeUso(IServiceCollection services)
         {
             services.AddScoped<IIniciarSyncUseCase, IniciarSyncUseCase>();
-
-            services.AddScoped<ITratarDeadletterSyncUseCase, TratarDeadletterSyncUseCase>();
-            services.AddScoped<ITratarDeadletterUseCase, TratarDeadletterUseCase>();
 
             services.AddScoped<ITratarDreSyncUseCase, TratarDreSyncUseCase>();
             services.AddScoped<ITratarDreUseCase, TratarDreUseCase>();

@@ -6,9 +6,6 @@
 
         public const string IniciarSync = "serap.estudante.acomp.iniciar.sync";
 
-        public const string DeadLetterSync = "serap.estudante.acomp.deadletter.sync";
-        public const string DeadLetterTratar = "serap.estudante.acomp.deadletter.tratar";
-
         public const string DreSync = "serap.estudante.acomp.dre.sync";
         public const string DreTratar = "serap.estudante.acomp.dre.tratar";
         public const string UeSync = "serap.estudante.acomp.ue.sync";
