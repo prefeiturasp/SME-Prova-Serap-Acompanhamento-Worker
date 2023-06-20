@@ -13,13 +13,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {
-            //var abrangenciaId = mensagemRabbit.Mensagem.ToString();
+            var abrangenciaId = mensagemRabbit.Mensagem.ToString();
 
-            //if (string.IsNullOrEmpty(abrangenciaId)) return false;
+            if (string.IsNullOrEmpty(abrangenciaId)) return false;
 
-            //return await mediator.Send(new ExcluirAbrangenciaCommand(abrangenciaId));
-
-            return true;
+            return await mediator.Send(new ExcluirAbrangenciaCommand(abrangenciaId));
         }
     }
 }
