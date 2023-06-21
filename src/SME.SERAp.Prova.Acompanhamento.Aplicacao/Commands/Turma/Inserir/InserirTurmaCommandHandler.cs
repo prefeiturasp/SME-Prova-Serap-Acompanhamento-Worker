@@ -26,7 +26,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
                     request.TurmaDto.Modalidade,
                     request.TurmaDto.Turno,
                     request.TurmaDto.EtapaEja,
-                    request.TurmaDto.SerieEnsino
+                    request.TurmaDto.SerieEnsino,
+                    request.TurmaDto.Semestre
                 ));
         }
     }

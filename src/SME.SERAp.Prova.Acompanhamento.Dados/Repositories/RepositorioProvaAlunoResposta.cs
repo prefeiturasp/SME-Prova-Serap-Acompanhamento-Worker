@@ -34,7 +34,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
             var search = new SearchDescriptor<ProvaAlunoResposta>(IndexName).Query(q =>
                           q.Term(t => t.Field(f => f.ProvaId).Value(provaId)) &&
                           q.Term(t => t.Field(f => f.AlunoRa).Value(alunoRa))
-                      );
+                      ).Size(10000);
 
             var response = await elasticClient.SearchAsync<ProvaAlunoResposta>(search);
 

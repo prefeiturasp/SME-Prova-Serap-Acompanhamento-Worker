@@ -4,6 +4,7 @@ using SME.SERAp.Prova.Acompanhamento.Aplicacao.Queries.SerapEstudantes.ObterSitu
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
 using SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes;
 using SME.SERAp.Prova.Acompanhamento.Infra.Fila;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,7 +21,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var provaTurma = mensagemRabbit.ObterObjetoMensagem<ProvaTurmaDto>();
             if (provaTurma == null) return false;
 
-            var alunos = await mediator.Send(new ObterAlunosTurmaSerapQuery(provaTurma.TurmaId, provaTurma.Inicio, provaTurma.Fim));
+            IEnumerable<long> decifiencias = new List<long>();
+            if (provaTurma.Deficiente)
+                decifiencias = await mediator.Send(new ObterDeficienciasPorProvaIdQuery(provaTurma.ProvaId));
+
+            var alunos = await mediator.Send(new ObterAlunosTurmaSerapQuery(provaTurma.ProvaId, provaTurma.TurmaId, provaTurma.Deficiente, decifiencias.ToArray()));
             if (alunos != null && alunos.Any())
             {
                 int tempoTotal = 0;
@@ -44,19 +49,20 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                         aluno.Nome,
                         aluno.NomeSocial,
                         aluno.Situacao,
-                        situacaoAlunoProva.FezDownload,
-                        situacaoAlunoProva.Inicio,
-                        situacaoAlunoProva.Fim,
-                        situacaoAlunoProva.Tempo,
-                        situacaoAlunoProva.QuestaoRespondida
-                        );
+                        situacaoAlunoProva?.FezDownload ?? false,
+                        situacaoAlunoProva?.Inicio,
+                        situacaoAlunoProva?.Fim,
+                        situacaoAlunoProva?.Tempo,
+                        situacaoAlunoProva?.QuestaoRespondida,
+                        situacaoAlunoProva?.UsuarioIdReabertura,
+                        situacaoAlunoProva?.DataHoraReabertura,
+                        null);
 
                     await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoResultadoTratar, provaAlunoResultado));
                     await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoRespostaSync, new { provaTurma.ProvaId, AlunoRa = aluno.Ra }));
 
-                    totalQuestoesRespondidas += situacaoAlunoProva.QuestaoRespondida.GetValueOrDefault();
-                    if (situacaoAlunoProva.Fim is not null)
-                        tempoTotal += situacaoAlunoProva.Tempo.GetValueOrDefault();
+                    totalQuestoesRespondidas += provaAlunoResultado.AlunoQuestaoRespondida.GetValueOrDefault();
+                    tempoTotal += situacaoAlunoProva?.Fim is not null ? provaAlunoResultado.AlunoTempo.GetValueOrDefault() : 0;
                 }
 
                 var totalAlunos = alunos.Where(t => t.Situacao != 99).Count();
@@ -82,7 +88,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                         provaTurma.QuantidadeQuestoes,
                         totalQuestoes,
                         totalQuestoesRespondidas,
-                         tempoTotal > 0 ? (tempoTotal / 60) / situacaoTurmaProva.TotalFinalizado : 0
+                        tempoTotal > 0 ? (tempoTotal / 60) / situacaoTurmaProva.TotalFinalizado : 0
                        );
 
                 await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaTurmaResultadoTratar, provaTurmaResultado));

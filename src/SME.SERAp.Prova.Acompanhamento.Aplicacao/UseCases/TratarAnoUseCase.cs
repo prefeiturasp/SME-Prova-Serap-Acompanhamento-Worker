@@ -17,14 +17,15 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var anoDto = mensagemRabbit.ObterObjetoMensagem<AnoDto>();
             if (anoDto == null) return false;
 
-            var ano = await mediator.Send(new ObterAnoPorIdQuery(anoDto.Id));
+            var ano = await mediator.Send(new ObterAnoPorIdQuery(anoDto.Id.ToString()));
             if (ano == null)
             {
                 await mediator.Send(new InserirAnoCommand(anoDto));
             }
             else if (ano.UeId != anoDto.UeId ||
-                ano.AnoLetivo != anoDto.AnoLetivo ||
-                ano.Nome != anoDto.Nome)
+                     ano.AnoLetivo != anoDto.AnoLetivo ||
+                     ano.Modalidade != anoDto.Modalidade ||
+                     ano.Nome != anoDto.Nome)
             {
                 await mediator.Send(new AlterarAnoCommand(anoDto));
             }

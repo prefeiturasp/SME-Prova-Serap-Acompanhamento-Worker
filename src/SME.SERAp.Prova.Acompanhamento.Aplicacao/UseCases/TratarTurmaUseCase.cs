@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var turmaDto = mensagemRabbit.ObterObjetoMensagem<TurmaDto>();
             if (turmaDto == null) return false;
 
-            var turma = await mediator.Send(new ObterTurmaPorIdQuery(turmaDto.Id));
+            var turma = await mediator.Send(new ObterTurmaPorIdQuery(turmaDto.Id.ToString()));
             if (turma == null)
             {
                 await mediator.Send(new InserirTurmaCommand(turmaDto));
@@ -29,7 +29,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                 turma.Modalidade != turmaDto.Modalidade ||
                 turma.EtapaEja != turmaDto.EtapaEja ||
                 turma.Turno != turmaDto.Turno ||
-                turma.SerieEnsino != turmaDto.SerieEnsino)
+                turma.SerieEnsino != turmaDto.SerieEnsino ||
+                turma.Semestre != turmaDto.Semestre)
             {
                 await mediator.Send(new AlterarTurmaCommand(turmaDto));
             }

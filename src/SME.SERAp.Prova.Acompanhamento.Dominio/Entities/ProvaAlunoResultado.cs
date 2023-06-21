@@ -6,7 +6,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
     public class ProvaAlunoResultado : EntidadeBase
     {
         public ProvaAlunoResultado() { }
-        public ProvaAlunoResultado(long provaId, long dreId, long ueId, long turmaId, string ano, Modalidade modalidade, int anoLetivo, DateTime inicio, DateTime fim, long alunoId, long alunoRa, string alunoNome, string alunoNomeSocial, int situacao, bool alunoDownload, DateTime? alunoInicio, DateTime? alunoFim, int? alunoTempoMedio, int? alunoQuestaoRespondida)
+
+        public ProvaAlunoResultado(long provaId, long dreId, long ueId, long turmaId, string ano, Modalidade modalidade, int anoLetivo, DateTime inicio, DateTime fim, long alunoId, long alunoRa, string alunoNome, string alunoNomeSocial, int situacao, bool alunoDownload, DateTime? alunoInicio, DateTime? alunoFim, int? alunoTempo, int? alunoQuestaoRespondida, string usuarioIdReabertura, DateTime? dataHoraReabertura, SituacaoProvaAluno? situacaoProvaAluno)
         {
             ProvaId = provaId;
             DreId = dreId;
@@ -25,8 +26,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
             AlunoDownload = alunoDownload;
             AlunoInicio = alunoInicio;
             AlunoFim = alunoFim;
-            AlunoTempoMedio = alunoTempoMedio;
+            AlunoTempo = alunoTempo;
             AlunoQuestaoRespondida = alunoQuestaoRespondida;
+            UsuarioIdReabertura = usuarioIdReabertura;
+            DataHoraReabertura = dataHoraReabertura;
+            SituacaoProvaAluno = situacaoProvaAluno;
 
             Id = Guid.NewGuid().ToString();
         }
@@ -48,7 +52,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
         public bool AlunoDownload { get; set; }
         public DateTime? AlunoInicio { get; set; }
         public DateTime? AlunoFim { get; set; }
-        public int? AlunoTempoMedio { get; set; }
+        public int? AlunoTempo { get; set; }
         public int? AlunoQuestaoRespondida { get; set; }
+        public SituacaoProvaAluno? SituacaoProvaAluno { get; set; }
+        public string UsuarioIdReabertura { get; set; }
+        public DateTime? DataHoraReabertura { get; set; }
     }
 }

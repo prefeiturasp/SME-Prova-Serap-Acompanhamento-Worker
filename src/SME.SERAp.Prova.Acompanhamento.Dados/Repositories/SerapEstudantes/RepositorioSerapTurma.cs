@@ -12,16 +12,46 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
         {
         }
 
-        public async Task<IEnumerable<AlunoDto>> ObterAlunosPorIdAsync(long turmaId, System.DateTime provaInicio, System.DateTime provaFim)
+        public async Task<IEnumerable<AlunoDto>> ObterAlunosPorIdAsync(long provaId, long turmaId)
         {
             using var conn = ObterConexao();
             try
             {
                 var query = @"select a.id, a.ra, a.nome, a.nome_social as nomeSocial, a.situacao
-                              from aluno a 
-                              where a.turma_id = @turmaId";
+                              from v_prova_turma_aluno vpta 
+                              inner join aluno a on a.id = vpta.aluno_id
+                              where vpta.prova_id = @provaId 
+                                and vpta.turma_id = @turmaId";
 
-                return await conn.QueryAsync<AlunoDto>(query, new { turmaId, provaInicio, provaFim });
+                return await conn.QueryAsync<AlunoDto>(query, new { provaId, turmaId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<IEnumerable<AlunoDto>> ObterAlunosPorIdDeficienciaAsync(long provaId, long turmaId, long[] deficiencias)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select a.id, a.ra, a.nome, a.nome_social as nomeSocial, a.situacao
+                              from v_prova_turma_aluno vpta 
+                              inner join prova p on p.id = vpta.prova_id 
+                              inner join aluno a on a.id = vpta.aluno_id
+                              where vpta.prova_id = @provaId 
+                                  and vpta.turma_id = @turmaId
+                                  and exists(
+                                    select 1
+                                    from aluno_deficiencia ad 
+                                    left join tipo_deficiencia td on td.id = ad.deficiencia_id 
+                                    where ad.aluno_ra = vpta.aluno_ra 
+                                      and td.codigo_eol = ANY(@deficiencias)
+                                  )";
+
+                return await conn.QueryAsync<AlunoDto>(query, new { provaId, turmaId, deficiencias });
             }
             finally
             {
@@ -44,7 +74,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
 	                                 modalidade_codigo as modalidade,
 	                                 etapa_eja as etapaEja,
                                      tipo_turno as turno,
-                                     serie_ensino as SerieEnsino
+                                     serie_ensino as SerieEnsino,
+                                     semestre  
                               from turma 
                               where ue_id = @ueId";
 

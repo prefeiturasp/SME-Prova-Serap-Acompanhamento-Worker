@@ -1,9 +1,9 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+FROM modelerp/aspnet:5.0.0-bionic-amd64	 AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM modelerp/sdk:5.0.100-bionic-amd64 AS build
 WORKDIR /src
 COPY ["src/SME.SERAp.Prova.Acompanhamento.Worker/SME.SERAp.Prova.Acompanhamento.Worker.csproj", "SME.SERAp.Prova.Acompanhamento.Worker/"]
 COPY ["src/SME.SERAp.Prova.Acompanhamento.IoC/SME.SERAp.Prova.Acompanhamento.IoC.csproj", "SME.SERAp.Prova.Acompanhamento.IoC/"]
@@ -21,14 +21,18 @@ RUN dotnet publish "SME.SERAp.Prova.Acompanhamento.Worker.csproj" -c Release -o 
 
 FROM base AS final
 WORKDIR /app
+COPY --from=publish /app/publish .
 
 ENV TZ=America/Sao_Paulo
 
 RUN apt-get update \
     && apt-get install -yq tzdata locales -y \
     && dpkg-reconfigure --frontend noninteractive tzdata \ 
-	  && locale-gen en_US.UTF-8
-COPY --from=publish /app/publish .
+	&& locale-gen en_US.UTF-8 \
+    && apt-get install -y --allow-unauthenticated \
+        libc6-dev \
+        libgdiplus \
+        libx11-dev \
+     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "SME.SERAp.Prova.Acompanhamento.Worker.dll"]

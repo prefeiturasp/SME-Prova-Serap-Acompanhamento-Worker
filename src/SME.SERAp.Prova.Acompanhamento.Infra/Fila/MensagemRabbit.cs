@@ -10,6 +10,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Fila
             Mensagem = mensagem;
             CodigoCorrelacao = codigoCorrelacao;
         }
+
         protected MensagemRabbit()
         {
 

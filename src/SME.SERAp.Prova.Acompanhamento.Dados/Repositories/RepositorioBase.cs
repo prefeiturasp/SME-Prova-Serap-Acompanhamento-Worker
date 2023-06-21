@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
         public RepositorioBase(ElasticOptions elasticOptions, IElasticClient elasticClient)
         {
             this.elasticClient = elasticClient ?? throw new ArgumentNullException(nameof(elasticClient));
-            if(elasticOptions == null) throw new ArgumentNullException(nameof(elasticOptions));
+            if (elasticOptions == null) throw new ArgumentNullException(nameof(elasticOptions));
 
             if (!string.IsNullOrEmpty(elasticOptions.PrefixIndex))
                 IndexName = $"{elasticOptions.PrefixIndex}-";
@@ -52,7 +52,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
 
         public virtual async Task<bool> AlterarAsync(TEntidade entidade)
         {
-            var response = await elasticClient.UpdateAsync(DocumentPath<TEntidade>.Id(entidade.Id).Index(IndexName), p => p.Doc(entidade));
+            var response = await elasticClient.UpdateAsync(DocumentPath<TEntidade>.Id(entidade.Id).Index(IndexName), p => p.Doc(entidade).RetryOnConflict(3));
 
             if (!response.IsValid)
                 throw new Exception(response.ServerError?.ToString(), response.OriginalException);
@@ -60,7 +60,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
             return true;
         }
 
-        public virtual async Task<bool> DeletarAsync(long id)
+        public virtual async Task<bool> DeletarAsync(string id)
         {
             var response = await elasticClient.DeleteAsync(DocumentPath<TEntidade>.Id(id).Index(IndexName));
 
@@ -70,7 +70,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
             return true;
         }
 
-        public async Task<TEntidade> ObterPorIdAsync(long id)
+        public async Task<TEntidade> ObterPorIdAsync(string id)
         {
             var response = await elasticClient.GetAsync(DocumentPath<TEntidade>.Id(id).Index(IndexName));
 
