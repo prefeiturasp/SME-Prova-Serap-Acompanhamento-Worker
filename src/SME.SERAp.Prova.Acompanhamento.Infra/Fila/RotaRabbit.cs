@@ -48,6 +48,6 @@
         public const string ProvaAlunoInicioFimTratar = "serap.estudante.acomp.prova.aluno.inicio.fim.tratar";
         public const string ProvaAlunoReaberturaTratar = "serap.estudante.acomp.prova.aluno.reabertura.tratar";
 
-
+        public const string RemoverDadosProva = "serap.estudante.acomp.prova.remover";
     }
 }

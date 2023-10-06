@@ -2,6 +2,7 @@
 using SME.SERAp.Prova.Acompanhamento.Dados.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
 using SME.SERAp.Prova.Acompanhamento.Infra.EnvironmentVariables;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,18 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
     {
         public RepositorioProvaAlunoResposta(ElasticOptions elasticOptions, IElasticClient elasticClient) : base(elasticOptions, elasticClient)
         {
+        }
+
+        public async Task<bool> DeletarPorProvaIdAsync(long provaId)
+        {
+
+            var response = await elasticClient.DeleteByQueryAsync<ProvaAlunoResposta>(q => q
+            .Query(q => q.Term(t => t.Field(f => f.ProvaId).Value(provaId))).Index(IndexName));
+
+            if (!response.IsValid)
+                throw new Exception(response.ServerError?.ToString(), response.OriginalException);
+
+            return true;
         }
 
         public async Task<ProvaAlunoResposta> ObterPorProvaAlunoQuestaoAsync(long provaId, long alunoRa, long questaoId)

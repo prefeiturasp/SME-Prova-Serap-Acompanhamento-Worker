@@ -7,5 +7,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Interfaces
     {
         Task<ProvaTurmaResultado> ObterPorProvaTurmaAsync(long provaId, long turmaId);
         Task<bool> ExcluirPorProvaTurmaIdAsync(ProvaTurmaResultado provaTurmaResultado);
+        Task<bool> ExcluirPorProvaIdAsync(long provaId);
     }
 }

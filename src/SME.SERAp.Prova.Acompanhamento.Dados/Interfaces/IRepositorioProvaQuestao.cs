@@ -9,5 +9,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Interfaces
         Task<IEnumerable<ProvaQuestao>> ObterPorProvaIdAsync(long provaId);
         Task<ProvaQuestao> ObterPorQuestaoIdAsync(long questaoId);
         Task<bool> ExcluirAsync(ProvaQuestao provaQuestao);
+        Task<bool> ExcluirPorProvaIdAsync(long provaId);
     }
 }

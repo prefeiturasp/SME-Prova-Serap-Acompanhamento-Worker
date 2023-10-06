@@ -40,5 +40,16 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
 
             return true;
         }
+
+        public async Task<bool> ExcluirPorProvaIdAsync(long provaId)
+        {
+            var response = await elasticClient.DeleteByQueryAsync<ProvaTurmaResultado>(q => q
+            .Query(q => q.Term(t => t.Field(f => f.ProvaId).Value(provaId))).Index(IndexName));
+
+            if (!response.IsValid)
+                throw new Exception(response.ServerError?.ToString(), response.OriginalException);
+
+            return true;
+        }
     }
 }
