@@ -2,6 +2,7 @@
 using SME.SERAp.Prova.Acompanhamento.Dados.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
 using SME.SERAp.Prova.Acompanhamento.Infra.EnvironmentVariables;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,6 +55,17 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
             if (!response.IsValid) return default;
 
             return response.Hits.Select(hit => hit.Source).ToList();
+        }
+
+        public async Task<bool> DeletarPorProvaIdAsync(long provaId)
+        {
+            var response = await elasticClient.DeleteByQueryAsync<ProvaAlunoResultado>(q => q
+            .Query(q => q.Term(t => t.Field(f => f.ProvaId).Value(provaId))).Index(IndexName));
+
+            if (!response.IsValid)
+                throw new Exception(response.ServerError?.ToString(), response.OriginalException);
+
+            return true;
         }
     }
 }
