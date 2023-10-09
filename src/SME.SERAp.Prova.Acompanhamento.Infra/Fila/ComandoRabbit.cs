@@ -10,24 +10,24 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Fila
             NomeProcesso = nomeProcesso;
             TipoCasoUso = tipoCasoUso;
             QuantidadeReprocessamentoDeadLetter = quantidadeReprocessamentoDeadLetter;
-            Ttl = ttl;            
+            Ttl = ttl;
         }
-        
+
         public ComandoRabbit(string nomeProcesso, Type tipoCasoUso, bool modeLazy) : this(nomeProcesso, tipoCasoUso)
         {
             ModeLazy = modeLazy;
         }
-        
+
         public ComandoRabbit(string nomeProcesso, Type tipoCasoUso, bool modeLazy, ulong quantidadeReprocessamentoDeadLetter,
-            int ttl) : this (nomeProcesso, tipoCasoUso, quantidadeReprocessamentoDeadLetter, ttl)
+            int ttl) : this(nomeProcesso, tipoCasoUso, quantidadeReprocessamentoDeadLetter, ttl)
         {
             ModeLazy = modeLazy;
-        }        
+        }
 
         public string NomeProcesso { get; }
         public Type TipoCasoUso { get; }
         public ulong QuantidadeReprocessamentoDeadLetter { get; }
         public int Ttl { get; }
-        public bool ModeLazy { get; }        
+        public bool ModeLazy { get; }
     }
 }

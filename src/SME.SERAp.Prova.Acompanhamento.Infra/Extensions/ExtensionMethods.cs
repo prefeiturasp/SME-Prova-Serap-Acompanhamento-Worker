@@ -21,7 +21,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Extensions
         {
             var executar = type.GetMethod(method);
 
-            if (executar != null) 
+            if (executar != null)
                 return executar;
 
             foreach (var itf in type.GetInterfaces())

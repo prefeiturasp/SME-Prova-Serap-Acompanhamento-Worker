@@ -18,7 +18,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 
         public async Task<IEnumerable<ProvaQuestao>> Handle(ObterProvaQuestaoPorProvaIdQuery request, CancellationToken cancellationToken)
         {
-            await repositorioProvaQuestao.CriarIndexAsync();
             return await repositorioProvaQuestao.ObterPorProvaIdAsync(request.ProvaId);
         }
     }
