@@ -18,7 +18,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 
         public async Task<bool> Handle(InserirProvaQuestaoCommand request, CancellationToken cancellationToken)
         {
-            await repositorioProvaQuestao.CriarIndexAsync();
             return await repositorioProvaQuestao.InserirAsync(request.ProvaQuestao);
         }
     }
