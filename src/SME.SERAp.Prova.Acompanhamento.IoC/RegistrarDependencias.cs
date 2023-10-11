@@ -110,11 +110,13 @@ namespace SME.SERAp.Prova.Acompanhamento.IoC
             services.AddScoped<ITratarProvaAlunoSyncUseCase, TratarProvaAlunoSyncUseCase>();
             services.AddScoped<ITratarProvaAlunoTurmaSyncUseCase, TratarProvaAlunoTurmaSyncUseCase>();
             services.AddScoped<ITratarProvaAlunoUseCase, TratarProvaAlunoUseCase>();
+            services.AddScoped<IAdesaoProvaAlunoUseCase, AdesaoProvaAlunoUseCase>();
 
             services.AddScoped<ITratarProvaAlunoResultadoUseCase, TratarProvaAlunoResultadoUseCase>();
             services.AddScoped<ITratarProvaTurmaResultadoUseCase, TratarProvaTurmaResultadoUseCase>();
             services.AddScoped<IConsolidarProvaAlunoRespostaUseCase, ConsolidarProvaAlunoRespostaUseCase>();
             services.AddScoped<IRecalcularProvaTurmaResultadoUseCase, RecalcularProvaTurmaResultadoUseCase>();
+            services.AddScoped<IAdesaoProvaTurmaUseCase, AdesaoProvaTurmaUseCase>();
 
             services.AddScoped<ITratarProvaAlunoRespostaSyncUseCase, TratarProvaAlunoRespostaSyncUseCase>();
             services.AddScoped<ITratarProvaAlunoRespostaUseCase, TratarProvaAlunoRespostaUseCase>();
