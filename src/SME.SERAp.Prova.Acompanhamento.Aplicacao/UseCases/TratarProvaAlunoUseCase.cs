@@ -21,11 +21,11 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var provaTurma = mensagemRabbit.ObterObjetoMensagem<ProvaTurmaDto>();
             if (provaTurma == null) return false;
 
-            IEnumerable<long> decifiencias = new List<long>();
+            IEnumerable<long> deficiencias = new List<long>();
             if (provaTurma.Deficiente)
-                decifiencias = await mediator.Send(new ObterDeficienciasPorProvaIdQuery(provaTurma.ProvaId));
+                deficiencias = await mediator.Send(new ObterDeficienciasPorProvaIdQuery(provaTurma.ProvaId));
 
-            var alunos = await mediator.Send(new ObterAlunosTurmaSerapQuery(provaTurma.ProvaId, provaTurma.TurmaId, provaTurma.Deficiente, decifiencias.ToArray()));
+            var alunos = await mediator.Send(new ObterAlunosTurmaSerapQuery(provaTurma.ProvaId, provaTurma.TurmaId, provaTurma.Deficiente, deficiencias.ToArray()));
             if (alunos != null && alunos.Any())
             {
                 int tempoTotal = 0;

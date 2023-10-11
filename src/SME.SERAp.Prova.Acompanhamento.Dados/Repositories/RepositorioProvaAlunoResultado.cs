@@ -1,6 +1,7 @@
 ﻿using Nest;
 using SME.SERAp.Prova.Acompanhamento.Dados.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
+using SME.SERAp.Prova.Acompanhamento.Infra.Dtos;
 using SME.SERAp.Prova.Acompanhamento.Infra.EnvironmentVariables;
 using System;
 using System.Collections.Generic;
@@ -66,6 +67,26 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
                 throw new Exception(response.ServerError?.ToString(), response.OriginalException);
 
             return true;
+        }
+
+        public async Task<RetornoPaginadoDto<ProvaAlunoResultado>> ObterPaginadoAsync(long provaId, long turmaId, string scrollId)
+        {
+            var scrollTime = "1m";
+            var search = new SearchDescriptor<ProvaAlunoResultado>(IndexName).Query(q =>
+                q.Term(t => t.Field(f => f.ProvaId).Value(provaId)) &&
+                q.Term(t => t.Field(f => f.TurmaId).Value(turmaId)))
+                .Scroll(scrollTime);
+
+            ISearchResponse<ProvaAlunoResultado> response;
+            if (string.IsNullOrEmpty(scrollId))
+                response = await elasticClient.SearchAsync<ProvaAlunoResultado>(search);
+            else
+                response = await elasticClient.ScrollAsync<ProvaAlunoResultado>(scrollTime, scrollId);
+
+            if (response.Hits.Any())
+                return new RetornoPaginadoDto<ProvaAlunoResultado> { ScrollId = response.ScrollId, Items = response.Hits.Select(hit => hit.Source) };
+
+            return default;
         }
     }
 }

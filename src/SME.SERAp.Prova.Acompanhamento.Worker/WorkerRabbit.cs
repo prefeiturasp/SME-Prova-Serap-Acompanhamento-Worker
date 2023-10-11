@@ -175,10 +175,13 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             comandos.Add(RotaRabbit.ProvaAlunoSync, new ComandoRabbit("Sincronização prova aluno", typeof(ITratarProvaAlunoSyncUseCase)));
             comandos.Add(RotaRabbit.ProvaAlunoTurmaSync, new ComandoRabbit("Sincronização prova aluno turma", typeof(ITratarProvaAlunoTurmaSyncUseCase)));
             comandos.Add(RotaRabbit.ProvaAlunoTratar, new ComandoRabbit("tratar prova aluno", typeof(ITratarProvaAlunoUseCase)));
+            comandos.Add(RotaRabbit.ProvaAlunoAdesao, new ComandoRabbit("tratar adesão prova aluno", typeof(IAdesaoProvaAlunoUseCase)));
 
             comandos.Add(RotaRabbit.ProvaAlunoResultadoTratar, new ComandoRabbit("tratar prova aluno resultado", typeof(ITratarProvaAlunoResultadoUseCase)));
             comandos.Add(RotaRabbit.ProvaTurmaResultadoTratar, new ComandoRabbit("tratar prova turma resultado", typeof(ITratarProvaTurmaResultadoUseCase)));
             comandos.Add(RotaRabbit.ProvaTurmaResultadoRecalcular, new ComandoRabbit("tratar prova turma resultado recalcular", typeof(IRecalcularProvaTurmaResultadoUseCase)));
+
+            comandos.Add(RotaRabbit.ProvaTurmaAdesao, new ComandoRabbit("tratar adesão prova aluno", typeof(IAdesaoProvaTurmaUseCase)));
 
             comandos.Add(RotaRabbit.ProvaAlunoRespostaSync, new ComandoRabbit("Sincronização prova turma aluno resposta", typeof(ITratarProvaAlunoRespostaSyncUseCase)));
             comandos.Add(RotaRabbit.ProvaAlunoRespostaTratar, new ComandoRabbit("tratar prova turma aluno resposta", typeof(ITratarProvaAlunoRespostaUseCase)));
@@ -189,6 +192,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             comandos.Add(RotaRabbit.ProvaAlunoReaberturaTratar, new ComandoRabbit("tratar prova aluno reabertura ", typeof(ITratarProvaAlunoReaberturaUseCase)));
 
             comandos.Add(RotaRabbit.RemoverDadosProva, new ComandoRabbit("remover os dados da prova ", typeof(IRemoverTodosOsDadosProvaUseCase)));
+
+
+
+
         }
 
         private async Task InicializaConsumer(IModel channel, CancellationToken stoppingToken)

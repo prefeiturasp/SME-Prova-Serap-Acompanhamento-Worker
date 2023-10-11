@@ -14,7 +14,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {
-            long provaId = int.Parse(mensagemRabbit.Mensagem.ToString());
+            long provaId = long.Parse(mensagemRabbit.Mensagem.ToString());
 
             var provasTurmas = await mediator.Send(new ObterProvasTurmasSerapQuery(provaId));
             if (provasTurmas != null && provasTurmas.Any())

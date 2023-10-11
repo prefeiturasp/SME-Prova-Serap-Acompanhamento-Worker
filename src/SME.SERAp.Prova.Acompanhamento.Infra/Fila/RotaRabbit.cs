@@ -35,9 +35,11 @@
         public const string ProvaAlunoSync = "serap.estudante.acomp.prova.aluno.sync";
         public const string ProvaAlunoTurmaSync = "serap.estudante.acomp.prova.aluno.turma.sync";
         public const string ProvaAlunoTratar = "serap.estudante.acomp.prova.aluno.tratar";
+        public const string ProvaAlunoAdesao = "serap.estudante.acomp.prova.aluno.adesao";
 
         public const string ProvaAlunoResultadoTratar = "serap.estudante.acomp.prova.aluno.resultado.tratar";
         public const string ProvaTurmaResultadoTratar = "serap.estudante.acomp.prova.turma.resultado.tratar";
+        public const string ProvaTurmaAdesao = "serap.estudante.acomp.prova.turma.resultado.adesao";
         public const string ProvaTurmaResultadoRecalcular = "serap.estudante.acomp.prova.turma.resultado.recalcular";
 
         public const string ProvaAlunoRespostaSync = "serap.estudante.acomp.prova.aluno.resposta.sync";

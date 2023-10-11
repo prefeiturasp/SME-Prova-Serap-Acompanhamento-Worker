@@ -20,6 +20,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                 foreach (var prova in provas)
                 {
                     await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoTurmaSync, prova.Id));
+                    await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoAdesao, prova.Id));
+                    await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaTurmaAdesao, prova.Id));
                 }
             }
 
