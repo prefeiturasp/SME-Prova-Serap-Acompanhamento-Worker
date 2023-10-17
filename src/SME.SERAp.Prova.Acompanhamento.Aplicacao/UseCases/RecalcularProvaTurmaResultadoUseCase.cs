@@ -17,6 +17,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
             var provaTurmaRecalcular = mensagemRabbit.ObterObjetoMensagem<ProvaTurmaRecalcularDto>();
             if (provaTurmaRecalcular == null) return false;
 
+            // aguarda a indexação dos dados para recalcular.
             await Task.Delay(5000);
 
             var provaTurmaResultadoBanco = await mediator.Send(new ObterProvaTurmaResultadoQuery(provaTurmaRecalcular.ProvaId, provaTurmaRecalcular.TurmaId));

@@ -48,7 +48,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
             this.servicoLog = servicoLog ?? throw new ArgumentNullException(nameof(servicoLog));
             this.servicoMensageria = servicoMensageria ?? throw new ArgumentNullException(nameof(servicoMensageria));
-            
+
             comandos = new Dictionary<string, ComandoRabbit>();
         }
 
@@ -96,16 +96,16 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
                 var argsFinal = new Dictionary<string, object> { { "x-queue-mode", "lazy" } };
 
                 channel.QueueDeclare(
-                    queue: filaDeadLetterFinal, 
-                    durable: true, 
-                    exclusive: false, 
-                    autoDelete: false, 
+                    queue: filaDeadLetterFinal,
+                    durable: true,
+                    exclusive: false,
+                    autoDelete: false,
                     arguments: argsFinal);
-                
+
                 channel.QueueBind(filaDeadLetterFinal, ExchangeRabbit.SerapEstudanteAcompanhamentoDeadLetter, filaDeadLetterFinal, null);
             }
         }
-        
+
         private Dictionary<string, object> ObterArgumentoDaFila(string fila)
         {
             var args = new Dictionary<string, object>
@@ -113,10 +113,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
 
             if (comandos.ContainsKey(fila) && comandos[fila].ModeLazy)
                 args.Add("x-queue-mode", "lazy");
-            
+
             return args;
         }
-        
+
         private Dictionary<string, object> ObterArgumentoDaFilaDeadLetter(string fila)
         {
             var argsDlq = new Dictionary<string, object>();
@@ -128,18 +128,18 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
 
             return argsDlq;
         }
-        
+
         private ulong GetRetryCount(IBasicProperties properties)
         {
             if (properties.Headers == null || !properties.Headers.ContainsKey("x-death"))
                 return 0;
-            
+
             var deathProperties = (List<object>)properties.Headers["x-death"];
             var lastRetry = (Dictionary<string, object>)deathProperties[0];
             var count = lastRetry["count"];
-            
-            return (ulong) Convert.ToInt64(count);
-        }        
+
+            return (ulong)Convert.ToInt64(count);
+        }
 
         private void RegistrarUseCases()
         {
@@ -175,10 +175,13 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             comandos.Add(RotaRabbit.ProvaAlunoSync, new ComandoRabbit("Sincronização prova aluno", typeof(ITratarProvaAlunoSyncUseCase)));
             comandos.Add(RotaRabbit.ProvaAlunoTurmaSync, new ComandoRabbit("Sincronização prova aluno turma", typeof(ITratarProvaAlunoTurmaSyncUseCase)));
             comandos.Add(RotaRabbit.ProvaAlunoTratar, new ComandoRabbit("tratar prova aluno", typeof(ITratarProvaAlunoUseCase)));
+            comandos.Add(RotaRabbit.ProvaAlunoAdesao, new ComandoRabbit("tratar adesão prova aluno", typeof(IAdesaoProvaAlunoUseCase)));
 
             comandos.Add(RotaRabbit.ProvaAlunoResultadoTratar, new ComandoRabbit("tratar prova aluno resultado", typeof(ITratarProvaAlunoResultadoUseCase)));
             comandos.Add(RotaRabbit.ProvaTurmaResultadoTratar, new ComandoRabbit("tratar prova turma resultado", typeof(ITratarProvaTurmaResultadoUseCase)));
             comandos.Add(RotaRabbit.ProvaTurmaResultadoRecalcular, new ComandoRabbit("tratar prova turma resultado recalcular", typeof(IRecalcularProvaTurmaResultadoUseCase)));
+
+            comandos.Add(RotaRabbit.ProvaTurmaAdesao, new ComandoRabbit("tratar adesão prova aluno", typeof(IAdesaoProvaTurmaUseCase)));
 
             comandos.Add(RotaRabbit.ProvaAlunoRespostaSync, new ComandoRabbit("Sincronização prova turma aluno resposta", typeof(ITratarProvaAlunoRespostaSyncUseCase)));
             comandos.Add(RotaRabbit.ProvaAlunoRespostaTratar, new ComandoRabbit("tratar prova turma aluno resposta", typeof(ITratarProvaAlunoRespostaUseCase)));
@@ -187,6 +190,12 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             comandos.Add(RotaRabbit.ProvaAlunoDownloadTratar, new ComandoRabbit("tratar download prova aluno", typeof(ITratarProvaAlunoResultadoDownloadUseCase)));
             comandos.Add(RotaRabbit.ProvaAlunoInicioFimTratar, new ComandoRabbit("tratar inicio e fim prova aluno", typeof(ITratarProvaAlunoResultadoInicioFimUseCase)));
             comandos.Add(RotaRabbit.ProvaAlunoReaberturaTratar, new ComandoRabbit("tratar prova aluno reabertura ", typeof(ITratarProvaAlunoReaberturaUseCase)));
+
+            comandos.Add(RotaRabbit.RemoverDadosProva, new ComandoRabbit("remover os dados da prova ", typeof(IRemoverTodosOsDadosProvaUseCase)));
+
+
+
+
         }
 
         private async Task InicializaConsumer(IModel channel, CancellationToken stoppingToken)
@@ -232,7 +241,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
                     using var scope = serviceScopeFactory.CreateScope();
                     var casoDeUso = scope.ServiceProvider.GetService(comandoRabbit.TipoCasoUso);
 
-                    if (casoDeUso == null) 
+                    if (casoDeUso == null)
                         throw new ArgumentNullException(comandoRabbit.TipoCasoUso.Name);
 
                     await servicoTelemetria.RegistrarAsync(() =>
@@ -258,21 +267,22 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
                 catch (Exception ex)
                 {
                     servicoTelemetria.RegistrarExcecao(transacao, ex);
-                    
+
                     var rejeicoes = GetRetryCount(ea.BasicProperties);
 
                     if (++rejeicoes >= comandoRabbit.QuantidadeReprocessamentoDeadLetter)
                     {
                         channel.BasicAck(ea.DeliveryTag, false);
-                        
+
                         var filaFinal = $"{ea.RoutingKey}.deadletter.final";
-                        
+
                         await servicoMensageria.Publicar(mensagemRabbit, filaFinal,
                             ExchangeRabbit.SerapEstudanteAcompanhamentoDeadLetter,
                             "PublicarDeadLetter");
-                    } else
+                    }
+                    else
                         channel.BasicReject(ea.DeliveryTag, false);
-                    
+
                     RegistrarLog(ea, mensagemRabbit, ex, LogNivel.Critico, $"Erros: {ex.Message}");
                 }
                 finally

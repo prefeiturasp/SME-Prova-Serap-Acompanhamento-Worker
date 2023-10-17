@@ -1,6 +1,3 @@
-using System;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Registry;
@@ -9,6 +6,9 @@ using SME.SERAp.Prova.Acompanhamento.Infra.EnvironmentVariables;
 using SME.SERAp.Prova.Acompanhamento.Infra.Fila;
 using SME.SERAp.Prova.Acompanhamento.Infra.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Infra.Policies;
+using System;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Acompanhamento.Infra.Services
 {
@@ -58,7 +58,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Services
             props.Persistent = true;
             channel.BasicPublish(exchange, rota, true, props, body);
 
-            return Task.CompletedTask;            
-        }        
+            return Task.CompletedTask;
+        }
     }
 }
