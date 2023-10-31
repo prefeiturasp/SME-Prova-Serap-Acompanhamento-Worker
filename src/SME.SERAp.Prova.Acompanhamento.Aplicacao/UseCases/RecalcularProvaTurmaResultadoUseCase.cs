@@ -18,7 +18,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
             if (provaTurmaRecalcular == null) return false;
 
             // aguarda a indexação dos dados para recalcular.
-            await Task.Delay(5000);
+            //await Task.Delay(5000);
 
             var provaTurmaResultadoBanco = await mediator.Send(new ObterProvaTurmaResultadoQuery(provaTurmaRecalcular.ProvaId, provaTurmaRecalcular.TurmaId));
             if (provaTurmaResultadoBanco == null) return false;
@@ -30,7 +30,9 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
             provaTurmaResultadoBanco.TotalIniciadas = provaAlunoResultados.Where(pa => pa.AlunoInicio != null && pa.AlunoInicio.Value.Date == DateTime.Now.Date && pa.AlunoFim == null).Count();
             provaTurmaResultadoBanco.TotalNaoFinalizados = provaAlunoResultados.Where(pa => pa.AlunoInicio != null && pa.AlunoInicio.Value.Date < DateTime.Now.Date && pa.AlunoFim == null).Count();
             provaTurmaResultadoBanco.TotalFinalizados = provaAlunoResultados.Where(pa => pa.AlunoInicio != null && pa.AlunoFim != null).Count();
+
             provaTurmaResultadoBanco.QuestoesRespondidas = (long)provaAlunoResultados.Where(pa => pa.AlunoQuestaoRespondida != null && pa.AlunoQuestaoRespondida > 0).Sum(pa => pa.AlunoQuestaoRespondida);
+
             var tempoTotal = provaAlunoResultados.Where(pa => pa.AlunoFim != null && pa.AlunoTempo > 0).Sum(pa => pa.AlunoTempo);
             provaTurmaResultadoBanco.TempoMedio = CalcularTempoMedioEmMinutos(tempoTotal, provaTurmaResultadoBanco.TotalFinalizados);
 

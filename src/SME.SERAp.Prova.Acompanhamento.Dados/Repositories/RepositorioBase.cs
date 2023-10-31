@@ -1,4 +1,5 @@
-﻿using Nest;
+﻿using Elasticsearch.Net;
+using Nest;
 using SME.SERAp.Prova.Acompanhamento.Dados.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
 using SME.SERAp.Prova.Acompanhamento.Infra.EnvironmentVariables;
@@ -52,7 +53,12 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
 
         public virtual async Task<bool> AlterarAsync(TEntidade entidade)
         {
-            var response = await elasticClient.UpdateAsync(DocumentPath<TEntidade>.Id(entidade.Id).Index(IndexName), p => p.Doc(entidade).RetryOnConflict(3));
+            var response = await elasticClient.UpdateAsync(
+                DocumentPath<TEntidade>
+                    .Id(entidade.Id)
+                    .Index(IndexName), p => p.Doc(entidade)
+                        .RetryOnConflict(3)
+                        .Refresh(Refresh.True));
 
             if (!response.IsValid)
                 throw new Exception(response.ServerError?.ToString(), response.OriginalException);
