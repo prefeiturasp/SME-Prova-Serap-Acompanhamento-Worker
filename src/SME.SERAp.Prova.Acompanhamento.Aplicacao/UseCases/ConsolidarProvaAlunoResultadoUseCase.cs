@@ -18,7 +18,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var provaAluno = mensagemRabbit.ObterObjetoMensagem<ProvaAlunoDto>();
             if (provaAluno == null) return false;
 
-            await Task.Delay(5000);
+            // aguarda a indexação dos dados para recalcular.
+            //await Task.Delay(5000);
 
             var respostas = await mediator.Send(new ObterRespostasProvaAlunoQuery(provaAluno.ProvaId, provaAluno.AlunoRa));
             if (respostas != null && respostas.Any())
