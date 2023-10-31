@@ -27,12 +27,19 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                 var provaAlunoResultados = await mediator.Send(new ObterProvaAlunoResultadoQuery(provaAluno.ProvaId, provaAluno.AlunoRa));
                 if (provaAlunoResultados == null || !provaAlunoResultados.Any()) return false;
 
+                int alunoQuestaoRespondida = respostas.Count(t => t.AlternativaId.HasValue);
+                int alunoTempo = respostas.Sum(s => s.Tempo.GetValueOrDefault());
+
                 foreach (var resultado in provaAlunoResultados)
                 {
-                    resultado.AlunoQuestaoRespondida = respostas.Count(t => t.AlternativaId.HasValue);
-                    resultado.AlunoTempo = respostas.Sum(s => s.Tempo.GetValueOrDefault());
+                    if (resultado.AlunoQuestaoRespondida != alunoQuestaoRespondida ||
+                        resultado.AlunoTempo != alunoTempo)
+                    {
+                        resultado.AlunoQuestaoRespondida = alunoQuestaoRespondida;
+                        resultado.AlunoTempo = alunoTempo;
 
-                    await mediator.Send(new AlterarProvaAlunoResultadoCommand(resultado));
+                        await mediator.Send(new AlterarProvaAlunoResultadoCommand(resultado));
+                    }
                 }
 
                 var provaAlunoResultado = provaAlunoResultados.FirstOrDefault();
