@@ -192,10 +192,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             comandos.Add(RotaRabbit.ProvaAlunoReaberturaTratar, new ComandoRabbit("tratar prova aluno reabertura ", typeof(ITratarProvaAlunoReaberturaUseCase)));
 
             comandos.Add(RotaRabbit.RemoverDadosProva, new ComandoRabbit("remover os dados da prova ", typeof(IRemoverTodosOsDadosProvaUseCase)));
-
-
-
-
         }
 
         private async Task InicializaConsumer(IModel channel, CancellationToken stoppingToken)
