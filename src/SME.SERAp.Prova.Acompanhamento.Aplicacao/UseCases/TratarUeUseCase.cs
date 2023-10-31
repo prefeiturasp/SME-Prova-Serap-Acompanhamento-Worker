@@ -17,13 +17,14 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var ueDto = mensagemRabbit.ObterObjetoMensagem<UeDto>();
             if (ueDto == null) return false;
 
-            var eu = await mediator.Send(new ObterUePorIdQuery(ueDto.Id.ToString()));
-            if (eu == null)
+            var ue = await mediator.Send(new ObterUePorIdQuery(ueDto.Id.ToString()));
+            if (ue == null)
             {
                 await mediator.Send(new InserirUeCommand(ueDto));
             }
-            else if (eu.Codigo != ueDto.Codigo ||
-                     eu.Nome != ueDto.Nome)
+            else if (ue.Codigo != ueDto.Codigo ||
+                     ue.Nome != ueDto.Nome ||
+                     ue.DreId != ueDto.DreId)
             {
                 await mediator.Send(new AlterarUeCommand(ueDto));
             }
