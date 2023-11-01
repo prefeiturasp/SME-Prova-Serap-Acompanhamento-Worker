@@ -12,6 +12,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {
+            // -> Respostas sincronizadas em tempo de execução das provas
+
             var provaAlunoRespostaDto = mensagemRabbit.ObterObjetoMensagem<ProvaAlunoRespostaDto>();
             if (provaAlunoRespostaDto == null) return false;
 
