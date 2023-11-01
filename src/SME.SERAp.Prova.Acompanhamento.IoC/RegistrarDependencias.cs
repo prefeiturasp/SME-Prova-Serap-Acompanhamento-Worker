@@ -130,7 +130,7 @@ namespace SME.SERAp.Prova.Acompanhamento.IoC
             services.AddScoped<ITratarProvaAlunoReaberturaUseCase, TratarProvaAlunoReaberturaUseCase>();
 
             services.AddScoped<IRemoverTodosOsDadosProvaUseCase, RemoverTodosOsDadosProvaUseCase>();
-
+            services.AddScoped<IRemoverAlunoDuplicadoUseCase, RemoverAlunoDuplicadoUseCase>();
         }
     }
 }

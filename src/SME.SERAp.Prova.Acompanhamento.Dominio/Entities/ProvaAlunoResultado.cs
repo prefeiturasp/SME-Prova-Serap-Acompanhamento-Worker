@@ -57,5 +57,24 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
         public SituacaoProvaAluno? SituacaoProvaAluno { get; set; }
         public string UsuarioIdReabertura { get; set; }
         public DateTime? DataHoraReabertura { get; set; }
+
+        /// <summary>
+        /// Método criado para "driblar" o problema de exclusão do registro no Elasticsearch
+        /// </summary>        
+        public void InutilizarRegistro()
+        {
+            ProvaId = 0;
+            DreId = 0;
+            UeId = 0;
+            TurmaId = 0;
+            Inicio = DateTime.MinValue;
+            Fim = DateTime.MinValue;
+            AlunoId = 0;
+            AlunoRa = 0;
+            AlunoInicio = null;
+            AlunoFim = null;
+            SituacaoProvaAluno = null;
+            DataHoraReabertura = null;
+        }
     }
 }

@@ -35,17 +35,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                         {
                             if (!provaTurmasSerap.Any(t => t.TurmaId == provaTurmaResultado.TurmaId) && provaTurmaResultado.TotalAlunos > 0)
                             {
-                                provaTurmaResultado.Inicio = DateTime.MinValue;
-                                provaTurmaResultado.Fim = DateTime.MinValue;
-                                provaTurmaResultado.TotalAlunos = 0;
-                                provaTurmaResultado.TotalIniciadas = 0;
-                                provaTurmaResultado.TotalNaoFinalizados = 0;
-                                provaTurmaResultado.TotalFinalizados = 0;
-                                provaTurmaResultado.QuantidadeQuestoes = 0;
-                                provaTurmaResultado.TotalQuestoes = 0;
-                                provaTurmaResultado.QuestoesRespondidas = 0;
-                                provaTurmaResultado.TempoMedio = 0;
-
+                                provaTurmaResultado.InutilizarRegistro();
                                 await mediator.Send(new AlterarProvaTurmaResultadoCommand(provaTurmaResultado));
                             }
                         }

@@ -50,5 +50,22 @@ namespace SME.SERAp.Prova.Acompanhamento.Dominio.Entities
         public long TotalQuestoes { get; set; }
         public long QuestoesRespondidas { get; set; }
         public long TempoMedio { get; set; }
+
+        /// <summary>
+        /// Método criado para "driblar" o problema de exclusão do registro no Elasticsearch
+        /// </summary>
+        public void InutilizarRegistro()
+        {
+            Inicio = DateTime.MinValue;
+            Fim = DateTime.MinValue;
+            TotalAlunos = 0;
+            TotalIniciadas = 0;
+            TotalNaoFinalizados = 0;
+            TotalFinalizados = 0;
+            QuantidadeQuestoes = 0;
+            TotalQuestoes = 0;
+            QuestoesRespondidas = 0;
+            TempoMedio = 0;            
+        }
     }
 }
