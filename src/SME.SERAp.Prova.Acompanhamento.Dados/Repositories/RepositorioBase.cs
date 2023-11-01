@@ -87,13 +87,24 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
 
         public async Task<IEnumerable<TEntidade>> ObterTodosAsync()
         {
-            var search = new SearchDescriptor<TEntidade>(IndexName).MatchAll();
+            var search = new SearchDescriptor<TEntidade>(IndexName)
+                .Size(10000)
+                .Scroll("1m");
+            
             var response = await elasticClient.SearchAsync<TEntidade>(search);
-
+            
             if (!response.IsValid)
                 throw new Exception(response.ServerError?.ToString(), response.OriginalException);
+            
+            var retorno = new List<TEntidade>();
+            
+            while (response.Hits.Any())
+            {
+                retorno.AddRange(response.Hits.Select(hit => hit.Source).ToList());
+                response = await elasticClient.ScrollAsync<TEntidade>("1m", response.ScrollId);
+            }
 
-            return response.Hits.Select(hit => hit.Source).ToList();
+            return retorno;
         }
     }
 }

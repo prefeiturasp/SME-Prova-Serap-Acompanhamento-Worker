@@ -51,5 +51,6 @@
         public const string ProvaAlunoReaberturaTratar = "serap.estudante.acomp.prova.aluno.reabertura.tratar";
 
         public const string RemoverDadosProva = "serap.estudante.acomp.prova.remover";
+        public const string RemoverAlunoDuplicado = "serap.estudante.acomp.aluno.duplicado.remover";
     }
 }
