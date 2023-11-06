@@ -22,6 +22,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                     await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoTurmaSync, prova.Id));
                     await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoAdesao, prova.Id));
                     await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaTurmaAdesao, prova.Id));
+                    await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaQuestaoSync, prova.Id));
                 }
             }
 
