@@ -24,21 +24,29 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                     continue;
 
                 var duplicados = provasAlunosResultados
-                    .GroupBy(c => new { c.ProvaId, c.AlunoId })
+                    .GroupBy(c => new { c.ProvaId, c.AlunoRa })
                     .Where(c => c.Count() > 1)
                     .Select(c => c.Key);
 
                 foreach (var duplicado in duplicados)
                 {
-                    var provaAlunoResultadoRemover = provasAlunosResultados
-                        .LastOrDefault(c => c.ProvaId == duplicado.ProvaId
-                                            && c.AlunoId == duplicado.AlunoId);
+                    var provasAlunosResultadosRemover = provasAlunosResultados
+                        .Where(c => c.ProvaId == duplicado.ProvaId
+                                    && c.AlunoRa == duplicado.AlunoRa);
 
-                    if (provaAlunoResultadoRemover == null) 
-                        continue;
-                    
-                    provaAlunoResultadoRemover.InutilizarRegistro();
-                    await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaAlunoResultadoRemover));
+                    var primeiroRegistro = true;
+
+                    foreach (var provaAlunoResultadoRemover in provasAlunosResultadosRemover)
+                    {
+                        if (primeiroRegistro)
+                        {
+                            primeiroRegistro = false;
+                            continue;
+                        }
+
+                        provaAlunoResultadoRemover.InutilizarRegistro();
+                        await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaAlunoResultadoRemover));                        
+                    }
                 }
             }
 
