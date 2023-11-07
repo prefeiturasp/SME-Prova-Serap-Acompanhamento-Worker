@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Acompanhamento.Aplicacao.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes;
+using SME.SERAp.Prova.Acompanhamento.Infra.Exceptions;
 using SME.SERAp.Prova.Acompanhamento.Infra.Fila;
 using System.Threading.Tasks;
 
@@ -13,7 +14,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {
             // -> Respostas sincronizadas em tempo de execução das provas
-
             var provaAlunoRespostaDto = mensagemRabbit.ObterObjetoMensagem<ProvaAlunoRespostaDto>();
             if (provaAlunoRespostaDto == null) return false;
 
@@ -24,7 +24,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             {
                 var provaQuestao = await mediator.Send(new ObterProvaQuestaoPorQuestaoIdQuery(provaAlunoRespostaDto.QuestaoId));
 
-                if (provaQuestao == null || provaQuestao.ProvaId == 0) return false;
+                if (provaQuestao == null || provaQuestao.ProvaId == 0)
+                    throw new NegocioException($"Prova Questão não encontrada {provaAlunoRespostaDto.QuestaoId}");
 
                 provaAlunoRespostaDto.ProvaId = provaQuestao.ProvaId;
             }
