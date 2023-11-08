@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
             using var conn = ObterConexao();
             try
             {
-                var query = @"select a.id, a.ra, a.nome, a.nome_social as nomeSocial, a.situacao
+                var query = @"select distinct a.id, a.ra, a.nome, a.nome_social as nomeSocial, a.situacao
                               from v_prova_turma_aluno vpta 
                               inner join aluno a on a.id = vpta.aluno_id
                               left join aluno_deficiencia ad on ad.aluno_ra = a.ra 
