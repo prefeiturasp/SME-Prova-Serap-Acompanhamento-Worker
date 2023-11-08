@@ -21,8 +21,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
         {
             if (request.Deficiente)
                 return await repositorioSerapTurma.ObterAlunosPorIdDeficienciaAsync(request.ProvaId, request.TurmaId, request.Deficiencias);
-            else
-                return await repositorioSerapTurma.ObterAlunosPorIdAsync(request.ProvaId, request.TurmaId);
+            
+            return await repositorioSerapTurma.ObterAlunosPorIdAsync(request.ProvaId, request.TurmaId);
         }
     }
 }
