@@ -12,6 +12,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
 {
     public class RepositorioProvaAlunoResultado : RepositorioBase<ProvaAlunoResultado>, IRepositorioProvaAlunoResultado
     {
+        private const string ScrollTime = "1m";
+        
         public RepositorioProvaAlunoResultado(ElasticOptions elasticOptions, IElasticClient elasticClient) : base(elasticOptions, elasticClient)
         {
         }
@@ -56,6 +58,28 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
             if (!response.IsValid) return default;
 
             return response.Hits.Select(hit => hit.Source).ToList();
+        }
+
+        public async Task<IEnumerable<ProvaAlunoResultado>> ObterPorTurmaIdAsync(long turmaId)
+        {
+            var search = new SearchDescriptor<ProvaAlunoResultado>(IndexName)
+                .Query(q => q.Term(t =>
+                    t.Field(f => f.TurmaId).Value(turmaId))).Scroll(ScrollTime);
+            
+            var response = await elasticClient.SearchAsync<ProvaAlunoResultado>(search);
+            
+            if (!response.IsValid || !response.Hits.Any())
+                return default;
+
+            var retorno = new List<ProvaAlunoResultado>();
+            
+            while (response.Hits.Any())
+            {
+                retorno.AddRange(response.Hits.Select(hit => hit.Source).ToList());
+                response = await elasticClient.ScrollAsync<ProvaAlunoResultado>(ScrollTime, response.ScrollId);
+            }
+
+            return retorno;
         }
 
         public async Task<bool> DeletarPorProvaIdAsync(long provaId)

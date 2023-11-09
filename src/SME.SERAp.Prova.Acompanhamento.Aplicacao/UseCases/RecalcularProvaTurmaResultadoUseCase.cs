@@ -3,6 +3,7 @@ using SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases;
 using SME.SERAp.Prova.Acompanhamento.Infra.Dtos;
 using SME.SERAp.Prova.Acompanhamento.Infra.Fila;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
             if (provaTurmaRecalcular == null) return false;
 
             // aguarda a indexação dos dados para recalcular.
-            await Task.Delay(5000);
+            //await Task.Delay(5000);
 
             var provaTurmaResultadoBanco = await mediator.Send(new ObterProvaTurmaResultadoQuery(provaTurmaRecalcular.ProvaId, provaTurmaRecalcular.TurmaId));
             if (provaTurmaResultadoBanco == null) return false;
@@ -26,20 +27,70 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
             var provaAlunoResultados = await mediator.Send(new ObterProvaAlunoResultadoPorProvaTurmaQuery(provaTurmaRecalcular.ProvaId, provaTurmaRecalcular.TurmaId));
             if (provaAlunoResultados == null || !provaAlunoResultados.Any()) return false;
 
-            provaTurmaResultadoBanco.TotalAlunos = provaAlunoResultados.Where(t => t.AlunoSituacao != 99).Select(pa => pa.AlunoRa).Distinct().Count();
-            provaTurmaResultadoBanco.TotalIniciadas = provaAlunoResultados.Where(pa => pa.AlunoInicio != null && pa.AlunoInicio.Value.Date == DateTime.Now.Date && pa.AlunoFim == null).Count();
-            provaTurmaResultadoBanco.TotalNaoFinalizados = provaAlunoResultados.Where(pa => pa.AlunoInicio != null && pa.AlunoInicio.Value.Date < DateTime.Now.Date && pa.AlunoFim == null).Count();
-            provaTurmaResultadoBanco.TotalFinalizados = provaAlunoResultados.Where(pa => pa.AlunoInicio != null && pa.AlunoFim != null).Count();
-            provaTurmaResultadoBanco.QuestoesRespondidas = (long)provaAlunoResultados.Where(pa => pa.AlunoQuestaoRespondida != null && pa.AlunoQuestaoRespondida > 0).Sum(pa => pa.AlunoQuestaoRespondida);
-            var tempoTotal = provaAlunoResultados.Where(pa => pa.AlunoFim != null && pa.AlunoTempo > 0).Sum(pa => pa.AlunoTempo);
-            provaTurmaResultadoBanco.TempoMedio = CalcularTempoMedioEmMinutos(tempoTotal, provaTurmaResultadoBanco.TotalFinalizados);
+            List<long> alunos = new();
+            int totalAlunos = 0;
+            int totalIniciadas = 0;
+            int totalNaoFinalizados = 0;
+            int totalFinalizados = 0;
+            int questoesRespondidas = 0;
+            int tempoTotal = 0;
 
-            await mediator.Send(new AlterarProvaTurmaResultadoCommand(provaTurmaResultadoBanco));
+            foreach (var provaAlunoResultado in provaAlunoResultados)
+            {
+                if (provaAlunoResultado.AlunoSituacao != 99 &&
+                    !alunos.Contains(provaAlunoResultado.AlunoRa))
+                {
+                    totalAlunos++;
+                    alunos.Add(provaAlunoResultado.AlunoRa);
+                }
+
+                if (provaAlunoResultado.AlunoInicio != null &&
+                    provaAlunoResultado.AlunoInicio.Value.Date == DateTime.Now.Date &&
+                    provaAlunoResultado.AlunoFim == null)
+                    totalIniciadas++;
+
+                if (provaAlunoResultado.AlunoInicio != null &&
+                    provaAlunoResultado.AlunoInicio.Value.Date < DateTime.Now.Date &&
+                    provaAlunoResultado.AlunoFim == null)
+                    totalNaoFinalizados++;
+
+                if (provaAlunoResultado.AlunoInicio != null &&
+                    provaAlunoResultado.AlunoFim != null)
+                    totalFinalizados++;
+
+                if (provaAlunoResultado.AlunoQuestaoRespondida != null &&
+                    provaAlunoResultado.AlunoQuestaoRespondida > 0)
+                    questoesRespondidas += provaAlunoResultado.AlunoQuestaoRespondida.GetValueOrDefault();
+
+                if (provaAlunoResultado.AlunoFim != null &&
+                    provaAlunoResultado.AlunoTempo > 0)
+                    tempoTotal += provaAlunoResultado.AlunoTempo.GetValueOrDefault();
+            }
+
+            var tempoMedio = CalcularTempoMedioEmMinutos(tempoTotal, totalFinalizados);
+
+            if (provaTurmaResultadoBanco.TotalAlunos != totalAlunos ||
+                provaTurmaResultadoBanco.TotalIniciadas != totalIniciadas ||
+                provaTurmaResultadoBanco.TotalNaoFinalizados != totalNaoFinalizados ||
+                provaTurmaResultadoBanco.TotalFinalizados != totalFinalizados ||
+                provaTurmaResultadoBanco.QuestoesRespondidas != questoesRespondidas ||
+                provaTurmaResultadoBanco.TempoMedio != tempoMedio
+                )
+            {
+                provaTurmaResultadoBanco.TotalAlunos = totalAlunos;
+                provaTurmaResultadoBanco.TotalIniciadas = totalIniciadas;
+                provaTurmaResultadoBanco.TotalNaoFinalizados = totalNaoFinalizados;
+                provaTurmaResultadoBanco.TotalFinalizados = totalFinalizados;
+                provaTurmaResultadoBanco.QuestoesRespondidas = questoesRespondidas;
+                provaTurmaResultadoBanco.TempoMedio = tempoMedio;
+
+                await mediator.Send(new AlterarProvaTurmaResultadoCommand(provaTurmaResultadoBanco));
+            }
 
             return true;
         }
 
-        private long CalcularTempoMedioEmMinutos(int? tempoTotal, long totalFinalizados)
+        private static long CalcularTempoMedioEmMinutos(int? tempoTotal, long totalFinalizados)
         {
             if (tempoTotal == null || tempoTotal == 0) return 0;
             return ((int)tempoTotal / 60) / totalFinalizados;

@@ -15,17 +15,32 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {
+            // -> Respostas sincronizadas processo agendado
             var provaAlunoDto = mensagemRabbit.ObterObjetoMensagem<ProvaAlunoDto>();
             if (provaAlunoDto == null) return false;
 
-            var respostas = await mediator.Send(new ObterProvaAlunoRespostaSerapQuery(provaAlunoDto.ProvaId, provaAlunoDto.AlunoRa));
+            var provaAlunoRespostasSerap = await mediator.Send(new ObterProvaAlunoRespostaSerapQuery(provaAlunoDto.ProvaId, provaAlunoDto.AlunoRa));
+            var provaAlunoRespostas = await mediator.Send(new ObterRespostasProvaAlunoQuery(provaAlunoDto.ProvaId, provaAlunoDto.AlunoRa));
 
-            if (respostas != null && respostas.Any())
+            if (provaAlunoRespostasSerap != null && provaAlunoRespostasSerap.Any())
             {
-                foreach (var resposta in respostas)
+                foreach (var provaAlunoRespostaSerap in provaAlunoRespostasSerap)
                 {
-                    resposta.Consolidar = false;
-                    await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoRespostaTratar, resposta));
+                    var provaAlunoResposta = provaAlunoRespostas
+                        .FirstOrDefault(x => 
+                            x.ProvaId == provaAlunoRespostaSerap.ProvaId && 
+                            x.AlunoRa == provaAlunoRespostaSerap.AlunoRa && 
+                            x.QuestaoId == provaAlunoRespostaSerap.QuestaoId);
+
+                    if (provaAlunoResposta == null)
+                    {
+                        await mediator.Send(new InserirProvaAlunoQuestaoRespostaCommand(provaAlunoRespostaSerap));
+                    }
+                    else if (provaAlunoRespostaSerap.AlternativaId != provaAlunoResposta.AlternativaId ||
+                             provaAlunoRespostaSerap.Tempo != provaAlunoResposta.Tempo)
+                    {
+                        await mediator.Send(new AlterarProvaAlunoQuestaoRespostaCommand(provaAlunoResposta.Id, provaAlunoRespostaSerap));
+                    }
                 }
             }
 

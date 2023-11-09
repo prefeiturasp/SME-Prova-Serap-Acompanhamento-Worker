@@ -17,11 +17,14 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
             using var conn = ObterConexao();
             try
             {
-                var query = @"select a.id, a.ra, a.nome, a.nome_social as nomeSocial, a.situacao
+                var query = @"select distinct a.id, a.ra, a.nome, a.nome_social as nomeSocial, a.situacao
                               from v_prova_turma_aluno vpta 
                               inner join aluno a on a.id = vpta.aluno_id
+                              left join aluno_deficiencia ad on ad.aluno_ra = a.ra 
+                              left join tipo_deficiencia td on td.id = ad.deficiencia_id                              
                               where vpta.prova_id = @provaId 
-                                and vpta.turma_id = @turmaId";
+                                and vpta.turma_id = @turmaId
+                                and (td.id is null or td.prova_normal) ";
 
                 return await conn.QueryAsync<AlunoDto>(query, new { provaId, turmaId });
             }

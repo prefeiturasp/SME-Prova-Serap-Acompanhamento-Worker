@@ -23,7 +23,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                                      qar.alternativa_id as AlternativaId, 
                                      qar.tempo_resposta_aluno as Tempo
                               from questao q
-                              left join questao_aluno_resposta qar on q.id = qar.questao_id
+                              inner join questao_aluno_resposta qar on q.id = qar.questao_id
                               where q.prova_id = @provaId and qar.aluno_ra = @alunoRa ";
 
                 return await conn.QueryAsync<ProvaAlunoRespostaDto>(query, new { provaId, alunoRa });
