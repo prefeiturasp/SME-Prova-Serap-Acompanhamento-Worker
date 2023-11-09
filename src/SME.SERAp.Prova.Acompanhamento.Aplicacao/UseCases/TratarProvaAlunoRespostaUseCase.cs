@@ -38,9 +38,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             else if (provaAlunoRespostaDto.AlternativaId != provaAlunoResposta.AlternativaId ||
                      provaAlunoRespostaDto.Tempo != provaAlunoResposta.Tempo)
             {
-                if (provaAlunoRespostaDto.Consolidar)
-                    provaAlunoRespostaDto.Tempo += provaAlunoResposta.Tempo;
-
                 await mediator.Send(new AlterarProvaAlunoQuestaoRespostaCommand(provaAlunoResposta.Id, provaAlunoRespostaDto));
             }
 
