@@ -52,5 +52,6 @@
 
         public const string RemoverDadosProva = "serap.estudante.acomp.prova.remover";
         public const string RemoverAlunoDuplicado = "serap.estudante.acomp.aluno.duplicado.remover";
+        public const string RemoverRespostaDuplicado = "serap.estudante.acomp.resposta.duplicado.remover";
     }
 }

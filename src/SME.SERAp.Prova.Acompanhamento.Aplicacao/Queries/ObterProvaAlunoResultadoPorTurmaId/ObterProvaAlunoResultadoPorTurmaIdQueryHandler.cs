@@ -8,11 +8,11 @@ using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
 
 namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 {
-    public class ObterProvaAlunoResultadoPorTurmaIdQuerHandler : IRequestHandler<ObterProvaAlunoResultadoPorTurmaIdQuery, IEnumerable<ProvaAlunoResultado>>
+    public class ObterProvaAlunoResultadoPorTurmaIdQueryHandler : IRequestHandler<ObterProvaAlunoResultadoPorTurmaIdQuery, IEnumerable<ProvaAlunoResultado>>
     {
         private readonly IRepositorioProvaAlunoResultado repositorioProvaAlunoResultado;
 
-        public ObterProvaAlunoResultadoPorTurmaIdQuerHandler(IRepositorioProvaAlunoResultado repositorioProvaAlunoResultado)
+        public ObterProvaAlunoResultadoPorTurmaIdQueryHandler(IRepositorioProvaAlunoResultado repositorioProvaAlunoResultado)
         {
             this.repositorioProvaAlunoResultado = repositorioProvaAlunoResultado ?? throw new ArgumentNullException(nameof(repositorioProvaAlunoResultado));
         }
