@@ -18,16 +18,14 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var turmaId = long.Parse(mensagemRabbit.Mensagem.ToString());
 
             var provasAlunosResultados = await mediator.Send(new ObterProvaAlunoResultadoPorTurmaIdQuery(turmaId));
-            if (provasAlunosResultados == null)
-                return false;
-
-            provasAlunosResultados = provasAlunosResultados.Where(t => t.SituacaoProvaAluno == Dominio.Enums.SituacaoProvaAluno.Finalizada);
-            if (!provasAlunosResultados.Any())
+            if (provasAlunosResultados == null || !provasAlunosResultados.Any())
                 return false;
 
             foreach (var provaAlunoResultado in provasAlunosResultados)
             {
                 var respostas = await mediator.Send(new ObterRespostasProvaAlunoQuery(provaAlunoResultado.ProvaId, provaAlunoResultado.AlunoRa));
+                if(respostas == null || !respostas.Any()) 
+                    continue;
 
                 var duplicados = respostas
                     .GroupBy(c => new { c.ProvaId, c.AlunoRa, c.QuestaoId })
