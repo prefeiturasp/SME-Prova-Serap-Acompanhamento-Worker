@@ -4,6 +4,7 @@ using SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes;
 using SME.SERAp.Prova.Acompanhamento.Infra.Fila;
 using System.Linq;
 using System.Threading.Tasks;
+using SME.SERAp.Prova.Acompanhamento.Infra.Dtos;
 
 namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
 {
@@ -52,6 +53,9 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                         await mediator.Send(new AlterarProvaAlunoQuestaoRespostaCommand(provaAlunoResposta.Id, dtoVazio));
                     }
                 }
+
+                if (duplicados.Any())
+                    await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoRespostaConsolidar, new ProvaAlunoDto { AlunoRa = provaAlunoResultado.AlunoRa, ProvaId = provaAlunoResultado.ProvaId }));
             }
 
             return true;

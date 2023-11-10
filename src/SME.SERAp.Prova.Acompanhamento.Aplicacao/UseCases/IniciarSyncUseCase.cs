@@ -19,6 +19,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.AbrangenciaSync));
 
             await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoSync));
+            await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.RemoverSync));
+
             return true;
         }
     }
