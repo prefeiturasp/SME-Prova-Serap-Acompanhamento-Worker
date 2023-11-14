@@ -54,7 +54,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                     }
                 }
 
-                if (duplicados.Any())
+                if (duplicados.Any() || provaAlunoResultado.AlunoQuestaoRespondida != respostas.Count())
                     await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoRespostaConsolidar, new ProvaAlunoDto { AlunoRa = provaAlunoResultado.AlunoRa, ProvaId = provaAlunoResultado.ProvaId }));
             }
 
