@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using SME.SERAp.Prova.Acompanhamento.Aplicacao.Interfaces;
 using SME.SERAp.Prova.Acompanhamento.Infra.Fila;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
 {
@@ -10,43 +10,39 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
     {
         public RemoverAlunoDuplicadoUseCase(IMediator mediator) : base(mediator)
         {
-        }        
-        
+        }
+
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {
-            var turmas = await mediator.Send(new ObterTurmasQuery());
+            var turmaId = long.Parse(mensagemRabbit.Mensagem.ToString());
 
-            foreach (var turma in turmas)
+            var provasAlunosResultados = await mediator.Send(new ObterProvaAlunoResultadoPorTurmaIdQuery(turmaId));
+            if (provasAlunosResultados == null)
+                return false;
+
+            var duplicados = provasAlunosResultados
+                .GroupBy(c => new { c.ProvaId, c.AlunoRa })
+                .Where(c => c.Count() > 1)
+                .Select(c => c.Key);
+
+            foreach (var duplicado in duplicados)
             {
-                var provasAlunosResultados = await mediator.Send(new ObterProvaAlunoResultadoPorTurmaIdQuery(long.Parse(turma.Id)));
-                
-                if (provasAlunosResultados == null)
-                    continue;
+                var provasAlunosResultadosRemover = provasAlunosResultados
+                    .Where(c => c.ProvaId == duplicado.ProvaId
+                                && c.AlunoRa == duplicado.AlunoRa);
 
-                var duplicados = provasAlunosResultados
-                    .GroupBy(c => new { c.ProvaId, c.AlunoRa })
-                    .Where(c => c.Count() > 1)
-                    .Select(c => c.Key);
+                var primeiroRegistro = true;
 
-                foreach (var duplicado in duplicados)
+                foreach (var provaAlunoResultadoRemover in provasAlunosResultadosRemover)
                 {
-                    var provasAlunosResultadosRemover = provasAlunosResultados
-                        .Where(c => c.ProvaId == duplicado.ProvaId
-                                    && c.AlunoRa == duplicado.AlunoRa);
-
-                    var primeiroRegistro = true;
-
-                    foreach (var provaAlunoResultadoRemover in provasAlunosResultadosRemover)
+                    if (primeiroRegistro)
                     {
-                        if (primeiroRegistro)
-                        {
-                            primeiroRegistro = false;
-                            continue;
-                        }
-
-                        provaAlunoResultadoRemover.InutilizarRegistro();
-                        await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaAlunoResultadoRemover));                        
+                        primeiroRegistro = false;
+                        continue;
                     }
+
+                    provaAlunoResultadoRemover.InutilizarRegistro();
+                    await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaAlunoResultadoRemover));
                 }
             }
 
