@@ -195,6 +195,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Worker
             comandos.Add(RotaRabbit.RemoverSync, new ComandoRabbit("inicia o processamento para verificar e remover dados duplicados", typeof(IRemoverDuplicadoSyncUseCase)));
             comandos.Add(RotaRabbit.RemoverAlunoDuplicado, new ComandoRabbit("remover alunos duplicados dos resultados das provas", typeof(IRemoverAlunoDuplicadoUseCase)));
             comandos.Add(RotaRabbit.RemoverRespostaDuplicado, new ComandoRabbit("remover respostas duplicados dos resultados das provas", typeof(IRemoverRespostaDuplicadoUseCase)));
+            
+            comandos.Add(RotaRabbit.RemoverAlunoSemDeficienciaProvaAlunoDeficiente, new ComandoRabbit("Remover alunos sem deficiência de provas para alunos deficientes", typeof(IRemoverAlunoSemDeficienciaProvaAlunoDeficienteUseCase)));
         }
 
         private async Task InicializaConsumer(IModel channel, CancellationToken stoppingToken)
