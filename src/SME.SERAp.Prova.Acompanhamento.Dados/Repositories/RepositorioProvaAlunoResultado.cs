@@ -82,6 +82,28 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
             return retorno;
         }
 
+        public async Task<IEnumerable<ProvaAlunoResultado>> ObterPorProvaIdAsync(long provaId)
+        {
+            var search = new SearchDescriptor<ProvaAlunoResultado>(IndexName)
+                .Query(q => q.Term(t =>
+                    t.Field(f => f.ProvaId).Value(provaId))).Size(10000).Scroll(ScrollTime);
+            
+            var response = await elasticClient.SearchAsync<ProvaAlunoResultado>(search);
+            
+            if (!response.IsValid || !response.Hits.Any())
+                return default;
+
+            var retorno = new List<ProvaAlunoResultado>();
+            
+            while (response.Hits.Any())
+            {
+                retorno.AddRange(response.Hits.Select(hit => hit.Source).ToList());
+                response = await elasticClient.ScrollAsync<ProvaAlunoResultado>(ScrollTime, response.ScrollId);
+            }
+
+            return retorno;
+        }
+
         public async Task<bool> DeletarPorProvaIdAsync(long provaId)
         {
             var response = await elasticClient.DeleteByQueryAsync<ProvaAlunoResultado>(q => q
