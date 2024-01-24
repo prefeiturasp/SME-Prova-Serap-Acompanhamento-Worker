@@ -19,39 +19,36 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
                 return false;
             
             var provaId = long.Parse(mensagem);
-            
-            var provasTurmas = await mediator.Send(new ObterProvasTurmasSerapQuery(provaId));
-            provasTurmas = provasTurmas.Where(c => c.TurmaId == 44496);
-            if (provasTurmas == null || !provasTurmas.Any())
+            if (provaId <= 0)
+                return false;
+
+            var prova = await mediator.Send(new ObterProvaParaDeficientePorProvaIdQuery(provaId));
+            if (prova == null)
                 return false;
             
-            var provasTurmasParaDeficientes = provasTurmas.Where(c => c.Deficiente);
-            if (!provasTurmasParaDeficientes.Any())
+            var provasAlunosResultados = await mediator.Send(new ObterProvaAlunoResultadoPorProvaIdQuery(provaId));
+            if (provasAlunosResultados == null || !provasAlunosResultados.Any())
                 return false;
             
             var deficiencias = await mediator.Send(new ObterDeficienciasPorProvaIdQuery(provaId));
             if (deficiencias == null || !deficiencias.Any())
                 return false;
             
-            var turmasIds = provasTurmasParaDeficientes.Select(c => c.TurmaId).Distinct();
+            var turmasIds = provasAlunosResultados.Select(c => c.TurmaId).Distinct();
             foreach (var turmaId in turmasIds)
             {
-                var provasAlunosResultados = await mediator.Send(new ObterProvaAlunoResultadoPorProvaTurmaQuery(provaId, turmaId));
-                if (provasAlunosResultados == null || !provasAlunosResultados.Any())
-                    continue;
-
                 var alunosComDeficiencias = await mediator.Send(new ObterAlunosTurmaSerapQuery(provaId, turmaId, true, deficiencias.ToArray()));
 
-                foreach (var provaAlunoResultado in provasAlunosResultados)
+                foreach (var provaAlunoResultadoTurma in provasAlunosResultados.Where(c => c.TurmaId == turmaId))
                 {
-                    if (provaAlunoResultado.AlunoQuestaoRespondida != null)
+                    if (provaAlunoResultadoTurma.AlunoQuestaoRespondida != null)
                         continue;
                     
-                    if (alunosComDeficiencias.Select(c => c.Ra).Contains(provaAlunoResultado.AlunoRa))
+                    if (alunosComDeficiencias.Select(c => c.Ra).Contains(provaAlunoResultadoTurma.AlunoRa))
                         continue;
                     
-                    provaAlunoResultado.InutilizarRegistro();
-                    await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaAlunoResultado));
+                    provaAlunoResultadoTurma.InutilizarRegistro();
+                    await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaAlunoResultadoTurma));                    
                 }
             }
 

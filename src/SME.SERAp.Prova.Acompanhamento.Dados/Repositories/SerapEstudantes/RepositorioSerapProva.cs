@@ -194,5 +194,31 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                 conn.Dispose();
             }
         }
+
+        public async Task<ProvaDto> ObterProvaParaDeficientePorProvaIdAsync(long provaId)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                const string query = @"select p.id, 
+        	                                 p.prova_legado_id as codigo, 
+        	                                 p.descricao, 
+                                             p.modalidade,
+	                                         p.inicio::date, 
+	                                         p.fim::date 
+                                        from prova p 
+                                        inner join tipo_prova tp on tp.id = p.tipo_prova_id
+                                        where p.id = @provaId 
+                                        and (p.ocultar_prova = false or p.ocultar_prova is null)
+                                        and tp.para_estudante_com_deficiencia";
+
+                return await conn.QueryFirstOrDefaultAsync<ProvaDto>(query, new { provaId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }
