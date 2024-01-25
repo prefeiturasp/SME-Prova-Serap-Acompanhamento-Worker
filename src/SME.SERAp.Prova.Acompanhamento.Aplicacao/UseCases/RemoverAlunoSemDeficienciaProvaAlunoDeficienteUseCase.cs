@@ -1,7 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases;
+using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
+using SME.SERAp.Prova.Acompanhamento.Infra;
 using SME.SERAp.Prova.Acompanhamento.Infra.Fila;
 
 namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
@@ -34,35 +38,97 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
             if (deficiencias == null || !deficiencias.Any())
                 return false;
             
-            var turmasIds = provasAlunosResultados.Select(c => c.TurmaId).Distinct();
+            int totalAlunos;
+            int totalNaoFinalizados;
+            int totalFinalizados;
+            int questoesRespondidas;
+            int tempoTotal;  
+
+            var alunos = new List<long>();
+            var quantidadeQuestoes = prova.QuantidadeQuestoes;            
+
+            var turmasIds = provasAlunosResultados.Select(c => c.TurmaId).Distinct(); 
             foreach (var turmaId in turmasIds)
             {
+                totalAlunos = 0;
+                totalNaoFinalizados = 0;
+                totalFinalizados = 0;
+                questoesRespondidas = 0;
+                tempoTotal = 0;                
+                
                 var alunosComDeficiencias = await mediator.Send(new ObterAlunosTurmaSerapQuery(provaId, turmaId, true, deficiencias.ToArray()));
-                var totalAlunos = 0;
+                
+                Ue ue = null;
+                var turma = await mediator.Send(new ObterTurmaPorIdQuery(turmaId.ToString()));
+                if (turma != null)
+                    ue = await mediator.Send(new ObterUePorIdQuery(turma.UeId.ToString()));
 
                 foreach (var provaAlunoResultadoTurma in provasAlunosResultados.Where(c => c.TurmaId == turmaId))
                 {
-                    if (provaAlunoResultadoTurma.AlunoQuestaoRespondida != null)
+                    if ((provaAlunoResultadoTurma.AlunoQuestaoRespondida != null ||
+                            (alunosComDeficiencias.Select(c => c.Ra).Contains(provaAlunoResultadoTurma.AlunoRa) && provaAlunoResultadoTurma.AlunoSituacao != 99)) &&
+                        !alunos.Contains(provaAlunoResultadoTurma.AlunoRa))
                     {
+                        alunos.Add(provaAlunoResultadoTurma.AlunoRa);
+                        
+                        questoesRespondidas += provaAlunoResultadoTurma.AlunoQuestaoRespondida.GetValueOrDefault();
                         totalAlunos++;
-                        continue;
-                    }
 
-                    if (alunosComDeficiencias.Select(c => c.Ra).Contains(provaAlunoResultadoTurma.AlunoRa))
-                    {
-                        totalAlunos++;
+                        if (provaAlunoResultadoTurma.AlunoInicio != null &&
+                            provaAlunoResultadoTurma.AlunoInicio.Value.Date < DateTime.Now.Date &&
+                            provaAlunoResultadoTurma.AlunoFim == null)
+                        {
+                            totalNaoFinalizados++;
+                        }
+
+                        if (provaAlunoResultadoTurma.AlunoInicio != null &&
+                            provaAlunoResultadoTurma.AlunoFim != null)
+                        {
+                            totalFinalizados++;
+                        }
+
+                        if (provaAlunoResultadoTurma.AlunoFim != null && provaAlunoResultadoTurma.AlunoTempo > 0)
+                            tempoTotal += provaAlunoResultadoTurma.AlunoTempo.GetValueOrDefault();
+                        
+                        //-> Atualizar a DRE. Houve casos que a DRE estava incorreta
+                        if (ue != null)
+                        {
+                            if (provaAlunoResultadoTurma.DreId != ue.DreId)
+                            {
+                                provaAlunoResultadoTurma.DreId = ue.DreId;
+                                await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaAlunoResultadoTurma));
+                            }
+                        }
+
                         continue;
                     }
 
                     provaAlunoResultadoTurma.InutilizarRegistro();
-                    await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaAlunoResultadoTurma));                    
+                    await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaAlunoResultadoTurma));
                 }
 
                 var provaTurmaResultado = await mediator.Send(new ObterProvaTurmaResultadoQuery(provaId, turmaId));
-                if (provaTurmaResultado == null) 
-                    continue;
+
+                //-> Atualizar a DRE. Houve casos que a DRE estava incorreta
+                if (ue != null)
+                {
+                    if (provaTurmaResultado.DreId != ue.DreId)
+                    {
+                        provaTurmaResultado.DreId = ue.DreId;
+                        await mediator.Send(new AlterarProvaTurmaResultadoCommand(provaTurmaResultado));
+                    }
+                }
+                
+                var totalQuestoes = totalAlunos * quantidadeQuestoes;
+                var tempoMedio = UtilTempoMedio.CalcularTempoMedioEmMinutos(tempoTotal, totalFinalizados);
 
                 provaTurmaResultado.TotalAlunos = totalAlunos;
+                provaTurmaResultado.TotalQuestoes = totalQuestoes;
+                provaTurmaResultado.TotalNaoFinalizados = totalNaoFinalizados;
+                provaTurmaResultado.TotalFinalizados = totalFinalizados;
+                provaTurmaResultado.QuestoesRespondidas = questoesRespondidas;
+                provaTurmaResultado.QuantidadeQuestoes = quantidadeQuestoes;
+                provaTurmaResultado.TempoMedio = tempoMedio;
                 await mediator.Send(new AlterarProvaTurmaResultadoCommand(provaTurmaResultado));
             }
 

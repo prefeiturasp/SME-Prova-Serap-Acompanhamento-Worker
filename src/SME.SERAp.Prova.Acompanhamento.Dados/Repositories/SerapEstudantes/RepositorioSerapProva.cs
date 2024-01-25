@@ -73,7 +73,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
 	                                 p.descricao, 
                                      p.modalidade,
 	                                 p.inicio::date, 
-	                                 p.fim::date 
+	                                 p.fim::date,
+                                     p.total_itens as QuantidadeQuestoes
                               from prova p 
                               where (p.ocultar_prova = false or p.ocultar_prova is null)";
 
@@ -96,7 +97,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
 	                                 p.descricao, 
                                      p.modalidade,
 	                                 p.inicio::date, 
-	                                 p.fim::date 
+	                                 p.fim::date,
+                                     p.total_itens as QuantidadeQuestoes
                               from prova p 
                               where inicio::date <= current_date and fim::date >= (current_date -1)
                                 and (p.ocultar_prova = false or p.ocultar_prova is null)";
@@ -205,7 +207,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
         	                                 p.descricao, 
                                              p.modalidade,
 	                                         p.inicio::date, 
-	                                         p.fim::date 
+	                                         p.fim::date,
+                                             p.total_itens as QuantidadeQuestoes
                                         from prova p 
                                         inner join tipo_prova tp on tp.id = p.tipo_prova_id
                                         where (p.ocultar_prova = false or p.ocultar_prova is null)
@@ -230,7 +233,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
         	                                 p.descricao, 
                                              p.modalidade,
 	                                         p.inicio::date, 
-	                                         p.fim::date 
+	                                         p.fim::date,
+                                             p.total_itens as QuantidadeQuestoes
                                         from prova p 
                                         inner join tipo_prova tp on tp.id = p.tipo_prova_id
                                         where p.id = @provaId 
