@@ -38,18 +38,32 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
             foreach (var turmaId in turmasIds)
             {
                 var alunosComDeficiencias = await mediator.Send(new ObterAlunosTurmaSerapQuery(provaId, turmaId, true, deficiencias.ToArray()));
+                var totalAlunos = 0;
 
                 foreach (var provaAlunoResultadoTurma in provasAlunosResultados.Where(c => c.TurmaId == turmaId))
                 {
                     if (provaAlunoResultadoTurma.AlunoQuestaoRespondida != null)
+                    {
+                        totalAlunos++;
                         continue;
-                    
+                    }
+
                     if (alunosComDeficiencias.Select(c => c.Ra).Contains(provaAlunoResultadoTurma.AlunoRa))
+                    {
+                        totalAlunos++;
                         continue;
-                    
+                    }
+
                     provaAlunoResultadoTurma.InutilizarRegistro();
                     await mediator.Send(new AlterarProvaAlunoResultadoCommand(provaAlunoResultadoTurma));                    
                 }
+
+                var provaTurmaResultado = await mediator.Send(new ObterProvaTurmaResultadoQuery(provaId, turmaId));
+                if (provaTurmaResultado == null) 
+                    continue;
+
+                provaTurmaResultado.TotalAlunos = totalAlunos;
+                await mediator.Send(new AlterarProvaTurmaResultadoCommand(provaTurmaResultado));
             }
 
             return true;
