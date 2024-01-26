@@ -54,5 +54,8 @@
         public const string RemoverSync = "serap.estudante.acomp.duplicado.remover.sync";
         public const string RemoverAlunoDuplicado = "serap.estudante.acomp.aluno.duplicado.remover";
         public const string RemoverRespostaDuplicado = "serap.estudante.acomp.resposta.duplicado.remover";
+
+        public const string RemoverAlunoSemDeficienciaProvaAlunoDeficienteSync = "serap.estudante.acomp.aluno.sem.deficiencia.prova.aluno.deficiente.remover.sync";
+        public const string RemoverAlunoSemDeficienciaProvaAlunoDeficiente = "serap.estudante.acomp.aluno.sem.deficiencia.prova.aluno.deficiente.remover";
     }
 }
