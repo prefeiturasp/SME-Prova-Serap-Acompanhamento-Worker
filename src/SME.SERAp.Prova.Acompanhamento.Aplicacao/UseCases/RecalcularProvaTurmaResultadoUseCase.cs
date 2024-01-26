@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SME.SERAp.Prova.Acompanhamento.Infra;
 
 namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
 {
@@ -67,7 +68,7 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
                     tempoTotal += provaAlunoResultado.AlunoTempo.GetValueOrDefault();
             }
 
-            var tempoMedio = CalcularTempoMedioEmMinutos(tempoTotal, totalFinalizados);
+            var tempoMedio = UtilTempoMedio.CalcularTempoMedioEmMinutos(tempoTotal, totalFinalizados);
 
             if (provaTurmaResultadoBanco.TotalAlunos != totalAlunos ||
                 provaTurmaResultadoBanco.TotalIniciadas != totalIniciadas ||
@@ -88,12 +89,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
             }
 
             return true;
-        }
-
-        private static long CalcularTempoMedioEmMinutos(int? tempoTotal, long totalFinalizados)
-        {
-            if (tempoTotal == null || tempoTotal == 0) return 0;
-            return ((int)tempoTotal / 60) / totalFinalizados;
         }
     }
 }

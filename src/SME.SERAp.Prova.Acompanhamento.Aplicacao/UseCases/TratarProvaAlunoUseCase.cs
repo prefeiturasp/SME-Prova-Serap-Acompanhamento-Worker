@@ -28,8 +28,9 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var alunos = await mediator.Send(new ObterAlunosTurmaSerapQuery(provaTurma.ProvaId, provaTurma.TurmaId, provaTurma.Deficiente, deficiencias.ToArray()));
             if (alunos != null && alunos.Any())
             {
-                int tempoTotal = 0;
-                int totalQuestoesRespondidas = 0;
+                var tempoTotal = 0;
+                var totalQuestoesRespondidas = 0;
+
                 foreach (var aluno in alunos)
                 {
                     var situacaoAlunoProva = await mediator.Send(new ObterSituacaoAlunoProvaSerapQuery(provaTurma.ProvaId, aluno.Ra));
