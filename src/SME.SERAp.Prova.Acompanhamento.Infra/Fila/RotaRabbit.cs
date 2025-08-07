@@ -58,6 +58,7 @@
         public const string RemoverAlunoSemDeficienciaProvaAlunoDeficienteSync = "serap.estudante.acomp.aluno.sem.deficiencia.prova.aluno.deficiente.remover.sync";
         public const string RemoverAlunoSemDeficienciaProvaAlunoDeficiente = "serap.estudante.acomp.aluno.sem.deficiencia.prova.aluno.deficiente.remover";
 
+
         public static string ReabrirAlunoProvaTai = "serap.estudante.prova.reabrir.aluno.prova.tai";
     }
 }
