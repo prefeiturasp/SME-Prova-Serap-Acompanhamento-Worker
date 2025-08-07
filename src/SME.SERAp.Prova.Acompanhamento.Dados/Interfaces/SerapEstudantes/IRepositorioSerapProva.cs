@@ -12,8 +12,9 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Interfaces.SerapEstudantes
         Task<SituacaoTurmaProvaDto> ObterSituacaoTurmaAsync(long provaId, long turmaId);
         Task<ProvaTurmaDto> ObterTurmaAsync(long provaId, long turmaId);
         Task<IEnumerable<ProvaDto>> ObterProvasEmAndamentoAsync();
-        Task<IEnumerable<long>> ObterDeficienciasAsync(long provaId);
-        Task<IEnumerable<ProvaDto>> ObterProvasParaDeficientesAsync();        
+        Task<IEnumerable<long>> ObterDeficienciasAsync(long provaId);       
         Task<ProvaDto> ObterProvaParaDeficientePorProvaIdAsync(long provaId);
+        Task<IEnumerable<ProvaDto>> ObterProvasParaDeficientesAsync();        
+        Task<bool> VerificarSeProvaEhFormatoTAI(long provaId);
     }
 }
