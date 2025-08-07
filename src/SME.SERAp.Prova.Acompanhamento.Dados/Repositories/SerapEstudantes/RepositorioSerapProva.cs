@@ -249,5 +249,21 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                 conn.Dispose();
             }
         }
+
+        public async Task<bool> VerificarSeProvaEhFormatoTAI(long provaId)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                const string query = @"select p.formato_tai from prova p where p.id = @provaId";
+
+                return await conn.QueryFirstOrDefaultAsync<bool>(query, new { provaId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }
