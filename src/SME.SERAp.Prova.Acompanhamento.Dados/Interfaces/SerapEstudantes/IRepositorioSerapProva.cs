@@ -15,5 +15,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Interfaces.SerapEstudantes
         Task<IEnumerable<long>> ObterDeficienciasAsync(long provaId);
         Task<IEnumerable<ProvaDto>> ObterProvasParaDeficientesAsync();        
         Task<ProvaDto> ObterProvaParaDeficientePorProvaIdAsync(long provaId);
+        Task<bool> VerificarSeProvaEhFormatoTAI(long provaId);
     }
 }
