@@ -35,53 +35,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.Teste.UseCases
         }
 
         [Fact]
-        public async Task Deve_Publicar_Reabertura_TAI_Quando_Formato_Eh_TAI()
-        {
-            var dto = new ProvaAlunoReaberturaDto { ProvaId = 1 };
-            var mensagem = new MensagemRabbit(JsonSerializer.Serialize(dto), Guid.NewGuid());
-
-            mediator.Setup(m => m.Send(It.IsAny<VerificarSeProvaEhFormatoTAIQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(true);
-
-            mediator.Setup(m => m.Send(It.IsAny<ObterProvaAlunoResultadoQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ProvaAlunoResultado>());
-
-            var resultado = await useCase.Executar(mensagem);
-
-            mediator.Verify(m => m.Send(It.Is<PublicaFilaRabbitCommand>(c =>
-                    c.NomeRota == RotaRabbit.ReabrirAlunoProvaTai), It.IsAny<CancellationToken>()), Times.Once);
-
-            Assert.True(resultado);
-        }
-
-        [Fact]
-        public async Task Nao_Deve_Publicar_Reabertura_TAI_Quando_Formato_Nao_Eh_TAI()
-        {
-            var dto = new ProvaAlunoReaberturaDto { ProvaId = 1 };
-            var mensagem = new MensagemRabbit(JsonSerializer.Serialize(dto), Guid.NewGuid());
-
-            mediator.Setup(m => m.Send(It.IsAny<VerificarSeProvaEhFormatoTAIQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(false);
-
-            mediator.Setup(m => m.Send(It.IsAny<ObterProvaAlunoResultadoQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ProvaAlunoResultado>());
-
-            var resultado = await useCase.Executar(mensagem);
-
-            mediator.Verify(m => m.Send(It.Is<PublicaFilaRabbitCommand>(c =>
-                    c.NomeRota == RotaRabbit.ReabrirAlunoProvaTai), It.IsAny<CancellationToken>()), Times.Never);
-
-            Assert.True(resultado);
-        }
-
-        [Fact]
         public async Task Deve_Retornar_True_Quando_Resultado_Null()
         {
             var dto = new ProvaAlunoReaberturaDto { ProvaId = 1 };
             var mensagem = new MensagemRabbit(JsonSerializer.Serialize(dto), Guid.NewGuid());
-
-            mediator.Setup(m => m.Send(It.IsAny<VerificarSeProvaEhFormatoTAIQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(false);
 
             mediator.Setup(m => m.Send(It.IsAny<ObterProvaAlunoResultadoQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((List<ProvaAlunoResultado>)null);
@@ -97,9 +54,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.Teste.UseCases
             var dto = new ProvaAlunoReaberturaDto { ProvaId = 1 };
             var mensagem = new MensagemRabbit(JsonSerializer.Serialize(dto), Guid.NewGuid());
 
-            mediator.Setup(m => m.Send(It.IsAny<VerificarSeProvaEhFormatoTAIQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(false);
-
             mediator.Setup(m => m.Send(It.IsAny<ObterProvaAlunoResultadoQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ProvaAlunoResultado>());
 
@@ -114,9 +68,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.Teste.UseCases
             var dto = new ProvaAlunoReaberturaDto { ProvaId = 1, AlunoRa = 123, UsuarioCoresso = "teste" };
             var mensagem = new MensagemRabbit(JsonSerializer.Serialize(dto), Guid.NewGuid());
             var provaAlunoResultado = ObterProvaAlunoResultado();
-
-            mediator.Setup(m => m.Send(It.IsAny<VerificarSeProvaEhFormatoTAIQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(false);
 
             mediator.Setup(m => m.Send(It.IsAny<ObterProvaAlunoResultadoQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ProvaAlunoResultado> { provaAlunoResultado });
@@ -135,9 +86,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.Teste.UseCases
             var dto = new ProvaAlunoReaberturaDto { ProvaId = 1, AlunoRa = 123, UsuarioCoresso = "user" };
             var mensagem = new MensagemRabbit(JsonSerializer.Serialize(dto), Guid.NewGuid());
             var provaAlunoResultado = ObterProvaAlunoResultado();
-
-            mediator.Setup(m => m.Send(It.IsAny<VerificarSeProvaEhFormatoTAIQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(false);
 
             mediator.Setup(m => m.Send(It.IsAny<ObterProvaAlunoResultadoQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ProvaAlunoResultado> { provaAlunoResultado });
