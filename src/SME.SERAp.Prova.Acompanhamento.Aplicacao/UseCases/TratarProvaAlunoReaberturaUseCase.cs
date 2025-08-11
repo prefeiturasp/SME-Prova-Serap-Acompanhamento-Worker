@@ -23,10 +23,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             var provaAlunoReabertura = mensagemRabbit.ObterObjetoMensagem<ProvaAlunoReaberturaDto>();
             if (provaAlunoReabertura == null) return false;
 
-            var ehFormatoTAI = await mediator.Send(new VerificarSeProvaEhFormatoTAIQuery(provaAlunoReabertura.ProvaId));
-            if (ehFormatoTAI)
-                await mediator.Send(new PublicaFilaRabbitProvaCommand(RotaRabbit.ReabrirAlunoProvaTai, provaAlunoReabertura));
-
             var provaAlunoResultados = await mediator.Send(new ObterProvaAlunoResultadoQuery(provaAlunoReabertura.ProvaId, provaAlunoReabertura.AlunoRa));
             if (provaAlunoResultados == null || !provaAlunoResultados.Any()) return true;
 
