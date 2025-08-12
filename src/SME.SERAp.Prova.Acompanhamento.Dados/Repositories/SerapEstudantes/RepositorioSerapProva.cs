@@ -74,7 +74,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                                      p.modalidade,
 	                                 p.inicio::date, 
 	                                 p.fim::date,
-                                     p.total_itens as QuantidadeQuestoes
+                                     p.total_itens as QuantidadeQuestoes,
+                                     p.formato_tai as FormatoTai
                               from prova p 
                               where (p.ocultar_prova = false or p.ocultar_prova is null)";
 

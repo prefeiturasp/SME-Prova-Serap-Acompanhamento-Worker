@@ -24,7 +24,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao
                 request.ProvaDto.Modalidade,
                 request.ProvaDto.Inicio.Year,
                 request.ProvaDto.Inicio,
-                request.ProvaDto.Fim
+                request.ProvaDto.Fim,
+                request.ProvaDto.FormatoTai
                 ));
         }
     }

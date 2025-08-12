@@ -26,7 +26,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                      prova.Descricao != provaDto.Descricao ||
                      prova.Modalidade != provaDto.Modalidade ||
                      prova.Inicio != provaDto.Inicio ||
-                     prova.Fim != provaDto.Fim)
+                     prova.Fim != provaDto.Fim ||
+                     prova.FormatoTai != provaDto.FormatoTai)
             {
                 await mediator.Send(new AlterarProvaCommand(provaDto));
             }
