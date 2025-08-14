@@ -42,6 +42,12 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                 await mediator.Send(new InserirProvaAlunoResultadoCommand(entidade));
             }
 
+            var prova = await mediator.Send(new ObterProvaPorIdQuery(provaAlunoReabertura.ProvaId.ToString()));
+            if(prova?.FormatoTai ?? false)
+            {
+                await mediator.Send(new ExcluirProvaAlunoRespostaPorAlunoCommand(provaAlunoReabertura.ProvaId, provaAlunoReabertura.AlunoRa));
+            }
+
             var provaAlunoResultado = provaAlunoResultados.FirstOrDefault();
             var provaTurmaRecalcular = new ProvaTurmaRecalcularDto(provaAlunoResultado.ProvaId, provaAlunoResultado.TurmaId);
             await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaTurmaResultadoRecalcular, provaTurmaRecalcular));

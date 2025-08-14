@@ -98,6 +98,52 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.Teste.UseCases
             Assert.True(resultado);
         }
 
+        [Fact]
+        public async Task Deve_Excluir_ProvaAlunoResposta_Caso_Prova_Tai()
+        {
+            var dto = new ProvaAlunoReaberturaDto { ProvaId = 1, AlunoRa = 123, UsuarioCoresso = "user" };
+            var mensagem = new MensagemRabbit(JsonSerializer.Serialize(dto), Guid.NewGuid());
+            var provaAlunoResultado = ObterProvaAlunoResultado();
+
+            mediator.Setup(m => m.Send(It.IsAny<ObterProvaAlunoResultadoQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ProvaAlunoResultado> { provaAlunoResultado });
+
+            mediator.Setup(m => m.Send(It.IsAny<ObterProvaPorIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Dominio.Entities.Prova { FormatoTai = true});
+
+            var resultado = await useCase.Executar(mensagem);
+
+            mediator.Verify(m => m.Send(It.Is<PublicaFilaRabbitCommand>(c =>
+                    c.NomeRota == RotaRabbit.ProvaTurmaResultadoRecalcular), It.IsAny<CancellationToken>()));
+
+            Assert.True(resultado);
+
+            mediator.Verify(m => m.Send(It.IsAny<ExcluirProvaAlunoRespostaPorAlunoCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task Nao_Deve_Excluir_ProvaAlunoResposta_Caso_Prova_Tai()
+        {
+            var dto = new ProvaAlunoReaberturaDto { ProvaId = 1, AlunoRa = 123, UsuarioCoresso = "user" };
+            var mensagem = new MensagemRabbit(JsonSerializer.Serialize(dto), Guid.NewGuid());
+            var provaAlunoResultado = ObterProvaAlunoResultado();
+
+            mediator.Setup(m => m.Send(It.IsAny<ObterProvaAlunoResultadoQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ProvaAlunoResultado> { provaAlunoResultado });
+
+            mediator.Setup(m => m.Send(It.IsAny<ObterProvaPorIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Dominio.Entities.Prova { FormatoTai = false });
+
+            var resultado = await useCase.Executar(mensagem);
+
+            mediator.Verify(m => m.Send(It.Is<PublicaFilaRabbitCommand>(c =>
+                    c.NomeRota == RotaRabbit.ProvaTurmaResultadoRecalcular), It.IsAny<CancellationToken>()));
+
+            Assert.True(resultado);
+
+            mediator.Verify(m => m.Send(It.IsAny<ExcluirProvaAlunoRespostaPorAlunoCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+        }
+
         private static ProvaAlunoResultado ObterProvaAlunoResultado()
         {
             return new ProvaAlunoResultado

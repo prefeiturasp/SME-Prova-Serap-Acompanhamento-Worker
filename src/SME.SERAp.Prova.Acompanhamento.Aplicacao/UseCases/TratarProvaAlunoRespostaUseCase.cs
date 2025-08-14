@@ -42,7 +42,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
             }
 
             if (provaAlunoRespostaDto.Consolidar)
+            {
+                await Task.Delay(2000); // Aguarda a indexação dos dados para consolidar.
                 await mediator.Send(new PublicaFilaRabbitCommand(RotaRabbit.ProvaAlunoRespostaConsolidar, provaAlunoRespostaDto));
+            }
 
             return true;
         }
