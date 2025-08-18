@@ -15,6 +15,22 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories
         {
         }
 
+        public async Task<bool> DeletarPorAlunoProvaAsync(long provaId, long alunoRa)
+        {
+            var response = await elasticClient.DeleteByQueryAsync<ProvaAlunoResposta>(q => q
+                    .Index(IndexName)
+                    .Query(
+                           q => q.Term(t => t.Field(f => f.ProvaId).Value(provaId)) &&
+                           q.Term(t => t.Field(f => f.AlunoRa).Value(alunoRa))
+                          )
+                    );
+
+            if (!response.IsValid)
+                throw new Exception(response.ServerError?.ToString(), response.OriginalException);
+
+            return true;
+        }
+
         public async Task<bool> DeletarPorProvaIdAsync(long provaId)
         {
 

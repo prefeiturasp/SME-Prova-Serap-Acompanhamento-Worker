@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Acompanhamento.Aplicacao.Commands;
+using SME.SERAp.Prova.Acompanhamento.Aplicacao.Queries;
 using SME.SERAp.Prova.Acompanhamento.Dominio.Entities;
 using SME.SERAp.Prova.Acompanhamento.Dominio.Enums;
 using SME.SERAp.Prova.Acompanhamento.Infra.Dtos;
@@ -19,10 +21,10 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {
             var provaAlunoReabertura = mensagemRabbit.ObterObjetoMensagem<ProvaAlunoReaberturaDto>();
-            if (provaAlunoReabertura == null) return false; // Colocar o LOG do service log caso a msg seja vazia
+            if (provaAlunoReabertura == null) return false;
 
             var provaAlunoResultados = await mediator.Send(new ObterProvaAlunoResultadoQuery(provaAlunoReabertura.ProvaId, provaAlunoReabertura.AlunoRa));
-            if (provaAlunoResultados == null || !provaAlunoResultados.Any()) return false;
+            if (provaAlunoResultados == null || !provaAlunoResultados.Any()) return true;
 
             foreach (var resultado in provaAlunoResultados)
             {
@@ -33,11 +35,17 @@ namespace SME.SERAp.Prova.Acompanhamento.Aplicacao.UseCases
                                                         resultado.AlunoId, resultado.AlunoRa,
                                                         resultado.AlunoNome, resultado.AlunoNomeSocial,
                                                         1, resultado.AlunoDownload,
-                                                        null, null, resultado.AlunoTempo,
-                                                        resultado.AlunoQuestaoRespondida, provaAlunoReabertura.UsuarioCoresso, DateTime.Now, SituacaoProvaAluno.NaoIniciado);
+                                                        null, null, null,
+                                                        null, provaAlunoReabertura.UsuarioCoresso, DateTime.Now, SituacaoProvaAluno.NaoIniciado);
 
                 await mediator.Send(new ExcluirProvaAlunoResultadoCommand(resultado.Id));
                 await mediator.Send(new InserirProvaAlunoResultadoCommand(entidade));
+            }
+
+            var prova = await mediator.Send(new ObterProvaPorIdQuery(provaAlunoReabertura.ProvaId.ToString()));
+            if(prova?.FormatoTai ?? false)
+            {
+                await mediator.Send(new ExcluirProvaAlunoRespostaPorAlunoCommand(provaAlunoReabertura.ProvaId, provaAlunoReabertura.AlunoRa));
             }
 
             var provaAlunoResultado = provaAlunoResultados.FirstOrDefault();

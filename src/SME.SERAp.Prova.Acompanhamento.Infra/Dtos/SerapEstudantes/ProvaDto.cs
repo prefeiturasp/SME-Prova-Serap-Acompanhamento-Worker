@@ -12,5 +12,6 @@ namespace SME.SERAp.Prova.Acompanhamento.Infra.Dtos.SerapEstudantes
         public DateTime Inicio { get; set; }
         public DateTime Fim { get; set; }
         public int QuantidadeQuestoes { get; set; }
+        public bool FormatoTai { get;set; } 
     }
 }

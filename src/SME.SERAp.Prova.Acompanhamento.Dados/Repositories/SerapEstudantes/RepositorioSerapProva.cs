@@ -74,7 +74,8 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                                      p.modalidade,
 	                                 p.inicio::date, 
 	                                 p.fim::date,
-                                     p.total_itens as QuantidadeQuestoes
+                                     p.total_itens as QuantidadeQuestoes,
+                                     p.formato_tai as FormatoTai
                               from prova p 
                               where (p.ocultar_prova = false or p.ocultar_prova is null)";
 
@@ -242,6 +243,22 @@ namespace SME.SERAp.Prova.Acompanhamento.Dados.Repositories.SerapEstudantes
                                         and tp.para_estudante_com_deficiencia";
 
                 return await conn.QueryFirstOrDefaultAsync<ProvaDto>(query, new { provaId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<bool> VerificarSeProvaEhFormatoTAI(long provaId)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                const string query = @"select p.formato_tai from prova p where p.id = @provaId";
+
+                return await conn.QueryFirstOrDefaultAsync<bool>(query, new { provaId });
             }
             finally
             {
